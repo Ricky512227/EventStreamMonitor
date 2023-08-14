@@ -1,7 +1,7 @@
 import sys
 from flask_jwt_extended import JWTManager
 from src.auth_token_service.client import init_grpc_token_client
-from src.airliner_common.log_monitor import LogMonitor
+from src.airliner_common.base_logger import LogMonitor
 from src.auth_token_service.tokens.token import Token
 from src.auth_token_service.models.token_model import Base, TokensModel
 from src.airliner_common.create_app import CreatFlaskApp

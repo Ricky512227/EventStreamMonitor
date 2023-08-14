@@ -3,27 +3,26 @@ import datetime,bcrypt
 class User:
     created_at = str(datetime.datetime.now())
     updated_at = str(datetime.datetime.now())
-    def __init__(self, username, firstname, lastname, dateofbirth,  email, pwd):
-        pwd = b'pwd'
+
+    def __init__(self, username=None, firstname=None, lastname=None, dateofbirth=None, email=None, pwd=None):
         self.username = username
         self.firstname = firstname
         self.lastname = lastname
-        self.dateofbirth= dateofbirth
+        self.dateofbirth = dateofbirth
         self.email = email
-        self.pwd = bcrypt.hashpw(pwd, bcrypt.gensalt())
+        self.pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt())
 
     @classmethod
-    def add_user(cls, username, firstname, lastname, dateofbirth,  email, pwd):
+    def add_user(cls, username, firstname, lastname, dateofbirth, email, pwd):
         user_obj = None
         try:
             print("Received :: username :: {0}, firstname :: {1}, lastname :: {2}, emailaddress :: {3}, password :: {4}, dateofbirth :: {5}".format(username, firstname, lastname, email, pwd, dateofbirth))
-            user_obj = cls(username, firstname, lastname, dateofbirth,  email, pwd)
+            user_obj = cls(username, firstname, lastname, dateofbirth, email, pwd)
             print("Returning :: {0} , ID :: {1}".format(user_obj, id(user_obj)))
         except Exception as ex:
             # user_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex,sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return user_obj
-
 
     @staticmethod
     def convert_db_model_to_response(model_instance):
@@ -38,7 +37,6 @@ class User:
 
     @staticmethod
     def generate_success_response(user_instance):
-        print(user_instance)
         succ_res_dict = {}
         try:
             succ_res_dict.update({'message': 'User  is created'})
@@ -60,6 +58,7 @@ class User:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             # user_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return succ_res_dict
+
     def __repr__(self):
         return f"UserName :: {self.username},FirstName :: {self.firstname}," \
                f" LastName :: {self.lastname}, Emailaddress :: {self.email} , Password :: {self.pwd}," \

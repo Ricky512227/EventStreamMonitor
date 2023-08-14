@@ -1,8 +1,11 @@
-import os,sys
+import sys
 import jsonschema
+from src.registration_service.registration_app import registration_app_logger
 
 def generate_req_missing_params(rec_req_params, aeroplane_req_headers_schema):
     missing_params_err_obj = {}
+    for key, value in rec_req_params.items():
+        registration_app_logger.debug("REQUEST <==> HEADER.params ==> Param :: {0} :: Value :: {1} :: Type ::{2} ".format(key,value, type(value)))
     try:
         jsonschema.validate(instance=rec_req_params, schema=aeroplane_req_headers_schema)
     except jsonschema.exceptions.ValidationError as ex:

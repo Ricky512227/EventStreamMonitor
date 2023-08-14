@@ -1,18 +1,3 @@
-import jsonschema, json
-# rec_req_headers = {
-#                    'Content-Type': 'application/json',
-#                    'User-Agent': 'PostmanRuntime/7.32.3',
-#                    'Accept': '*/*',
-#                    'Postman-Token': 'e060e477-601b-4ceb-9112-84bb5fb4f5d1',
-#                    'Host': '127.0.0.1:5000',
-#                    'Accept-Encoding': 'gzip, deflate, br',
-#                    'Connection': 'keep-alive',
-#                    'Content-Length': '191'
-#                    }
-# rec_req_headers = { 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Postman-Token': 'e060e477-601b-4ceb-9112-84bb5fb4f5d1', 'Host': '127.0.0.1:5000', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '191'}
-# rec_req_headers = {'Accept': '*/*', 'Postman-Token': 'e060e477-601b-4ceb-9112-84bb5fb4f5d1', 'Host': '127.0.0.1:5000', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '191'
-
-
 class AirlinerSchemaValidationError:
     error = "BAD_REQUEST"
     status_code = 400
