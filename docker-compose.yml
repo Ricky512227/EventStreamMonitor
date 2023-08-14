@@ -1,0 +1,20 @@
+version: '3'
+services:
+  airliner-app:
+    build:
+      context: .
+      dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile
+    ports:
+      - "5001:5000"  # Map host port to container port for Flask app
+    depends_on:
+      - airliner-db
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:testeventstreammonitor#123@airliner-db/Airlines
+
+  airliner-db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=testeventstreammonitor#123
+      - MYSQL_DATABASE=Airlines
+    ports:
+      - "3307:3306"  # Map host port to container port for MySQL

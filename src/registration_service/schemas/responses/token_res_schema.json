@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generate Token Response",
+  "description": "Schema for the response after generating an access token",
+  "type": "object",
+  "properties": {
+    "accessToken": {
+      "type": "string",
+      "description": "The generated access token"
+    },
+    "expiresIn": {
+      "type": "integer",
+      "description": "Duration (in seconds) until the access token expires"
+    },
+    "tokenType": {
+      "type": "string",
+      "description": "Type of the token (e.g., 'bearer')"
+    }
+  },
+  "required": ["accessToken", "expiresIn", "tokenType"]
+}

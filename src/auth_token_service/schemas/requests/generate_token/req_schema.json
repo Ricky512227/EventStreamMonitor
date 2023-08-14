@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generate Token Request",
+  "description": "Schema for generating an access token request",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "description": "User's unique identifier"
+    },
+    "username": {
+      "type": "string",
+      "description": "User's username"
+    },
+    "password": {
+      "type": "string",
+      "description": "User's password"
+    }
+  },
+  "required": ["userId", "username", "password"]
+}

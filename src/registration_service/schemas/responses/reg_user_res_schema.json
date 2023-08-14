@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Registration Response Schema",
+  "description": "Schema for user registration response data",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "A message indicating the outcome of the registration."
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "User's username"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address"
+        },
+        "dateofbirth": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "User's date of birth"
+        },
+        "firstName": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "User's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "User's last name"
+        },
+        "CreatedAtTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "UpdatedAtTime": {
+        "type": "string",
+        "format": "date-time"
+        }
+      },
+      "required": ["userId", "username", "email", "firstName", "lastName"],
+      "additionalProperties": false,
+      "description": "User details"
+    }
+  },
+  "required": ["message", "user"],
+  "additionalProperties": false
+}

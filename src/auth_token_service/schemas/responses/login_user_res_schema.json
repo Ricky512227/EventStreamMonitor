@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Login User Response",
+  "description": "Schema for the response after a successful user login",
+  "type": "object",
+  "properties": {
+    "accessToken": {
+      "type": "string",
+      "description": "The generated access token"
+    },
+    "expiresIn": {
+      "type": "integer",
+      "description": "Duration (in seconds) until the access token expires"
+    },
+    "tokenType": {
+      "type": "string",
+      "description": "Type of the token (e.g., 'bearer')"
+    },
+    "message": {
+      "type": "string",
+      "description": "A message indicating the success of the login"
+    }
+  },
+  "required": ["accessToken", "expiresIn", "tokenType", "message"]
+}
