@@ -1,7 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, BigInteger, ForeignKey
+from sqlalchemy import Column, String, BigInteger
 from sqlalchemy.schema import Sequence
-from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 class TokensModel(Base):

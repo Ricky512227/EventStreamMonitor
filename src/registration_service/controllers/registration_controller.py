@@ -1,11 +1,11 @@
 import sys
 from sqlalchemy.exc import SQLAlchemyError
 from flask import jsonify, request, abort
-from src.registration_service.registration_app import registration_app_logger, req_headers_schema, reg_user_req_schema, registration_pool_obj, registration_db_engine, service_name
-from src.airliner_common.create_db_engine import create_session_for_service
-from src.airliner_common.req_header_validation import generate_req_missing_params
 from src.registration_service.users.user import User
 from src.registration_service.models.user_model import UsersModel
+from src.airliner_common.req_header_validation import generate_req_missing_params
+from src.registration_service import registration_app_logger, req_headers_schema, reg_user_req_schema, res_app_obj
+
 
 def add_user():
     registration_app_logger.info('REQUEST ==> Received Endpoint :: {0}'.format(request.endpoint))
@@ -40,7 +40,7 @@ def add_user():
                                                   CreatedAt = user_obj.created_at,
                                                   UpdatedAt = user_obj.updated_at)
                 registration_app_logger.info("Mapping the request data to the database model:: [SUCCESS]")
-                registration_session = create_session_for_service(registration_pool_obj, registration_db_engine, service_name.lower())
+                registration_session = res_app_obj.create_session_for_service()
                 if registration_session is not None:
                     try:
                         registration_session.add(user_map_db_instance)
@@ -84,7 +84,7 @@ def add_user():
 
 def check_user_credentails(userID):
     try:
-        registration_session = create_session_for_service(registration_pool_obj, registration_db_engine, service_name.lower())
+        registration_session = res_app_obj.create_session_for_service()
         if registration_session is not None:
             try:
                 row = registration_session.query(UsersModel).filter_by(ID=userID).first()

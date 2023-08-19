@@ -17,13 +17,13 @@ def init_grpc_token_client(serverIp, serverport):
     tokenstub = None
     try:
         tokenchannel = grpc.insecure_channel(serverIp + ":" + serverport)
+        print("Created channel :: {0}".format(tokenchannel))
         tokenstub = token_pb2_grpc.UserValidationForTokenGenerationStub(tokenchannel)
         print("Created Stub and assigned to the channel :: {0}".format(tokenstub))
         grpc_client_status = True
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-    finally:
-        return tokenstub, grpc_client_status
+    return tokenstub, grpc_client_status
 
 
 def trigger_request(tokenstub, data_to_send):
@@ -37,8 +37,7 @@ def trigger_request(tokenstub, data_to_send):
         print("Error occurred :: {0}\tLine No:: {1}".format(ex.debug_error_string(), sys.exc_info()[2].tb_lineno))
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-    finally:
-        return resp_data, resp_status
+    return resp_data, resp_status
 
 
 

@@ -36,22 +36,7 @@ def init_airliner_configs(configuration_file_path):
 
 
 
-def read_json_schema(schema_file_path):
-    loaded_status = False
-    loaded_schema = None
-    try:
-        print("Received Schema File Path : {0}".format(schema_file_path))
-        with open(schema_file_path, "r") as schema_file:
-            loaded_status = True
-            loaded_schema = dict(json.load(schema_file))
-    except FileNotFoundError as ex:
-        print(f"Schema file not found: {schema_file_path}")
-    except json.JSONDecodeError as ex:
-        print(f"Invalid JSON syntax in the schema file: {ex}")
-    except Exception as ex:
-        print('Error occurred :: {0} \tLine No: {1}'.format(ex, sys.exc_info()[2].tb_lineno))
-    print("Schema Validation {0}".format(loaded_status))
-    return loaded_status, loaded_schema
+
 
 
 

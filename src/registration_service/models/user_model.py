@@ -47,6 +47,7 @@ Base = declarative_base()
 #     #     except Exception as ex:
 #     #         airliner_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
+
 class UsersModel(Base):
     __tablename__ = 'users'
     ID = Column(BigInteger,Sequence('user_id_seq',start=1000), primary_key=True)

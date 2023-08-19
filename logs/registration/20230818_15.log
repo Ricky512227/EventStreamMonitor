@@ -1,0 +1,28 @@
+2023-08-18 15:27:36 - INFO - [create_app.py : 41] :: Received Service [registration]
+2023-08-18 15:27:36 - INFO - [create_app.py : 43] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-08-18 15:27:36 - INFO - [create_app.py : 48] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-08-18 15:27:36 - INFO - [create_app.py : 58] :: Added Blueprints :: /static/<path:filename>
+2023-08-18 15:27:36 - INFO - [create_app.py : 68] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-08-18 15:27:36 - INFO - [create_app.py : 62] :: Preparing DatabaseURI for Service :: [registration]
+2023-08-18 15:27:36 - INFO - [create_app.py : 64] :: Prepared DatabaseURI for Service :: [registration] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS
+2023-08-18 15:27:36 - INFO - [create_app.py : 70] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-08-18 15:27:36 - INFO - [create_app.py : 99] :: Current Connection status set to :: False for the service :: registration
+2023-08-18 15:27:36 - INFO - [create_app.py : 100] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-18 15:27:36 - INFO - [create_app.py : 104] :: Established the connection to the database :: [SUCCESS]
+2023-08-18 15:27:36 - INFO - [create_app.py : 106] :: Current Connection status set to :: True for the service :: registration
+2023-08-18 15:27:36 - INFO - [create_app.py : 108] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-08-18 15:27:36 - INFO - [create_app.py : 141] :: Database already exists :: REGISTRATIONS
+2023-08-18 15:27:36 - INFO - [create_app.py : 117] :: Trying to create the tables if not present in the database...
+2023-08-18 15:27:36 - INFO - [create_app.py : 119] :: Going to create the tables ...
+2023-08-18 15:27:36 - INFO - [create_app.py : 122] :: Created the tables ...
+2023-08-18 15:27:36 - INFO - [create_app.py : 75] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-08-18 15:27:36 - INFO - [create_app.py : 77] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-08-18 15:27:36 - INFO - [create_app.py : 81] :: Initialized Pool for Service ==>[registration] :: [SUCCESS]
+2023-08-18 15:27:36 - INFO - [create_app.py : 150] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-18 15:27:36 - INFO - [create_app.py : 151] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-18 15:27:36 - INFO - [create_app.py : 152] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x103b46eb0> - ID: 4357123760
+2023-08-18 15:27:36 - INFO - [create_app.py : 153] :: Current Pool Size ::  100
+2023-08-18 15:27:36 - INFO - [create_app.py : 154] :: Checked Out Connections from Pool  0
+2023-08-18 15:27:36 - INFO - [create_app.py : 155] :: Checked in Connections available in Pool :: 0
+2023-08-18 15:27:36 - INFO - [create_app.py : 156] :: Current Pool Overflow Info :: -100
+2023-08-18 15:27:36 - INFO - [create_app.py : 157] :: #---------------------------------[ POOL - INFO ]----------------------------------------#

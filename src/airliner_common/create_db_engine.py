@@ -4,12 +4,13 @@ from sqlalchemy import create_engine, QueuePool
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
+from create_app import CreatFlaskApp
 
 
-class CreateDbEngine:
+class CreateDbEngine(CreatFlaskApp):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
     def __init__(self, service_name, db_driver, db_user, db_password, db_ip_address, db_port, db_name):
+        super().__init__(service_name)
         self.db_driver = db_driver
         self.db_user = db_user
         self.db_password = db_password
@@ -18,22 +19,21 @@ class CreateDbEngine:
         self.db_name = db_name
         self.database_uri = None
         self.app_db_engine = None
-        self.service_name = service_name
+
 
     def get_database_uri(self):
-        print("Preparing DatabaseURI for Service :: [{0}]".format(self.service_name))
+        self.app_logger.info("Preparing DatabaseURI for Service :: [{0}]".format(self.service_name))
         database_uri = self.db_driver + "://" + self.db_user + ":" + self.db_password + "@" + self.db_ip_address + ":" + self.db_port + "/" + self.db_name
-        print("Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, database_uri))
+        self.app_logger.info("Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, database_uri))
         return database_uri
     def create_db_engine(self):
-        # database_uri = 'mysql+pymysql://root:testeventstreammonitor#123@localhost:3307/Airlines'
         database_uri = self.get_database_uri()
-        print("Creating DB-Engine using DatabaseURI :: {1} for Service :: [{0}]".format(self.service_name, database_uri))
+        self.app_logger.info("Creating DB-Engine using DatabaseURI :: {1} for Service :: [{0}]".format(self.service_name, database_uri))
         app_db_engine = create_engine(database_uri)
-        print("Created DB-Engine using DatabaseURI :: {0} for Service :: [{1}]".format(app_db_engine, self.service_name))
+        self.app_logger.info("Created DB-Engine using DatabaseURI :: {0} for Service :: [{1}]".format(app_db_engine, self.service_name))
         return app_db_engine
 
-class BindSQLALCHEMY:
+class BindSQLALCHEMY(CreatFlaskApp):
     def __init__(self, service_name, app_name, databaseuri):
         self.app_name = app_name
         self.databaseuri = databaseuri
@@ -43,12 +43,12 @@ class BindSQLALCHEMY:
 
     def bind_db_app(self):
         self.app_name.config['SQLALCHEMY_DATABASE_URI'] = self.databaseuri
-        print("Binding SQLALCHEMY using DatabaseURI:: [{1}] to Application Instance for Service :: [{0}]".format(self.service_name, self.databaseuri))
+        self.app_logger.info("Binding SQLALCHEMY using DatabaseURI:: [{1}] to Application Instance for Service :: [{0}]".format(self.service_name, self.databaseuri))
         app_db = SQLAlchemy(app=self.app_name)
-        print("Binded SQLALCHEMY :: [{0}] to Application Instance for Service :: [{1}]".format(app_db, self.service_name))
+        self.app_logger.info("Binded SQLALCHEMY :: [{0}] to Application Instance for Service :: [{1}]".format(app_db, self.service_name))
         return app_db
 
-class QueuePool_To_Target_DB:
+class QueuePool_To_Target_DB(CreatFlaskApp):
     def __init__(self, service_name, app_db_engine, db_pool_size, db_pool_max_overflow):
         self.service_name = service_name
         self.app_db_engine= app_db_engine
@@ -57,7 +57,7 @@ class QueuePool_To_Target_DB:
         self.connection_pool=None
 
     def create_pool(self):
-        print("Initialized Pool for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
+        self.app_logger.info("Initialized Pool for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
         self.connection_pool = QueuePool(creator=self.app_db_engine,pool_size=self.db_pool_size, max_overflow=self.db_pool_max_overflow)
         return self.connection_pool
 
@@ -65,16 +65,20 @@ class QueuePool_To_Target_DB:
     def display_pool_info(self):
         try:
             if self.connection_pool:
-                print("#---------------------------------[ POOL - INFO ]----------------------------------------#")
-                print("Displaying Pool_Info for Service ==>[{0}] ".format(self.service_name))
-                print("Current Pool Info :: {0} - ID: {1}".format(self.connection_pool, id(self.connection_pool)))
-                print("Current Pool Size ::  {0}".format(self.connection_pool.size()))
-                print("Checked Out Connections from Pool  {0}".format(self.connection_pool.checkedin()))
-                print("Checked in Connections available in Pool :: {0}".format(self.connection_pool.checkedout()))
-                print("Current Pool Overflow Info :: {0}".format(self.connection_pool.overflow()))
-                print("#---------------------------------[ POOL - INFO ]----------------------------------------#")
+                self.app_logger.info("#---------------------------------[ POOL - INFO ]----------------------------------------#")
+                self.app_logger.info("Displaying Pool_Info for Service ==>[{0}] ".format(self.service_name))
+                self.app_logger.info("Current Pool Info :: {0} - ID: {1}".format(self.connection_pool, id(self.connection_pool)))
+                self.app_logger.info("Current Pool Size ::  {0}".format(self.connection_pool.size()))
+                self.app_logger.info("Checked Out Connections from Pool  {0}".format(self.connection_pool.checkedin()))
+                self.app_logger.info("Checked in Connections available in Pool :: {0}".format(self.connection_pool.checkedout()))
+                self.app_logger.info("Current Pool Overflow Info :: {0}".format(self.connection_pool.overflow()))
+                self.app_logger.info("#---------------------------------[ POOL - INFO ]----------------------------------------#")
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+
+
+
+
 
 def create_session_for_service(app_pool, airliner_db_engine, service_name):
     aero_session = None
@@ -151,3 +155,15 @@ def check_db_connectivity_and_retry(USER_SERVICE_NAME, airliner_db_engine):
             print("Going for retry .. RETRY_INTERVAL :: {0} sec".format(RETRY_INTERVAL))
             time.sleep(RETRY_INTERVAL)
     return db_connection_status
+
+
+
+
+# if check_db_connectivity_and_retry(SERVICE_NAME, registration_db_engine):
+#     database_uri = registration_db_obj.get_database_uri()
+#     if init_databases_for_service(database_uri):
+#         if create_tables_associated_to_db_model(Base, airliner_db_engine=registration_db_engine):
+#             registration_db_bind_obj = BindSQLALCHEMY(SERVICE_NAME, registration_app, database_uri)
+#             registration_db_sqlalchemy = registration_db_bind_obj.bind_db_app()
+#             registration_pool_obj = QueuePool_To_Target_DB(SERVICE_NAME, registration_db_engine, 100, 20)
+#             registration_connection_pool = registration_pool_obj.create_pool()

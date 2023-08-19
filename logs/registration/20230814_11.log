@@ -1,4 +1,0 @@
-2023-08-14 11:29:21 - INFO - [__init__.py : 18] :: Application :: <Flask 'REGISTRATION'> , Type :: <class 'flask.app.Flask'>
-2023-08-14 11:29:21 - INFO - [registration_app.py : 25] :: Application is ready to server traffic.
-<class 'flask.app.Flask'>
-2023-08-14 11:29:21 - INFO - [registration_app.py : 25] :: Application is ready to server traffic.
