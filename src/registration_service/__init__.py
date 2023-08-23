@@ -21,16 +21,15 @@ try:
                                 db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW, base=Base)
 
     registration_app_logger = res_app_obj.app_logger
+
     registration_app = res_app_obj.create_app_instance()
 
     # Read Schema File
-    login_user_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/login_user/req_schema.json"
     reg_user_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json"
     req_headers_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/request_headers_schema.json"
 
-    req_headers_schema, _ = res_app_obj.read_json_schema(req_headers_schema_filepath)
-    login_user_req_schema, _ = res_app_obj.read_json_schema(login_user_req_schema_filepath)
-    reg_user_req_schema, _ = res_app_obj.read_json_schema(reg_user_req_schema_filepath)
+    _, req_headers_schema = res_app_obj.read_json_schema(req_headers_schema_filepath)
+    _, reg_user_req_schema = res_app_obj.read_json_schema(reg_user_req_schema_filepath)
 
     registration_bp = res_app_obj.create_blueprint()
 
@@ -48,6 +47,12 @@ try:
                 registration_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(add_user)
                 res_app_obj.register_blueprint()
                 res_app_obj.display_registered_blueprints_for_service()
+
+                from src.airliner_common.airliner_err_handlers import internal_server_error, bad_request, not_found
+                res_app_obj.register_err_handler(500, internal_server_error)
+                res_app_obj.register_err_handler(400, bad_request)
+                res_app_obj.register_err_handler(404, not_found)
+                res_app_obj.display_registered_err_handlers()
 
                 from src.registration_service.registration_grpc.server import UserValidationForTokenGenerationService
 

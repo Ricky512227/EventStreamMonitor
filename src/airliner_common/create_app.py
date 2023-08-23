@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
 from src.airliner_common.base_logger import LogMonitor
+from flask_jwt_extended import JWTManager
 
 
 class CreatFlaskApp(LogMonitor):
@@ -43,6 +44,10 @@ class CreatFlaskApp(LogMonitor):
         self.app_logger.info("Flask of Application Instance created for service [{0}] ,  App Name :: [{1}] ==> SUCCESS".format(self.service_name, self.app_instance))
         return self.app_instance
 
+    def init_jwt_manger(self):
+        self.app_instance.config['JWT_SECRET_KEY'] = '12345Ricky@23'
+        return JWTManager(self.app_instance)
+
     def create_blueprint(self):
         self.blueprint_instance = Blueprint(self.service_name+"_bp", __name__)
         self.app_logger.info("Created Blueprint :: {0} for the Application service ::{1}".format(self.blueprint_instance, self.service_name))
@@ -52,7 +57,14 @@ class CreatFlaskApp(LogMonitor):
         self.app_logger.info("Registering blueprints to the service :: {0}".format(self.app_instance))
         return self.app_instance.register_blueprint(self.blueprint_instance)
 
-    #
+    def register_err_handler(self, status_code, err_handler_func_name):
+        self.app_logger.info("Registering Error Handler {1}-{2} to the service :: {0}".format(self.app_instance,status_code,err_handler_func_name ))
+        return self.app_instance.register_error_handler(status_code, err_handler_func_name)
+
+    def display_registered_err_handlers(self):
+        for error_code, handler_info in self.app_instance.error_handler_spec.items():
+            self.app_logger.info(f"Error Code: {error_code}, Handler Function: {handler_info[0]}")
+
     def display_registered_blueprints_for_service(self):
         for rule in self.app_instance.url_map.iter_rules():
             self.app_logger.info("Added Blueprints :: {0}".format(rule))

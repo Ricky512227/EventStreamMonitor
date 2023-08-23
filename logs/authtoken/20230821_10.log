@@ -1,0 +1,34 @@
+2023-08-21 10:56:32 - INFO - [base_logger.py : 34] :: Initialized logger for the service [authtoken] :: [SUCCESS]
+2023-08-21 10:56:32 - INFO - [create_app.py : 42] :: Received Service [authtoken]
+2023-08-21 10:56:32 - INFO - [create_app.py : 44] :: Flask of Application Instance created for service [authtoken] ,  App Name :: [<Flask 'authtoken'>] ==> SUCCESS
+2023-08-21 10:56:32 - INFO - [create_app.py : 53] :: Created Blueprint :: <Blueprint 'authtoken_bp'> for the Application service ::authtoken
+2023-08-21 10:56:32 - INFO - [create_app.py : 63] :: Added Blueprints :: /static/<path:filename>
+2023-08-21 10:56:32 - INFO - [create_app.py : 73] :: Creating DB-Engine using DatabaseURI for Service :: [authtoken]
+2023-08-21 10:56:32 - INFO - [create_app.py : 67] :: Preparing DatabaseURI for Service :: [authtoken]
+2023-08-21 10:56:32 - INFO - [create_app.py : 69] :: Prepared DatabaseURI for Service :: [authtoken] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3305/AUTHTOKENS
+2023-08-21 10:56:32 - INFO - [create_app.py : 75] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3305/AUTHTOKENS)]
+2023-08-21 10:56:32 - INFO - [create_app.py : 104] :: Current Connection status set to :: False for the service :: authtoken
+2023-08-21 10:56:32 - INFO - [create_app.py : 105] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-21 10:56:32 - INFO - [create_app.py : 109] :: Established the connection to the database :: [SUCCESS]
+2023-08-21 10:56:32 - INFO - [create_app.py : 111] :: Current Connection status set to :: True for the service :: authtoken
+2023-08-21 10:56:32 - INFO - [create_app.py : 113] :: Closing the Current Connection as the connection was established for the service :: authtoken
+2023-08-21 10:56:32 - INFO - [create_app.py : 146] :: Database already exists :: AUTHTOKENS
+2023-08-21 10:56:32 - INFO - [create_app.py : 122] :: Trying to create the tables if not present in the database...
+2023-08-21 10:56:32 - INFO - [create_app.py : 124] :: Going to create the tables ...
+2023-08-21 10:56:32 - INFO - [create_app.py : 127] :: Created the tables ...
+2023-08-21 10:56:32 - INFO - [create_app.py : 80] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3305/AUTHTOKENS] to Application Instance for Service :: [authtoken]
+2023-08-21 10:56:32 - INFO - [create_app.py : 82] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [authtoken]
+2023-08-21 10:56:32 - INFO - [create_app.py : 86] :: Initialized Pool for Service ==>[authtoken] :: [SUCCESS]
+2023-08-21 10:56:32 - INFO - [create_app.py : 155] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-21 10:56:32 - INFO - [create_app.py : 156] :: Displaying Pool_Info for Service ==>[authtoken] 
+2023-08-21 10:56:32 - INFO - [create_app.py : 157] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x10440bfa0> - ID: 4366319520
+2023-08-21 10:56:32 - INFO - [create_app.py : 158] :: Current Pool Size ::  100
+2023-08-21 10:56:32 - INFO - [create_app.py : 159] :: Checked Out Connections from Pool  0
+2023-08-21 10:56:32 - INFO - [create_app.py : 160] :: Checked in Connections available in Pool :: 0
+2023-08-21 10:56:32 - INFO - [create_app.py : 161] :: Current Pool Overflow Info :: -100
+2023-08-21 10:56:32 - INFO - [create_app.py : 162] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-21 10:56:32 - INFO - [create_app.py : 57] :: Registering blueprints to the service :: <Flask 'authtoken'>
+2023-08-21 10:56:32 - INFO - [create_app.py : 63] :: Added Blueprints :: /static/<path:filename>
+2023-08-21 10:56:32 - INFO - [create_app.py : 63] :: Added Blueprints :: /api/v1/airliner/generateToken
+2023-08-21 10:56:32 - INFO - [token_app.py : 10] :: Started the AUTHTOKENS server ...
+2023-08-21 10:56:32 - INFO - [token_app.py : 11] :: Application is ready to server traffic.

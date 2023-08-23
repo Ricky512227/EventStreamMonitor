@@ -48,3 +48,12 @@ LastName	VARCHAR	User's last name
 DateOfBirth	DATE	User's date of birth
 CreatedAt	DATETIME	Date and time of registration
 UpdatedAt	DATETIME	Date and time of last update
+
+from flask_jwt_extended import JWTManager
+
+        auth_token_app.config['JWT_SECRET_KEY'] = '12345Ricky@23'
+        auth_token_jwt = JWTManager(auth_token_app)
+
+                login_user_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/auth_token_service/schemas/requests/login_user/req_schema.json"
+        gen_token_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/auth_token_service/schemas/requests/generate_token/req_schema.json"
+        req_headers_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/auth_token_service/schemas/headers/request_headers_schema.json"

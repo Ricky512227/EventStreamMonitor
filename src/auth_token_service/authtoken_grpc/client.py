@@ -12,11 +12,13 @@ def TokenGrpcRequestPreparation(userid, username, passcode):
     return tokoen_req_message
 
 
-def init_grpc_token_client(serverIp, serverport):
+def init_grpc_token_client():
     grpc_client_status = False
     tokenstub = None
     try:
-        tokenchannel = grpc.insecure_channel(serverIp + ":" + serverport)
+        grpc_auth_token_client_ip = "127.0.0.1"
+        grpc_auth_token_client_port = "8081"
+        tokenchannel = grpc.insecure_channel(grpc_auth_token_client_ip + ":" + grpc_auth_token_client_port)
         print("Created channel :: {0}".format(tokenchannel))
         tokenstub = token_pb2_grpc.UserValidationForTokenGenerationStub(tokenchannel)
         print("Created Stub and assigned to the channel :: {0}".format(tokenstub))

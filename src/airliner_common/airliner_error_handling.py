@@ -1,17 +1,87 @@
-class AirlinerSchemaValidationError:
-    error = "BAD_REQUEST"
-    status_code = 400
-    def __init__(self, message, error_details):
+
+class AirlinerErrorDetails:
+    def __init__(self, message=None, error_details=None):
         self.message = message
         self.error_details = error_details
-        self.errors = error_details
+
+class AirlinerError500(AirlinerErrorDetails):
+    error = "INTERNAL_SERVER"
+    status_code = 500
+    def __init__(self):
+        super().__init__()
     def to_dict(self):
-        return {
+        response_500={
+                        "status_code": self.status_code,
+                        "error": self.error,
+                        "message": self.message,
+                        "errors": self.error_details
+        }
+        if self.message is None:
+            del response_500["message"]
+        if self.error_details is None:
+            del response_500["errors"]
+        return response_500
+
+class AirlinerError400(AirlinerErrorDetails):
+    error = "BAD_REQUEST"
+    status_code = 400
+    def __init__(self):
+        super().__init__()
+
+    def to_dict(self):
+
+        response_400 = {
+            "status_code": self.status_code,
             "error": self.error,
             "message": self.message,
+            "error_details": self.error_details
+        }
+
+        if self.message is None:
+            del response_400["message"]
+        if self.error_details is None:
+            del response_400["errors"]
+
+        return response_400
+
+class AirlinerError404(AirlinerErrorDetails):
+    error = "NOT_FOUND"
+    status_code = 404
+    def __init__(self):
+        super().__init__()
+    def to_dict(self):
+        response_404 = {
             "status_code": self.status_code,
+            "error": self.error,
+            "message": self.message,
             "errors": self.error_details
         }
+        if self.message is None:
+            del response_404["message"]
+        if self.error_details is None:
+            del response_404["errors"]
+        return response_404
+
+
+
+
+
+
+# internal_server_error = AirlinerError500()
+# # internal_server_error.message = "An internal server error occurred."
+# # internal_server_error.error_details = "Additional details about the error."
+# error_dict = internal_server_error.to_dict()
+# print(error_dict)
+
+
+
+
+
+
+
+
+
+
 
 
 

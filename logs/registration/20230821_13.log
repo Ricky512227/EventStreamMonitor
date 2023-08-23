@@ -1,0 +1,38 @@
+2023-08-21 13:34:34 - INFO - [base_logger.py : 34] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-08-21 13:34:34 - INFO - [create_app.py : 42] :: Received Service [registration]
+2023-08-21 13:34:34 - INFO - [create_app.py : 44] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-08-21 13:34:34 - INFO - [create_app.py : 53] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-08-21 13:34:34 - INFO - [create_app.py : 71] :: Added Blueprints :: /static/<path:filename>
+2023-08-21 13:34:34 - INFO - [create_app.py : 81] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-08-21 13:34:34 - INFO - [create_app.py : 75] :: Preparing DatabaseURI for Service :: [registration]
+2023-08-21 13:34:34 - INFO - [create_app.py : 77] :: Prepared DatabaseURI for Service :: [registration] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS
+2023-08-21 13:34:34 - INFO - [create_app.py : 83] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-08-21 13:34:34 - INFO - [create_app.py : 112] :: Current Connection status set to :: False for the service :: registration
+2023-08-21 13:34:34 - INFO - [create_app.py : 113] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-21 13:34:34 - INFO - [create_app.py : 117] :: Established the connection to the database :: [SUCCESS]
+2023-08-21 13:34:34 - INFO - [create_app.py : 119] :: Current Connection status set to :: True for the service :: registration
+2023-08-21 13:34:34 - INFO - [create_app.py : 121] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-08-21 13:34:34 - INFO - [create_app.py : 154] :: Database already exists :: REGISTRATIONS
+2023-08-21 13:34:34 - INFO - [create_app.py : 130] :: Trying to create the tables if not present in the database...
+2023-08-21 13:34:34 - INFO - [create_app.py : 132] :: Going to create the tables ...
+2023-08-21 13:34:34 - INFO - [create_app.py : 135] :: Created the tables ...
+2023-08-21 13:34:34 - INFO - [create_app.py : 88] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-08-21 13:34:34 - INFO - [create_app.py : 90] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-08-21 13:34:34 - INFO - [create_app.py : 94] :: Initialized Pool for Service ==>[registration] :: [SUCCESS]
+2023-08-21 13:34:34 - INFO - [create_app.py : 163] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-21 13:34:34 - INFO - [create_app.py : 164] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-21 13:34:34 - INFO - [create_app.py : 165] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x103e8a3d0> - ID: 4360545232
+2023-08-21 13:34:34 - INFO - [create_app.py : 166] :: Current Pool Size ::  100
+2023-08-21 13:34:34 - INFO - [create_app.py : 167] :: Checked Out Connections from Pool  0
+2023-08-21 13:34:34 - INFO - [create_app.py : 168] :: Checked in Connections available in Pool :: 0
+2023-08-21 13:34:34 - INFO - [create_app.py : 169] :: Current Pool Overflow Info :: -100
+2023-08-21 13:34:34 - INFO - [create_app.py : 170] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-21 13:34:34 - INFO - [create_app.py : 57] :: Registering blueprints to the service :: <Flask 'registration'>
+2023-08-21 13:34:34 - INFO - [create_app.py : 71] :: Added Blueprints :: /static/<path:filename>
+2023-08-21 13:34:34 - INFO - [create_app.py : 71] :: Added Blueprints :: /api/v1/airliner/registerUser
+2023-08-21 13:34:34 - INFO - [__init__.py : 55] :: Created GRPC server with the workers of max :: 10
+2023-08-21 13:34:34 - INFO - [__init__.py : 58] :: Registered GRPC server to the server :: UserValidationForTokenGenerationService
+2023-08-21 13:34:34 - INFO - [__init__.py : 61] :: Starting GRPC server for the Token-User service with the IP & PORT:: localhost:8081
+2023-08-21 13:34:34 - INFO - [registration_app.py : 5] :: Started the grpc server ...
+2023-08-21 13:34:34 - INFO - [registration_app.py : 6] :: Started the REGISTRATION server ...
+2023-08-21 13:34:34 - INFO - [registration_app.py : 7] :: Application is ready to server traffic.
