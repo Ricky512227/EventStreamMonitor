@@ -9,18 +9,14 @@ def add_user():
     registration_app_logger.info('REQUEST ==> Received Endpoint :: {0}'.format(request.endpoint))
     rec_req_headers = dict(request.headers)
     registration_app_logger.info("Received Headers from the request :: {0}".format(rec_req_headers))
-    res_app_obj.rec_req_params = rec_req_headers
-    res_app_obj.loaded_schema = req_headers_schema
-    header_result = res_app_obj.generate_req_missing_params()
+    header_result = res_app_obj.generate_req_missing_params(rec_req_headers, req_headers_schema)
     if len(header_result.keys()) != 0:
         header_result["message"] = "Request Header Missing"
         registration_app_logger.info("Sending Error response back to client :: {0}".format(header_result))
         abort(400, description=header_result)
     if request.method == 'POST':
         rec_req_data = request.get_json()
-        res_app_obj.rec_req_params = rec_req_data
-        res_app_obj.loaded_schema = reg_user_req_schema
-        body_result = res_app_obj.generate_req_missing_params()
+        body_result = res_app_obj.generate_req_missing_params(rec_req_data, reg_user_req_schema)
         if len(body_result.keys()) != 0:
             body_result["message"] = "Request Params Missing"
             registration_app_logger.info("Sending Error response back to client :: {0}".format(body_result))

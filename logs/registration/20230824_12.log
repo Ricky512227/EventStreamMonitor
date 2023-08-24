@@ -1,0 +1,128 @@
+2023-08-24 12:29:39 - INFO - [base_logger.py : create_logger_for_service - 34] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_app_instance - 55] :: Received Service [registration]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_app_instance - 57] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-08-24 12:29:39 - INFO - [create_app.py : read_json_schema - 265] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json
+2023-08-24 12:29:39 - INFO - [create_app.py : read_json_schema - 275] :: Schema Validation True
+2023-08-24 12:29:39 - INFO - [create_app.py : read_json_schema - 265] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json
+2023-08-24 12:29:39 - INFO - [create_app.py : read_json_schema - 275] :: Schema Validation True
+2023-08-24 12:29:39 - INFO - [create_app.py : create_blueprint - 74] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-08-24 12:29:39 - INFO - [create_app.py : display_registered_blueprints_for_service - 106] :: Added Blueprints :: /static/<path:filename>
+2023-08-24 12:29:39 - INFO - [create_app.py : create_db_engine - 123] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-08-24 12:29:39 - INFO - [create_app.py : get_database_uri - 114] :: Preparing DatabaseURI for Service :: [registration]
+2023-08-24 12:29:39 - INFO - [create_app.py : get_database_uri - 116] :: Prepared DatabaseURI for Service :: [registration] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS
+2023-08-24 12:29:39 - INFO - [create_app.py : create_db_engine - 125] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-08-24 12:29:39 - INFO - [create_app.py : check_database_connectivity - 215] :: Current Connection status set to :: False for the service :: registration
+2023-08-24 12:29:39 - INFO - [create_app.py : check_database_connectivity - 216] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-24 12:29:39 - INFO - [create_app.py : check_database_connectivity - 220] :: Established the connection to the database :: [SUCCESS]
+2023-08-24 12:29:39 - INFO - [create_app.py : check_database_connectivity - 222] :: Current Connection status set to :: True for the service :: registration
+2023-08-24 12:29:39 - INFO - [create_app.py : check_database_connectivity - 224] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-08-24 12:29:39 - INFO - [create_app.py : init_databases_for_service - 257] :: Database already exists :: REGISTRATIONS
+2023-08-24 12:29:39 - INFO - [create_app.py : create_tables_associated_to_db_model - 233] :: Trying to create the tables if not present in the database...
+2023-08-24 12:29:39 - INFO - [create_app.py : create_tables_associated_to_db_model - 235] :: Going to create the tables ...
+2023-08-24 12:29:39 - INFO - [create_app.py : create_tables_associated_to_db_model - 238] :: Created the tables ...
+2023-08-24 12:29:39 - INFO - [create_app.py : bind_db_app - 133] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-08-24 12:29:39 - INFO - [create_app.py : bind_db_app - 135] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 142] :: Creating Pool of connections for Service ==>[registration] :: [STARTED]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 144] :: Created Pool of connections for Service ==>[registration] :: [SUCCESS]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 145] :: Creating session using pool of connections  :: [STARTED]
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 146] :: Creating  a session maker for database interactions
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 148] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x1114b6c70>
+2023-08-24 12:29:39 - INFO - [create_app.py : create_pool_of_connections - 149] :: Initialised a session maker for database interactions sessionmaker(class_='Session', bind=Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS), autoflush=True, expire_on_commit=True)
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 190] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 191] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 192] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1114b6c70> - ID: 4585122928
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 193] :: Current Pool Size ::  100
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 194] :: Checked Out Connections from Pool  0
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 195] :: Checked in Connections available in Pool :: 0
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 196] :: Current Pool Overflow Info :: -100
+2023-08-24 12:29:39 - INFO - [create_app.py : display_pool_info - 197] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 12:29:39 - INFO - [create_app.py : register_blueprint - 81] :: Registering blueprints to the service :: <Flask 'registration'>
+2023-08-24 12:29:39 - INFO - [create_app.py : display_registered_blueprints_for_service - 106] :: Added Blueprints :: /static/<path:filename>
+2023-08-24 12:29:39 - INFO - [create_app.py : display_registered_blueprints_for_service - 106] :: Added Blueprints :: /api/v1/airliner/registerUser
+2023-08-24 12:29:39 - INFO - [create_app.py : register_err_handler - 89] :: Registering Error Handler 500-<function internal_server_error at 0x111521160> to the service :: <Flask 'registration'>
+2023-08-24 12:29:39 - INFO - [create_app.py : register_err_handler - 89] :: Registering Error Handler 400-<function bad_request at 0x111510af0> to the service :: <Flask 'registration'>
+2023-08-24 12:29:39 - INFO - [create_app.py : register_err_handler - 89] :: Registering Error Handler 404-<function not_found at 0x1115211f0> to the service :: <Flask 'registration'>
+2023-08-24 12:29:39 - INFO - [create_app.py : display_registered_err_handlers - 98] :: Error Code: None, Handler Function: {}
+2023-08-24 12:29:39 - INFO - [__init__.py : <module> - 59] :: Created GRPC server with the workers of max :: 10
+2023-08-24 12:29:39 - INFO - [__init__.py : <module> - 62] :: Registered GRPC server to the server :: UserValidationForTokenGenerationService
+2023-08-24 12:29:39 - INFO - [__init__.py : <module> - 65] :: Starting GRPC server for the Token-User service with the IP & PORT:: localhost:8081
+2023-08-24 12:29:39 - INFO - [registration_app.py : <module> - 5] :: Started the grpc server ...
+2023-08-24 12:29:39 - INFO - [registration_app.py : <module> - 6] :: Started the REGISTRATION server ...
+2023-08-24 12:29:39 - INFO - [registration_app.py : <module> - 7] :: Application is ready to server traffic.
+2023-08-24 13:06:49 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:06:49 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '175'}
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 175 :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: email :: Value :: devarapallikamalsai@gmail.com :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: firstName :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: lastName :: Value :: devarapalli :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: dateOfBirth :: Value :: 06-4-1995 :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: password :: Value :: testeventstreammonitor#123 :: Type ::<class 'str'> 
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 286] :: Checking the data and doing validations...
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 289] :: Required_Properties_As_Per_Schema :: ['username', 'email', 'password']
+2023-08-24 13:06:49 - ERROR - [create_app.py : generate_req_missing_params - 292] :: Missing params found :: ['username']
+2023-08-24 13:06:49 - ERROR - [create_app.py : generate_req_missing_params - 294] :: Packing message for missing property which are found :: ['username']
+2023-08-24 13:06:49 - INFO - [create_app.py : generate_req_missing_params - 295] :: Validation for Request is  :: [SUCCESS]
+2023-08-24 13:06:49 - INFO - [registration_controller.py : add_user - 22] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Params Missing'}
+2023-08-24 13:06:57 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:06:57 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 13:06:57 - INFO - [registration_controller.py : add_user - 15] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Header Missing'}
+2023-08-24 13:07:09 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:07:09 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 13:07:09 - INFO - [registration_controller.py : add_user - 15] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Header Missing'}
+2023-08-24 13:08:04 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:08:04 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 13:08:04 - INFO - [registration_controller.py : add_user - 15] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Header Missing'}
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 15] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Header Missing'}
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 280] :: Validation for Request is  :: [STARTED]
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [create_app.py : generate_req_missing_params - 282] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 13:08:06 - INFO - [registration_controller.py : add_user - 15] :: Sending Error response back to client :: {'details': {'params': ['username']}, 'message': 'Request Header Missing'}

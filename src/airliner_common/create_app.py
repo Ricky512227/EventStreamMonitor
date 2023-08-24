@@ -1,35 +1,40 @@
 import json
 import sys
 import time
-
 import jsonschema
 from flask import Flask
 from flask import Blueprint
 import sqlalchemy.exc
-from sqlalchemy import create_engine, QueuePool
+from sqlalchemy.pool import QueuePool
+from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
 from src.airliner_common.base_logger import LogMonitor
 from flask_jwt_extended import JWTManager
+from urllib.parse import quote_plus
+
 
 
 class CreatFlaskApp(LogMonitor):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    def __init__(self, service_name, db_driver, db_user, db_ip_address, db_password,  db_port, db_name, db_pool_size, db_pool_max_overflow, base):
+    def __init__(self, service_name, db_driver, db_user, db_ip_address, db_password,  db_port, db_name, db_pool_size, db_pool_max_overflow,retry_interval, base):
         self.service_name = service_name
         self.app_logger = super().create_logger_for_service(self.service_name)
         self.app_instance = None
         self.blueprint_instance = None
         self.database_uri = None
+        self.airliner_db_connection = None
+        self.db_connection_status = False
         self.app_db_engine = None
+
+
         self.app_db= None
         self.connection_pool = None
-        self.app_db_engine= None
         self.Session = None
         self.session_instance = None
-        self.schema_header_file_path = None
-        self.schema_req_body_file_path = None
+        # self.schema_header_file_path = None
+        # self.schema_req_body_file_path = None
         self.loaded_status = False
         self.loaded_schema = None
         self.missing_params_err_obj = {}
@@ -48,6 +53,7 @@ class CreatFlaskApp(LogMonitor):
         self.db_pool_size= db_pool_size
         self.db_pool_max_overflow= db_pool_max_overflow
         self.base = base
+        self.retry_interval = retry_interval
 
 
     def create_app_instance(self):
@@ -111,8 +117,9 @@ class CreatFlaskApp(LogMonitor):
 
     def get_database_uri(self):
         try:
+            # connection_string = 'postgresql://username:password@localhost/dbname'
             self.app_logger.info("Preparing DatabaseURI for Service :: [{0}]".format(self.service_name))
-            self.database_uri = self.db_driver + "://" + self.db_user + ":" + self.db_password + "@" + self.db_ip_address + ":" + self.db_port + "/" + self.db_name
+            self.database_uri = self.db_driver + "://" + self.db_user + ":" + quote_plus(self.db_password) + "@" + self.db_ip_address + ":" + self.db_port + "/" + self.db_name
             self.app_logger.info("Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, self.database_uri))
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
@@ -200,32 +207,30 @@ class CreatFlaskApp(LogMonitor):
 
     def check_db_connectivity_and_retry(self):
         # Establishing the connection to the database and create a database/table if not exists
-        RETRY_INTERVAL = 5
         while True:
-            db_connection_status = self.check_database_connectivity()
-            if db_connection_status:
+            self.db_connection_status = self.check_database_connectivity()
+            if self.db_connection_status:
                 break
             else:
-                self.app_logger.info("Going for retry .. RETRY_INTERVAL :: {0} sec".format(RETRY_INTERVAL))
-                time.sleep(RETRY_INTERVAL)
-        return db_connection_status
+                self.app_logger.info("Going for retry .. RETRY_INTERVAL :: {0} sec".format(self.retry_interval))
+                time.sleep(self.retry_interval)
+        return self.db_connection_status
 
     def check_database_connectivity(self):
-        db_connection_status = False
-        self.app_logger.info("Current Connection status set to :: {0} for the service :: {1}".format(db_connection_status, self.service_name))
+        self.app_logger.info("Current Connection status set to :: {0} for the service :: {1}".format(self.db_connection_status, self.service_name))
         self.app_logger.info("Trying to establish the connection to the database :: [IN-PROGRESS]")
         try:
             # Handle the connection event before_connect :: [Triggered before a connection to the database is established.]
-            airliner_db_connection = self.app_db_engine.connect()
+            self.airliner_db_connection = self.app_db_engine.connect()
             self.app_logger.info("Established the connection to the database :: [SUCCESS]")
-            db_connection_status = True
-            self.app_logger.info("Current Connection status set to :: {0} for the service :: {1}".format(db_connection_status,self.service_name))
-            airliner_db_connection.close()
+            self.db_connection_status = True
+            self.app_logger.info("Current Connection status set to :: {0} for the service :: {1}".format(self.db_connection_status,self.service_name))
+            self.airliner_db_connection.close()
             self.app_logger.info("Closing the Current Connection as the connection was established for the service :: {0}".format(self.service_name))
         except sqlalchemy.exc.OperationalError as ex:
-            self.app_logger.error("Current Connection status set to :: {0}".format(db_connection_status))
+            self.app_logger.error("Current Connection status set to :: {0}".format(self.db_connection_status))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return db_connection_status
+        return self.db_connection_status
 
     def create_tables_associated_to_db_model(self):
         connection_status = False
@@ -260,19 +265,14 @@ class CreatFlaskApp(LogMonitor):
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return is_databases_created
 
-    def read_json_schema(self):
+    def read_json_schema(self, schema_file_path):
         try:
-            if self.schema_header_file_path:
-                self.schema_file_path = self.schema_header_file_path
-            elif self.schema_req_body_file_path:
-                self.schema_file_path = self.schema_req_body_file_path
-
-            self.app_logger.info("Received Schema File Path : {0}".format(self.schema_file_path))
-            with open(self.schema_file_path, "r") as self.schema_file:
+            self.app_logger.info("Received Schema File Path : {0}".format(schema_file_path))
+            with open(schema_file_path, "r") as self.schema_file:
                 self.loaded_status = True
                 self.loaded_schema = dict(json.load(self.schema_file))
         except FileNotFoundError as ex:
-            self.app_logger.error(f"Schema file not found: {self.schema_file_path}")
+            self.app_logger.error(f"Schema file not found: {schema_file_path}")
         except json.JSONDecodeError as ex:
             self.app_logger.error(f"Invalid JSON syntax in the schema file: {ex}")
         except Exception as ex:
@@ -280,22 +280,17 @@ class CreatFlaskApp(LogMonitor):
         self.app_logger.info("Schema Validation {0}".format(self.loaded_status))
         return self.loaded_status, self.loaded_schema
 
-    def generate_req_missing_params(self):
+    def generate_req_missing_params(self, rec_req_params, loaded_schema):
         try:
-            if self.schema_header_file_path:
-                self.schema_file_path = self.schema_header_file_path
-            elif self.schema_req_body_file_path:
-                self.schema_file_path = self.schema_req_body_file_path
-
             self.app_logger.info("Validation for Request is  :: [STARTED]")
-            for key, value in self.rec_req_params.items():
+            for key, value in rec_req_params.items():
                 self.app_logger.info( "REQUEST <==> params ==> Param :: {0} :: Value :: {1} :: Type ::{2} ".format(key, value, type(value)))
             try:
-                jsonschema.validate(instance=self.rec_req_params, schema=self.loaded_schema)
+                jsonschema.validate(instance=rec_req_params, schema=loaded_schema)
             except jsonschema.exceptions.ValidationError as ex:
                 self.app_logger.info("Checking the data and doing validations...")
                 # Get the list of required properties from the schema
-                self.required_properties = self.loaded_schema.get("required", [])
+                self.required_properties = loaded_schema.get("required", [])
                 self.app_logger.info("Required_Properties_As_Per_Schema :: {0}".format(self.required_properties))
                 # Get the list of missing required properties from the validation error
                 self.missing_params = [property_name for property_name in self.required_properties if property_name not in ex.instance]
