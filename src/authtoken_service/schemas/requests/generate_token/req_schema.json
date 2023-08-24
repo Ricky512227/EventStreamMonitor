@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "userId": {
-      "type": "integer",
+      "type": "string",
       "description": "User's unique identifier"
     },
     "username": {

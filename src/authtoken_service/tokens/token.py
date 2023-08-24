@@ -36,6 +36,7 @@ class Token:
 
     @staticmethod
     def convert_db_model_to_response(model_instance):
+        print("<<<<<>>>>>>", model_instance, type(model_instance))
         model_dict = {}
         model_dict['data'] = {col.name: getattr(model_instance, col.name) for col in model_instance.__table__.columns}
         if 'CreatedAtTime' in model_dict['data'].keys():
@@ -52,9 +53,11 @@ class Token:
             succ_res_dict.update({'message': 'Token  is created'})
             succ_res_dict.update(
                 {
-                    'accessToken': token_instance['TokenID'],
-                    'expiresIn': token_instance['Expiry']
-                    # 'tokenType': token_instance['']
+                    "token":{
+                            'accessToken': token_instance['data']['Token'],
+                            'expiresIn': token_instance['data']['Expiry']
+                            # 'tokenType': token_instance['']
+                    }
                 }
             )
         except Exception as ex:

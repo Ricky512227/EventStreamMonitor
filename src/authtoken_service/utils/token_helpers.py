@@ -1,4 +1,4 @@
-from src.auth_token_service import authtoken_logger
+from src.authtoken_service import authtoken_logger
 import sys
 
 def generate_success_user_response(user_map_db_instance):

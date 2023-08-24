@@ -13,7 +13,7 @@ class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTo
             token_res_message = token_pb2.TokenResMessage()
             data = check_user_credentails(request.userid)
             registration_app_logger.info("Received response after trigger rpc :: {0}".format(data))
-            token_res_message.userid = "1"
+            token_res_message.userid = request.userid
             token_res_message.isvalid = True
             registration_app_logger.info("Sending response back to gRPC client ::{0}".format(token_res_message))
         except Exception as ex:

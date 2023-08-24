@@ -26,7 +26,7 @@ try:
 
     # Read Schema File
     reg_user_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json"
-    req_headers_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/request_headers_schema.json"
+    req_headers_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json"
 
     _, req_headers_schema = res_app_obj.read_json_schema(req_headers_schema_filepath)
     _, reg_user_req_schema = res_app_obj.read_json_schema(reg_user_req_schema_filepath)

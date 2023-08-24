@@ -26,6 +26,7 @@ class User:
 
     @staticmethod
     def convert_db_model_to_response(model_instance):
+        print("<<<<<>>>>>>", model_instance, type(model_instance))
         model_dict = {}
         model_dict['data'] = {col.name: getattr(model_instance, col.name) for col in model_instance.__table__.columns}
         if 'CreatedAtTime' in model_dict['data'].keys():

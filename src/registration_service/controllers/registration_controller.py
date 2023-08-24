@@ -28,7 +28,7 @@ def add_user():
                 dataofbirth = rec_req_data['dateOfBirth']
                 try:
                     registration_app_logger.info("Processing the request data... :: [STARTED]")
-                    user_obj: User = User.add_user(username, firstname, lastname, dataofbirth, emailaddress, password)
+                    user_obj: User = User.add_user(username= username, firstname= firstname, lastname= lastname, dateofbirth= dataofbirth, email= emailaddress, pwd= password)
                     registration_app_logger.info("Instance creation for User :: [SUCCESS] :: {0}".format(user_obj))
                     registration_app_logger.info("Mapping the request data to the database model:: [STARTED]")
                     user_map_db_instance = UsersModel(Username = user_obj.username,
@@ -56,25 +56,28 @@ def add_user():
                         except SQLAlchemyError as ex:
                             registration_session.rollback()
                             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                            abort(500, description={'message': 'Create User Failed', 'details': {'params': ex}})
+                            return jsonify({"message": "Internal Server Error"}), 500
 
                         except Exception as ex:
                             registration_session.rollback()
                             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                            abort(500, description={'message': 'Create User Failed', 'details': {'params': str(ex)}})
+                            return jsonify({"message": "Internal Server Error"}), 500
                         finally:
                             print("Closing the  session  {0}:: [STARTED]".format(registration_session))
                             registration_session.close()  # Close the change
                             print("Closed the  session  {0}:: [SUCCESS]".format(registration_session))
+
+
                 except Exception as ex:
                     registration_app_logger.error("Instance creation for User :: [FAILED] :: {0}".format(ex))
                     abort(500, description={'message': 'Create User Failed', 'details': {'params': str(ex)}})
 
             else:
-                registration_app_logger.error("Validation for Request-Data is  :: [FAILED]")
-                result["message"] = "Request data of params missing"
+                registration_app_logger.error("Validation for Request-Body is  :: [FAILED]")
+                result["message"] = "Request Params Missing"
                 registration_app_logger.info("Sending Error response back to client :: {0}".format(result))
                 abort(400, description=result)
+
     else:
         registration_app_logger.error("Validation for Request-Header is  :: [FAILED]")
         result["message"] = "Request Header Missing"
@@ -90,10 +93,11 @@ def check_user_credentails(userID):
     try:
         registration_session = res_app_obj.create_session_for_service()
         if registration_session is not None:
-            try:
-                row = registration_session.query(UsersModel).filter_by(ID=userID).first()
+            row = registration_session.query(UsersModel).get(ID=userID)
+            if row is not None:
                 return row.ID, True
-            except Exception as ex:
-                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            else:
+                return userID, False
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        return userID, False

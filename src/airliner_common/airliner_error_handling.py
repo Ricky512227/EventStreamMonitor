@@ -5,7 +5,7 @@ class AirlinerErrorDetails:
         self.error_details = error_details
 
 class AirlinerError500(AirlinerErrorDetails):
-    error = "INTERNAL_SERVER"
+    error = "INTERNAL_SERVER_ERROR"
     status_code = 500
     def __init__(self):
         super().__init__()
@@ -62,7 +62,23 @@ class AirlinerError404(AirlinerErrorDetails):
             del response_404["errors"]
         return response_404
 
-
+class AirlinerError405(AirlinerErrorDetails):
+    error = "METHOD_NOT_ALLOWED"
+    status_code = 405
+    def __init__(self):
+        super().__init__()
+    def to_dict(self):
+        response_404 = {
+            "status_code": self.status_code,
+            "error": self.error,
+            "message": self.message,
+            "errors": self.error_details
+        }
+        if self.message is None:
+            del response_404["message"]
+        if self.error_details is None:
+            del response_404["errors"]
+        return response_404
 
 
 

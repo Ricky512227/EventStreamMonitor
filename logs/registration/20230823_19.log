@@ -1,0 +1,42 @@
+2023-08-23 19:57:47 - INFO - [base_logger.py : 34] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-08-23 19:57:47 - INFO - [create_app.py : 42] :: Received Service [registration]
+2023-08-23 19:57:47 - INFO - [create_app.py : 44] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-08-23 19:57:47 - INFO - [create_app.py : 53] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-08-23 19:57:47 - INFO - [create_app.py : 70] :: Added Blueprints :: /static/<path:filename>
+2023-08-23 19:57:47 - INFO - [create_app.py : 80] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-08-23 19:57:47 - INFO - [create_app.py : 74] :: Preparing DatabaseURI for Service :: [registration]
+2023-08-23 19:57:47 - INFO - [create_app.py : 76] :: Prepared DatabaseURI for Service :: [registration] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS
+2023-08-23 19:57:47 - INFO - [create_app.py : 82] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-08-23 19:57:47 - INFO - [create_app.py : 111] :: Current Connection status set to :: False for the service :: registration
+2023-08-23 19:57:47 - INFO - [create_app.py : 112] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-23 19:57:47 - INFO - [create_app.py : 116] :: Established the connection to the database :: [SUCCESS]
+2023-08-23 19:57:47 - INFO - [create_app.py : 118] :: Current Connection status set to :: True for the service :: registration
+2023-08-23 19:57:47 - INFO - [create_app.py : 120] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-08-23 19:57:47 - INFO - [create_app.py : 153] :: Database already exists :: REGISTRATIONS
+2023-08-23 19:57:47 - INFO - [create_app.py : 129] :: Trying to create the tables if not present in the database...
+2023-08-23 19:57:47 - INFO - [create_app.py : 131] :: Going to create the tables ...
+2023-08-23 19:57:47 - INFO - [create_app.py : 134] :: Created the tables ...
+2023-08-23 19:57:47 - INFO - [create_app.py : 87] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-08-23 19:57:47 - INFO - [create_app.py : 89] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-08-23 19:57:47 - INFO - [create_app.py : 93] :: Initialized Pool for Service ==>[registration] :: [SUCCESS]
+2023-08-23 19:57:47 - INFO - [create_app.py : 162] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-23 19:57:47 - INFO - [create_app.py : 163] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-23 19:57:47 - INFO - [create_app.py : 164] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1060d8c70> - ID: 4396518512
+2023-08-23 19:57:47 - INFO - [create_app.py : 165] :: Current Pool Size ::  100
+2023-08-23 19:57:47 - INFO - [create_app.py : 166] :: Checked Out Connections from Pool  0
+2023-08-23 19:57:47 - INFO - [create_app.py : 167] :: Checked in Connections available in Pool :: 0
+2023-08-23 19:57:47 - INFO - [create_app.py : 168] :: Current Pool Overflow Info :: -100
+2023-08-23 19:57:47 - INFO - [create_app.py : 169] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-23 19:57:47 - INFO - [create_app.py : 57] :: Registering blueprints to the service :: <Flask 'registration'>
+2023-08-23 19:57:47 - INFO - [create_app.py : 70] :: Added Blueprints :: /static/<path:filename>
+2023-08-23 19:57:47 - INFO - [create_app.py : 70] :: Added Blueprints :: /api/v1/airliner/registerUser
+2023-08-23 19:57:47 - INFO - [create_app.py : 61] :: Registering Error Handler 500-<function internal_server_error at 0x1063b6d30> to the service :: <Flask 'registration'>
+2023-08-23 19:57:47 - INFO - [create_app.py : 61] :: Registering Error Handler 400-<function bad_request at 0x1063b6700> to the service :: <Flask 'registration'>
+2023-08-23 19:57:47 - INFO - [create_app.py : 61] :: Registering Error Handler 404-<function not_found at 0x1063b6dc0> to the service :: <Flask 'registration'>
+2023-08-23 19:57:47 - INFO - [create_app.py : 66] :: Error Code: None, Handler Function: {}
+2023-08-23 19:57:47 - INFO - [__init__.py : 60] :: Created GRPC server with the workers of max :: 10
+2023-08-23 19:57:47 - INFO - [__init__.py : 63] :: Registered GRPC server to the server :: UserValidationForTokenGenerationService
+2023-08-23 19:57:47 - INFO - [__init__.py : 66] :: Starting GRPC server for the Token-User service with the IP & PORT:: localhost:8081
+2023-08-23 19:57:47 - INFO - [registration_app.py : 5] :: Started the grpc server ...
+2023-08-23 19:57:47 - INFO - [registration_app.py : 6] :: Started the REGISTRATION server ...
+2023-08-23 19:57:47 - INFO - [registration_app.py : 7] :: Application is ready to server traffic.
