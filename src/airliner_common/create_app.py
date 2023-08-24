@@ -27,14 +27,13 @@ class CreatFlaskApp(LogMonitor):
         self.airliner_db_connection = None
         self.db_connection_status = False
         self.app_db_engine = None
+        self.is_engine_created = False
 
 
         self.app_db= None
         self.connection_pool = None
         self.Session = None
         self.session_instance = None
-        # self.schema_header_file_path = None
-        # self.schema_req_body_file_path = None
         self.loaded_status = False
         self.loaded_schema = None
         self.missing_params_err_obj = {}
@@ -125,14 +124,28 @@ class CreatFlaskApp(LogMonitor):
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.database_uri
 
-    def create_db_engine(self):
-        try:
-            self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
-            self.app_db_engine = create_engine(self.get_database_uri())
-            self.app_logger.info("Created DB-Engine using DatabaseURIfor Service :: [{0}]".format(self.app_db_engine))
-        except Exception as ex:
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return self.app_db_engine
+    def create_db_engine(self, max_retries=3, retry_delay=5):
+        retries = 0
+        while retries < max_retries:
+            try:
+                self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
+                self.app_db_engine = create_engine(self.get_database_uri())
+                self.is_engine_created = True
+                self.app_logger.info("Created DB-Engine using DatabaseURI for Service :: [{0}]".format(self.app_db_engine))
+                return self.app_db_engine, self.is_engine_created
+            except Exception as ex:
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                retries += 1
+                if retries < max_retries:
+                    self.app_logger.info(f"Retrying in {retry_delay} seconds...")
+                    time.sleep(retry_delay)
+                else:
+                    self.is_engine_created = False  # Set the flag to False on max retries
+                    self.app_db_engine = None  # Set the engine to None in case of an error
+                    return self.app_db_engine, self.is_engine_created
+
+
 
     def bind_db_app(self):
         try:

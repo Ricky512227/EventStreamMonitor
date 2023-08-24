@@ -35,8 +35,8 @@ try:
     registration_bp = res_app_obj.create_blueprint()
     res_app_obj.display_registered_blueprints_for_service()
 
-    registration_db_engine = res_app_obj.create_db_engine()
-    if registration_db_engine is not None:
+    registration_db_engine, is_engine_created = res_app_obj.create_db_engine()
+    if is_engine_created:
         if res_app_obj.check_db_connectivity_and_retry():
             if res_app_obj.init_databases_for_service():
                 if res_app_obj.create_tables_associated_to_db_model():
