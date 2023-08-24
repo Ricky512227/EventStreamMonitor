@@ -1,0 +1,177 @@
+2023-08-24 02:57:04 - INFO - [base_logger.py : create_logger_for_service - 34] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_app_instance - 54] :: Received Service [registration]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_app_instance - 56] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-08-24 02:57:04 - INFO - [create_app.py : read_json_schema - 209] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json
+2023-08-24 02:57:04 - INFO - [create_app.py : read_json_schema - 219] :: Schema Validation True
+2023-08-24 02:57:04 - INFO - [create_app.py : read_json_schema - 209] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json
+2023-08-24 02:57:04 - INFO - [create_app.py : read_json_schema - 219] :: Schema Validation True
+2023-08-24 02:57:04 - INFO - [create_app.py : create_blueprint - 65] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-08-24 02:57:04 - INFO - [create_app.py : display_registered_blueprints_for_service - 82] :: Added Blueprints :: /static/<path:filename>
+2023-08-24 02:57:04 - INFO - [create_app.py : create_db_engine - 92] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-08-24 02:57:04 - INFO - [create_app.py : get_database_uri - 86] :: Preparing DatabaseURI for Service :: [registration]
+2023-08-24 02:57:04 - INFO - [create_app.py : get_database_uri - 88] :: Prepared DatabaseURI for Service :: [registration] - mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS
+2023-08-24 02:57:04 - INFO - [create_app.py : create_db_engine - 94] :: Created DB-Engine using DatabaseURIfor Service :: [Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-08-24 02:57:04 - INFO - [create_app.py : check_database_connectivity - 140] :: Current Connection status set to :: False for the service :: registration
+2023-08-24 02:57:04 - INFO - [create_app.py : check_database_connectivity - 141] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-08-24 02:57:04 - INFO - [create_app.py : check_database_connectivity - 145] :: Established the connection to the database :: [SUCCESS]
+2023-08-24 02:57:04 - INFO - [create_app.py : check_database_connectivity - 147] :: Current Connection status set to :: True for the service :: registration
+2023-08-24 02:57:04 - INFO - [create_app.py : check_database_connectivity - 149] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-08-24 02:57:04 - INFO - [create_app.py : init_databases_for_service - 182] :: Database already exists :: REGISTRATIONS
+2023-08-24 02:57:04 - INFO - [create_app.py : create_tables_associated_to_db_model - 158] :: Trying to create the tables if not present in the database...
+2023-08-24 02:57:04 - INFO - [create_app.py : create_tables_associated_to_db_model - 160] :: Going to create the tables ...
+2023-08-24 02:57:04 - INFO - [create_app.py : create_tables_associated_to_db_model - 163] :: Created the tables ...
+2023-08-24 02:57:04 - INFO - [create_app.py : bind_db_app - 99] :: Binding SQLALCHEMY using DatabaseURI:: [mysql+pymysql://root:testeventstreammonitor#123@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-08-24 02:57:04 - INFO - [create_app.py : bind_db_app - 101] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 105] :: Creating Pool of connections for Service ==>[registration] :: [STARTED]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 107] :: Created Pool of connections for Service ==>[registration] :: [SUCCESS]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 108] :: Creating session using pool of connections  :: [STARTED]
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 109] :: Creating  a session maker for database interactions
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 111] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x1129e0d00>
+2023-08-24 02:57:04 - INFO - [create_app.py : create_pool_of_connections - 112] :: Initialised a session maker for database interactions sessionmaker(class_='Session', bind=Engine(mysql+pymysql://root:***@127.0.0.1:3304/REGISTRATIONS), autoflush=True, expire_on_commit=True)
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 191] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 192] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 193] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1129e0d00> - ID: 4607315200
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 194] :: Current Pool Size ::  100
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 195] :: Checked Out Connections from Pool  0
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 196] :: Checked in Connections available in Pool :: 0
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 197] :: Current Pool Overflow Info :: -100
+2023-08-24 02:57:04 - INFO - [create_app.py : display_pool_info - 198] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:57:04 - INFO - [create_app.py : register_blueprint - 69] :: Registering blueprints to the service :: <Flask 'registration'>
+2023-08-24 02:57:04 - INFO - [create_app.py : display_registered_blueprints_for_service - 82] :: Added Blueprints :: /static/<path:filename>
+2023-08-24 02:57:04 - INFO - [create_app.py : display_registered_blueprints_for_service - 82] :: Added Blueprints :: /api/v1/airliner/registerUser
+2023-08-24 02:57:04 - INFO - [create_app.py : register_err_handler - 73] :: Registering Error Handler 500-<function internal_server_error at 0x112aedee0> to the service :: <Flask 'registration'>
+2023-08-24 02:57:04 - INFO - [create_app.py : register_err_handler - 73] :: Registering Error Handler 400-<function bad_request at 0x112aed8b0> to the service :: <Flask 'registration'>
+2023-08-24 02:57:04 - INFO - [create_app.py : register_err_handler - 73] :: Registering Error Handler 404-<function not_found at 0x112aedf70> to the service :: <Flask 'registration'>
+2023-08-24 02:57:04 - INFO - [create_app.py : display_registered_err_handlers - 78] :: Error Code: None, Handler Function: {}
+2023-08-24 02:57:04 - INFO - [__init__.py : <module> - 62] :: Created GRPC server with the workers of max :: 10
+2023-08-24 02:57:04 - INFO - [__init__.py : <module> - 65] :: Registered GRPC server to the server :: UserValidationForTokenGenerationService
+2023-08-24 02:57:04 - INFO - [__init__.py : <module> - 68] :: Starting GRPC server for the Token-User service with the IP & PORT:: localhost:8081
+2023-08-24 02:57:04 - INFO - [registration_app.py : <module> - 5] :: Started the grpc server ...
+2023-08-24 02:57:04 - INFO - [registration_app.py : <module> - 6] :: Started the REGISTRATION server ...
+2023-08-24 02:57:04 - INFO - [registration_app.py : <module> - 7] :: Application is ready to server traffic.
+2023-08-24 02:58:16 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 12] :: Validation for Request-Header is  :: [STARTED]
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 17] :: Validation for Request-Header is  :: [SUCCESS]
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 20] :: Validation for Request-Body is  :: [STARTED]
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: username :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: email :: Value :: devarapallikamalsai@gmail.com :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: firstName :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: lastName :: Value :: devarapalli :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: dateOfBirth :: Value :: 06-4-1995 :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: password :: Value :: testeventstreammonitor#123 :: Type ::<class 'str'> 
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 229] :: Checking the data and do validations...
+2023-08-24 02:58:17 - INFO - [create_app.py : generate_req_missing_params - 232] :: Required_Properties_As_Per_Schema :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:17 - ERROR - [create_app.py : generate_req_missing_params - 235] :: Missing params found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:17 - ERROR - [create_app.py : generate_req_missing_params - 237] :: Packing message for missing property which are found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 25] :: Validation for Request-body is  :: [SUCCESS]
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 33] :: Processing the request data... :: [STARTED]
+2023-08-24 02:58:17 - INFO - [user.py : add_user - 18] :: Received :: username :: kamal, firstname :: kamal, lastname :: devarapalli, emailaddress :: devarapallikamalsai@gmail.com, dateofbirth :: 06-4-1995
+2023-08-24 02:58:17 - INFO - [user.py : add_user - 29] :: Returning :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$hPmWjqKiWU0Grtyzvgxu0O7LnH7i6qzphXjMO8jZ83rlJ6YHMaAZi', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:17.419640', 'updated_at': '2023-08-24 02:58:17.419912'} , ID :: 4609244800
+2023-08-24 02:58:17 - INFO - [user.py : add_user - 30] :: Instance creation for User :: [SUCCESS] :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$hPmWjqKiWU0Grtyzvgxu0O7LnH7i6qzphXjMO8jZ83rlJ6YHMaAZi', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:17.419640', 'updated_at': '2023-08-24 02:58:17.419912'}
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 36] :: Mapping the request data to the database model:: [STARTED]
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 45] :: Mapping the request data to the database model:: [SUCCESS]
+2023-08-24 02:58:17 - INFO - [create_app.py : get_session_for_service - 119] :: Using session to store the data in to DataBase Session-Id  :: <sqlalchemy.orm.session.Session object at 0x112b98c40>
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 191] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 192] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 193] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1129e0d00> - ID: 4607315200
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 194] :: Current Pool Size ::  100
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 195] :: Checked Out Connections from Pool  0
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 196] :: Checked in Connections available in Pool :: 0
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 197] :: Current Pool Overflow Info :: -100
+2023-08-24 02:58:17 - INFO - [create_app.py : display_pool_info - 198] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 50] :: Data added into  DataBase session UserID='None', UserName='kamal',         FirstName='kamal', LastName='devarapalli',         Email='devarapallikamalsai@gmail.com', Password='b'$2b$12$hPmWjqKiWU0Grtyzvgxu0O7LnH7i6qzphXjMO8jZ83rlJ6YHMaAZi'',         DateOfBirth='06-4-1995', CreatedAt='2023-08-24 02:58:17.419640', UpdatedAt='2023-08-24 02:58:17.419912':: SUCCESS
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 52] :: Added Data is committed into  DataBase <sqlalchemy.orm.session.Session object at 0x112b98c40>:: SUCCESS
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 53] :: Generating Success response  :: [STARTED]
+2023-08-24 02:58:17 - INFO - [registration_controller.py : add_user - 56] :: Generating Success response  :: [STARTED] :: {'message': 'User  is created', 'user': {'userId': 59, 'username': 'kamal', 'email': 'devarapallikamalsai@gmail.com', 'dateOfBirth': '06-4-1995', 'firstName': 'kamal', 'lastName': 'devarapalli', 'CreatedAt': datetime.datetime(2023, 8, 24, 2, 58, 17), 'UpdatedAt': datetime.datetime(2023, 8, 24, 2, 58, 17)}}
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 12] :: Validation for Request-Header is  :: [STARTED]
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 17] :: Validation for Request-Header is  :: [SUCCESS]
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 20] :: Validation for Request-Body is  :: [STARTED]
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: username :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: email :: Value :: devarapallikamalsai@gmail.com :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: firstName :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: lastName :: Value :: devarapalli :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: dateOfBirth :: Value :: 06-4-1995 :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: password :: Value :: testeventstreammonitor#123 :: Type ::<class 'str'> 
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 229] :: Checking the data and do validations...
+2023-08-24 02:58:37 - INFO - [create_app.py : generate_req_missing_params - 232] :: Required_Properties_As_Per_Schema :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:37 - ERROR - [create_app.py : generate_req_missing_params - 235] :: Missing params found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:37 - ERROR - [create_app.py : generate_req_missing_params - 237] :: Packing message for missing property which are found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 25] :: Validation for Request-body is  :: [SUCCESS]
+2023-08-24 02:58:37 - INFO - [registration_controller.py : add_user - 33] :: Processing the request data... :: [STARTED]
+2023-08-24 02:58:38 - INFO - [user.py : add_user - 18] :: Received :: username :: kamal, firstname :: kamal, lastname :: devarapalli, emailaddress :: devarapallikamalsai@gmail.com, dateofbirth :: 06-4-1995
+2023-08-24 02:58:38 - INFO - [user.py : add_user - 29] :: Returning :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$BM5yG4liXl9llo4fA2eceOKONC2CLiORVYbqlp.htupKkbM/FQ3ea', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:38.160931', 'updated_at': '2023-08-24 02:58:38.160958'} , ID :: 4609324736
+2023-08-24 02:58:38 - INFO - [user.py : add_user - 30] :: Instance creation for User :: [SUCCESS] :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$BM5yG4liXl9llo4fA2eceOKONC2CLiORVYbqlp.htupKkbM/FQ3ea', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:38.160931', 'updated_at': '2023-08-24 02:58:38.160958'}
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 36] :: Mapping the request data to the database model:: [STARTED]
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 45] :: Mapping the request data to the database model:: [SUCCESS]
+2023-08-24 02:58:38 - INFO - [create_app.py : get_session_for_service - 119] :: Using session to store the data in to DataBase Session-Id  :: <sqlalchemy.orm.session.Session object at 0x112bfe220>
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 191] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 192] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 193] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1129e0d00> - ID: 4607315200
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 194] :: Current Pool Size ::  100
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 195] :: Checked Out Connections from Pool  0
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 196] :: Checked in Connections available in Pool :: 0
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 197] :: Current Pool Overflow Info :: -100
+2023-08-24 02:58:38 - INFO - [create_app.py : display_pool_info - 198] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 50] :: Data added into  DataBase session UserID='None', UserName='kamal',         FirstName='kamal', LastName='devarapalli',         Email='devarapallikamalsai@gmail.com', Password='b'$2b$12$BM5yG4liXl9llo4fA2eceOKONC2CLiORVYbqlp.htupKkbM/FQ3ea'',         DateOfBirth='06-4-1995', CreatedAt='2023-08-24 02:58:38.160931', UpdatedAt='2023-08-24 02:58:38.160958':: SUCCESS
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 52] :: Added Data is committed into  DataBase <sqlalchemy.orm.session.Session object at 0x112bfe220>:: SUCCESS
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 53] :: Generating Success response  :: [STARTED]
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 56] :: Generating Success response  :: [STARTED] :: {'message': 'User  is created', 'user': {'userId': 60, 'username': 'kamal', 'email': 'devarapallikamalsai@gmail.com', 'dateOfBirth': '06-4-1995', 'firstName': 'kamal', 'lastName': 'devarapalli', 'CreatedAt': datetime.datetime(2023, 8, 24, 2, 58, 38), 'UpdatedAt': datetime.datetime(2023, 8, 24, 2, 58, 38)}}
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 9] :: REQUEST ==> Received Endpoint :: registration_bp.add_user
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 11] :: Received Headers from the request :: {'Content-Type': 'application/json', 'User-Agent': 'PostmanRuntime/7.32.3', 'Accept': '*/*', 'Host': '127.0.0.1:9091', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'Content-Length': '195'}
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 12] :: Validation for Request-Header is  :: [STARTED]
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Type :: Value :: application/json :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: User-Agent :: Value :: PostmanRuntime/7.32.3 :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept :: Value :: */* :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Host :: Value :: 127.0.0.1:9091 :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Accept-Encoding :: Value :: gzip, deflate, br :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Connection :: Value :: keep-alive :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: Content-Length :: Value :: 195 :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 17] :: Validation for Request-Header is  :: [SUCCESS]
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 20] :: Validation for Request-Body is  :: [STARTED]
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: username :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: email :: Value :: devarapallikamalsai@gmail.com :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: firstName :: Value :: kamal :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: lastName :: Value :: devarapalli :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: dateOfBirth :: Value :: 06-4-1995 :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 225] :: REQUEST <==> params ==> Param :: password :: Value :: testeventstreammonitor#123 :: Type ::<class 'str'> 
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 229] :: Checking the data and do validations...
+2023-08-24 02:58:38 - INFO - [create_app.py : generate_req_missing_params - 232] :: Required_Properties_As_Per_Schema :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:38 - ERROR - [create_app.py : generate_req_missing_params - 235] :: Missing params found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:38 - ERROR - [create_app.py : generate_req_missing_params - 237] :: Packing message for missing property which are found :: ['Host', 'User-Agent', 'Accept', 'Connection', 'Accept-Encoding', 'Content-Length', 'Content-Type']
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 25] :: Validation for Request-body is  :: [SUCCESS]
+2023-08-24 02:58:38 - INFO - [registration_controller.py : add_user - 33] :: Processing the request data... :: [STARTED]
+2023-08-24 02:58:39 - INFO - [user.py : add_user - 18] :: Received :: username :: kamal, firstname :: kamal, lastname :: devarapalli, emailaddress :: devarapallikamalsai@gmail.com, dateofbirth :: 06-4-1995
+2023-08-24 02:58:39 - INFO - [user.py : add_user - 29] :: Returning :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$XoYok7DVXFg5H2kNf8VMxufe3CkpOjXizta0xh6kFWR/XPBXH6RCC', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:39.209462', 'updated_at': '2023-08-24 02:58:39.209482'} , ID :: 4609643520
+2023-08-24 02:58:39 - INFO - [user.py : add_user - 30] :: Instance creation for User :: [SUCCESS] :: {'username': 'kamal', 'firstname': 'kamal', 'lastname': 'devarapalli', 'password': b'$2b$12$XoYok7DVXFg5H2kNf8VMxufe3CkpOjXizta0xh6kFWR/XPBXH6RCC', 'email': 'devarapallikamalsai@gmail.com', 'dateofbirth': '06-4-1995', 'created_at': '2023-08-24 02:58:39.209462', 'updated_at': '2023-08-24 02:58:39.209482'}
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 36] :: Mapping the request data to the database model:: [STARTED]
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 45] :: Mapping the request data to the database model:: [SUCCESS]
+2023-08-24 02:58:39 - INFO - [create_app.py : get_session_for_service - 119] :: Using session to store the data in to DataBase Session-Id  :: <sqlalchemy.orm.session.Session object at 0x112bfecd0>
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 191] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 192] :: Displaying Pool_Info for Service ==>[registration] 
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 193] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1129e0d00> - ID: 4607315200
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 194] :: Current Pool Size ::  100
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 195] :: Checked Out Connections from Pool  0
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 196] :: Checked in Connections available in Pool :: 0
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 197] :: Current Pool Overflow Info :: -100
+2023-08-24 02:58:39 - INFO - [create_app.py : display_pool_info - 198] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 50] :: Data added into  DataBase session UserID='None', UserName='kamal',         FirstName='kamal', LastName='devarapalli',         Email='devarapallikamalsai@gmail.com', Password='b'$2b$12$XoYok7DVXFg5H2kNf8VMxufe3CkpOjXizta0xh6kFWR/XPBXH6RCC'',         DateOfBirth='06-4-1995', CreatedAt='2023-08-24 02:58:39.209462', UpdatedAt='2023-08-24 02:58:39.209482':: SUCCESS
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 52] :: Added Data is committed into  DataBase <sqlalchemy.orm.session.Session object at 0x112bfecd0>:: SUCCESS
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 53] :: Generating Success response  :: [STARTED]
+2023-08-24 02:58:39 - INFO - [registration_controller.py : add_user - 56] :: Generating Success response  :: [STARTED] :: {'message': 'User  is created', 'user': {'userId': 61, 'username': 'kamal', 'email': 'devarapallikamalsai@gmail.com', 'dateOfBirth': '06-4-1995', 'firstName': 'kamal', 'lastName': 'devarapalli', 'CreatedAt': datetime.datetime(2023, 8, 24, 2, 58, 39), 'UpdatedAt': datetime.datetime(2023, 8, 24, 2, 58, 39)}}

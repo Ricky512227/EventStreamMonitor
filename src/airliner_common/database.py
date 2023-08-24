@@ -1,5 +1,4 @@
 import sys, time
-
 from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.pool import QueuePool
@@ -7,6 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import TimeoutError, OperationalError
 from sqlalchemy_utils import database_exists, create_database
 from src.airliner_service.models.airliner_model import Base
+
+
 
 def init_airliner_database_engine(airliner_app, airliner_logger, database_uri):
     try:

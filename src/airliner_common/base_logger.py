@@ -6,7 +6,7 @@ import logging
 class LogMonitor:
     log_file_path = None
     log_time_format = "%Y-%m-%d %H:%M:%S"
-    log_file_format = '%(asctime)s - %(levelname)s - [%(filename)s : %(lineno)d] :: %(message)s'
+    log_file_format ='%(asctime)s - %(levelname)s - [%(filename)s : %(funcName)s - %(lineno)d] :: %(message)s'
     log_level = logging.DEBUG
     log_file_mode = 'w'
     project_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

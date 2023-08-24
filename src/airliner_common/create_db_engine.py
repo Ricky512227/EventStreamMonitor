@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from create_app import CreatFlaskApp
 
 
-class CreateDbEngine(CreatFlaskApp):
+class DataBaseManager(CreatFlaskApp):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     def __init__(self, service_name, db_driver, db_user, db_password, db_ip_address, db_port, db_name):
         super().__init__(service_name)
@@ -56,7 +56,7 @@ class QueuePool_To_Target_DB(CreatFlaskApp):
         self.db_pool_max_overflow= db_pool_max_overflow
         self.connection_pool=None
 
-    def create_pool(self):
+    def create_pool_of_connections(self):
         self.app_logger.info("Initialized Pool for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
         self.connection_pool = QueuePool(creator=self.app_db_engine,pool_size=self.db_pool_size, max_overflow=self.db_pool_max_overflow)
         return self.connection_pool

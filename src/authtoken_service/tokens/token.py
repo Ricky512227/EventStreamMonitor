@@ -1,42 +1,48 @@
-# ID = Column(BigInteger, Sequence('aeroplane_id_seq',start=2000), primary_key=True)
-# UserID = Column(BigInteger, ForeignKey('Users.ID'), unique=True, nullable=False)
-# Token = Column(String(255), nullable=False)
-# Expiry = Column(String(255), nullable=False)
-# CreatedAt = Column(String(255), nullable=False)
-# UpdatedAt = Column(String(255), nullable=False)
-
 import sys
 import datetime,bcrypt
 from flask_jwt_extended import create_access_token
+from src.authtoken_service import authtoken_app_logger
 
 
 class Token:
     token_type = "bearer"
-    expiry =  10000
-    created_at = str(datetime.datetime.now())
-    updated_at = str(datetime.datetime.now())
-    custom_access_token = None
-
+    expiry = 10000
     def __init__(self, user_id, user_name, pwd):
         self.user_id = user_id
         self.user_name = user_name
         self.pwd = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt())
+        self.created_at = str(datetime.datetime.now())
+        self.updated_at = str(datetime.datetime.now())
+        self.user_cus_token = None
+        self.token_obj = None
 
     def generate_custom_token(self):
-        my_identity = self.user_id
-        generated_token = create_access_token(identity=my_identity)
-        return generated_token
+        try:
+            self.user_cus_token = create_access_token(identity=self.user_id)
+        except Exception as ex:
+            authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        return self.user_cus_token
 
-    @classmethod
-    def create_custom_token(cls, user_id, user_name, pwd):
-        token_instance = cls(user_id, user_name, pwd)
-        custom_access_token = token_instance.generate_custom_token()
-        token_instance.custom_access_token = custom_access_token
-        return token_instance
+    def add_token(self):
+        try:
+            self.token_obj = {
+                            "userid": self.user_id,
+                            "username": self.user_name,
+                            "token" :  self.generate_custom_token(),
+                            "created_at": self.created_at,
+                            "updated_at": self.updated_at,
+                            "token_type" : "bearer",
+                            "expiry" : 10000
+            }
+            authtoken_app_logger.info("Returning :: {0} , ID :: {1}".format(self.token_obj, id(self.token_obj)))
+            authtoken_app_logger.info("Instance creation for User :: [SUCCESS] :: {0}".format(self.token_obj))
+        except Exception as ex:
+            authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        return self.token_obj
 
     @staticmethod
     def convert_db_model_to_response(model_instance):
-        print("<<<<<>>>>>>", model_instance, type(model_instance))
         model_dict = {}
         model_dict['data'] = {col.name: getattr(model_instance, col.name) for col in model_instance.__table__.columns}
         if 'CreatedAtTime' in model_dict['data'].keys():

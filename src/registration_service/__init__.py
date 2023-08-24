@@ -21,27 +21,28 @@ try:
                                 db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW, base=Base)
 
     registration_app_logger = res_app_obj.app_logger
-
     registration_app = res_app_obj.create_app_instance()
 
     # Read Schema File
     reg_user_req_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json"
-    req_headers_schema_filepath = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json"
+    req_headers_schema_filepath= "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json"
 
-    _, req_headers_schema = res_app_obj.read_json_schema(req_headers_schema_filepath)
-    _, reg_user_req_schema = res_app_obj.read_json_schema(reg_user_req_schema_filepath)
 
+    # schema_header_file_path = req_headers_schema_filepath, schema_req_body_file_path = reg_user_req_schema_filepath
+    res_app_obj.schema_header_file_path= req_headers_schema_filepath
+    req_headers_schema_status, req_headers_schema = res_app_obj.read_json_schema()
+    res_app_obj.schema_req_body_file_path = reg_user_req_schema_filepath
+    reg_user_req_schema_status, reg_user_req_schema = res_app_obj.read_json_schema()
     registration_bp = res_app_obj.create_blueprint()
-
     res_app_obj.display_registered_blueprints_for_service()
+
     registration_db_engine = res_app_obj.create_db_engine()
     if res_app_obj.check_db_connectivity_and_retry():
         if res_app_obj.init_databases_for_service():
             if res_app_obj.create_tables_associated_to_db_model():
                 registration_SQLAlchemy = res_app_obj.bind_db_app()
-                registration_connection_pool = res_app_obj.create_pool()
+                registration_connection_pool,_ = res_app_obj.create_pool_of_connections()
                 res_app_obj.display_pool_info()
-
                 from src.registration_service.controllers.registration_controller import add_user
 
                 registration_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(add_user)

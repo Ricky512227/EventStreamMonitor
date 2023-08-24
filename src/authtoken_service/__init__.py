@@ -37,7 +37,7 @@ try:
         if authtoken_app_obj.init_databases_for_service():
             if authtoken_app_obj.create_tables_associated_to_db_model():
                 authtoken_SQLAlchemy = authtoken_app_obj.bind_db_app()
-                authtoken_connection_pool = authtoken_app_obj.create_pool()
+                authtoken_connection_pool = authtoken_app_obj.create_pool_of_connections()
                 authtoken_app_obj.display_pool_info()
 
                 from src.authtoken_service.controllers.authtoken_controller import create_token
