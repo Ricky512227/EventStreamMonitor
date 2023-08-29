@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: registrations-service
+spec:
+  selector:
+    app: registrations-service
+  ports:
+    - port: 5001
+      targetPort: 9091
+  type: LoadBalancer

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registrations-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registrations-db
+  template:
+    metadata:
+      labels:
+        app: registrations-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          env:
+            - name: POSTGRES_USER
+              value: airlineradmin
+            - name: POSTGRES_PASSWORD
+              value: testeventstreammonitor#123
+            - name: POSTGRES_DB
+              value: REGISTRATIONS
+          ports:
+            - containerPort: 5432
