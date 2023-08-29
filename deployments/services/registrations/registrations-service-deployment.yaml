@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registrations-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registrations-service
+  template:
+    metadata:
+      labels:
+        app: registrations-service
+    spec:
+      containers:
+        - name: registrations-service
+          image: registrations:v1
+          ports:
+            - containerPort: 9091
+          envFrom:
+            - configMapRef:
+                name: registrations-service-configmap
