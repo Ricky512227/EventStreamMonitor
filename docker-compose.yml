@@ -10,9 +10,10 @@ services:
       - "3304:5432"
 
   registration-service:
-    build:
-      context: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration
-      dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile
+#    build:
+#      context: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration
+#      dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile
+    image: registrations:v1
     ports:
       - "5001:9091"
     depends_on:
