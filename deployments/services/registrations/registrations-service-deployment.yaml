@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: registrations-service-deployment
+  namespace: miniapp
 spec:
   replicas: 1
   selector:
@@ -13,10 +14,10 @@ spec:
         app: registrations-service
     spec:
       containers:
-        - name: registrations-service
+        - name: registrations-app
           image: registrations:v1
           ports:
             - containerPort: 9091
           envFrom:
             - configMapRef:
-                name: registrations-service-configmap
+                name: registrations-configmap

@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registrations-service-deployment
+  name: authtokens-service-deployment
+  namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registrations-service
+      app: authtokens-service
   template:
     metadata:
       labels:
-        app: registrations-service
+        app: authtokens-service
     spec:
       containers:
-        - name: registrations-service
-          image: registrations:v1
+        - name: authtokens-app
+          image: authtokens:v1
           ports:
-            - containerPort: 9091
+            - containerPort: 9093
           envFrom:
             - configMapRef:
-                name: registrations-service-configmap
+                name: authtokens-configmap

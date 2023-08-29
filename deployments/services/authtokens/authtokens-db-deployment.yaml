@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registrations-db
+  name: authtokens-db-deployment
+  namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registrations-db
+      app: authtokens-db
   template:
     metadata:
       labels:
-        app: registrations-db
+        app: authtokens-db
     spec:
       containers:
-        - name: postgres
+        - name: postgres-db-token-app
           image: postgres:latest
           env:
             - name: POSTGRES_USER
@@ -21,6 +22,6 @@ spec:
             - name: POSTGRES_PASSWORD
               value: testeventstreammonitor#123
             - name: POSTGRES_DB
-              value: REGISTRATIONS
+              value: AUTHTOKENS
           ports:
             - containerPort: 5432

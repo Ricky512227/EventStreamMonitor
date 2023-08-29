@@ -2,10 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: registrations-db
+  namespace: miniapp
 spec:
   selector:
     app: registrations-db
   ports:
-    - port: 5432
+    - port: 5433
       targetPort: 5432
   type: ClusterIP

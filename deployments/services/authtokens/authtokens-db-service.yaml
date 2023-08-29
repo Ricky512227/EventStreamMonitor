@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: registrations-db
+  name: authtokens-db-service
+  namespace: miniapp
 spec:
   selector:
-    app: registrations-db
+    app: authtokens-db
   ports:
-    - port: 5432
+    - port: 5434
       targetPort: 5432
   type: ClusterIP

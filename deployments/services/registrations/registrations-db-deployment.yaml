@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registrations-db
+  name: registrations-db-deployment
+  namespace: miniapp
 spec:
   replicas: 1
   selector:
@@ -13,7 +14,7 @@ spec:
         app: registrations-db
     spec:
       containers:
-        - name: postgres
+        - name: postgres-db-reg-app
           image: postgres:latest
           env:
             - name: POSTGRES_USER

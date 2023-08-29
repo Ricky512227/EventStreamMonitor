@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: registrations-service-configmap
+  name: registrations-configmap
   namespace: miniapp
 data:
   FLASK_ENV: "development"

@@ -1,27 +1,27 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: registrations-service-configmap
+  name: authtokens-configmap
   namespace: miniapp
 data:
   FLASK_ENV: "development"
   DEBUG: "True"
   SECRET_KEY: "12345abcd"
-  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/registration_service.py"
+  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/authtoken_service/authtoken_service.py"
 
-  SERVICE_NAME: "registration"
+  SERVICE_NAME: "authtoken"
   DB_DRIVER_NAME: "postgresql"
   DB_USER: "airlineradmin"
   DB_PASSWORD: "testeventstreammonitor#123"
-  DB_IPADDRESS: "registrations-db"
+  DB_IPADDRESS: "authtokens-db"
   DB_PORT: "5432"
-  DB_NAME: "REGISTRATIONS"
+  DB_NAME: "AUTHTOKENS"
   POOL_SIZE: "100"
   MAX_OVERFLOW: "20"
   RETRY_INTERVAL: "5"
 
-  REGISTRATION_SERVER_IPADDRESS: "0.0.0.0"
-  REGISTRATION_SERVER_PORT: "9091"
+  AUTHTOKEN_SERVER_IPADDRESS: "0.0.0.0"
+  AUTHTOKEN_SERVER_PORT: "9093"
 
   REGISTRATION_GRPC_SERVER_IP: "0.0.0.0"
   REGISTRATION_GRPC_SERVER_PORT: "9092"

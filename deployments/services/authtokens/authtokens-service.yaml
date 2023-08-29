@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: registrations-service
+  name: authtokens-service
+  namespace: miniapp
 spec:
   selector:
-    app: registrations-service
+    app: authtokens-service
   ports:
-    - port: 5001
-      targetPort: 9091
+    - protocol: TCP
+      port: 5002
+      targetPort: 9093
   type: LoadBalancer

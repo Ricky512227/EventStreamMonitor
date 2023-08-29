@@ -57,7 +57,7 @@ def create_token():
 
             authtoken_app_logger.info("Token not exists, so Validating whether it is registered user  :: [STARTED]")
             authtoken_app_logger.info("Sending gRPC message to Registration Service :: [STARTED]")
-            token_grpc_client = gRPCTokenClient("127.0.0.1", "8081")
+            token_grpc_client = gRPCTokenClient("0.0.0.0", "9092")
             tokenstub, grpc_client_status = token_grpc_client.create_channel_stub()
             if not grpc_client_status:
                 authtoken_app_logger.error("Channel/stub  Creation :: [FAILED]")
