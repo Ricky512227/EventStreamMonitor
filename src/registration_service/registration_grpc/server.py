@@ -2,7 +2,7 @@ import sys
 from src.airliner_grpc import token_pb2_grpc
 from src.airliner_grpc import token_pb2
 from google.protobuf.json_format import MessageToJson
-from src.registration_service.controllers.registration_controller import check_user_credentails
+from src.registration_service.controllers.registration_controller import check_user_credentials
 from src.registration_service import registration_app_logger
 class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTokenGenerationServicer):
     def ValidateUserCredentials(self, request, context):
@@ -12,7 +12,7 @@ class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTo
             metadata = dict(context.invocation_metadata())
             registration_app_logger.info("Metadata :: {0}".format(metadata))
             token_res_message = token_pb2.TokenResMessage()
-            data = check_user_credentails(request.userid)
+            data = check_user_credentials(request.userid)
             registration_app_logger.info("Received response after trigger rpc :: {0}".format(data))
             token_res_message.userid = str(data[0])
             token_res_message.isvalid = True

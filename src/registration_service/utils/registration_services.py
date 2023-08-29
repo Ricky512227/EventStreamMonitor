@@ -1,4 +1,4 @@
-from src.registration_service.registration_app import registration_app_logger
+from src.registration_service.registration_service import registration_app_logger
 import sys
 
 def generate_success_user_response(user_map_db_instance):

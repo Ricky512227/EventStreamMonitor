@@ -1,20 +1,22 @@
 version: '3'
 services:
-  airliner-app:
+  registration-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=airlineradmin
+      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_DB=REGISTRATIONS
+    ports:
+      - "3304:5432"
+
+  registration-service:
     build:
-      context: .
+      context: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration
       dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile
     ports:
-      - "5001:5000"  # Map host port to container port for Flask app
+      - "5001:9091"
     depends_on:
-      - airliner-db
-    environment:
-      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:testeventstreammonitor#123@airliner-db/Airlines
+      - registration-db
+    env_file:
+      - /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/.env.prod
 
-  airliner-db:
-    image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=testeventstreammonitor#123
-      - MYSQL_DATABASE=Airlines
-    ports:
-      - "3307:3306"  # Map host port to container port for MySQL

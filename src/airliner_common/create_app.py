@@ -36,6 +36,7 @@ class CreatFlaskApp(LogMonitor):
         self.session_instance = None
         self.loaded_status = False
         self.loaded_schema = None
+        self.SQLALCHEMY_DATABASE_URI = None
         self.missing_params_err_obj = {}
         self.rec_req_params = None
         self.required_properties = []
@@ -66,8 +67,7 @@ class CreatFlaskApp(LogMonitor):
 
     def init_jwt_manger(self):
         try:
-            self.app_instance.config['JWT_SECRET_KEY'] = '12345Ricky@23'
-            return JWTManager(self.app_instance)
+            return JWTManager(self.app_instance.config['JWT_SECRET_KEY'])
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             return None
@@ -118,7 +118,7 @@ class CreatFlaskApp(LogMonitor):
         try:
             # connection_string = 'postgresql://username:password@localhost/dbname'
             self.app_logger.info("Preparing DatabaseURI for Service :: [{0}]".format(self.service_name))
-            self.database_uri = self.db_driver + "://" + self.db_user + ":" + quote_plus(self.db_password) + "@" + self.db_ip_address + ":" + self.db_port + "/" + self.db_name
+            self.database_uri = self.db_driver + "://" + self.db_user + ":" + quote_plus(self.db_password) + "@" + self.db_ip_address + ":" + str(self.db_port) + "/" + self.db_name
             self.app_logger.info("Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, self.database_uri))
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
@@ -129,7 +129,9 @@ class CreatFlaskApp(LogMonitor):
         while retries < max_retries:
             try:
                 self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
-                self.app_db_engine = create_engine(self.get_database_uri())
+                self.SQLALCHEMY_DATABASE_URI = self.get_database_uri()
+                self.app_instance.config['SQLALCHEMY_DATABASE_URI'] = self.SQLALCHEMY_DATABASE_URI
+                self.app_db_engine = create_engine(self.app_instance.config['SQLALCHEMY_DATABASE_URI'])
                 self.is_engine_created = True
                 self.app_logger.info("Created DB-Engine using DatabaseURI for Service :: [{0}]".format(self.app_db_engine))
                 return self.app_db_engine, self.is_engine_created

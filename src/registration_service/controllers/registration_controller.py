@@ -5,6 +5,7 @@ from src.registration_service.users.user import User
 from src.registration_service.models.user_model import UsersModel
 from src.registration_service import registration_app_logger, req_headers_schema, reg_user_req_schema, res_app_obj
 
+
 def add_user():
     registration_app_logger.info('REQUEST ==> Received Endpoint :: {0}'.format(request.endpoint))
     rec_req_headers = dict(request.headers)
@@ -24,23 +25,23 @@ def add_user():
         username = rec_req_data['username']
         firstname = rec_req_data['firstName']
         lastname = rec_req_data['lastName']
-        emailaddress = rec_req_data['email']
+        emailaddres = rec_req_data['email']
         password = rec_req_data['password']
-        dataofbirth = rec_req_data['dateOfBirth']
+        dateofbirth = rec_req_data['dateOfBirth']
         registration_app_logger.info("Processing the request data... :: [STARTED]")
-        user_obj = User(username= username, firstname= firstname, lastname= lastname, dateofbirth= dataofbirth, email= emailaddress, pwd= password)
+        user_obj = User(username=username, firstname=firstname, lastname=lastname, dateofbirth=dateofbirth, email=emailaddres, pwd=password)
         if user_obj is None:
             abort(500, description={'message': 'Create User Failed'})
         user_instance = user_obj.add_user()
         registration_app_logger.info("Mapping the request data to the database model:: [STARTED]")
-        user_map_db_instance = UsersModel(Username = user_instance["username"],
-                                              FirstName = user_instance["firstname"],
-                                              LastName = user_instance["lastname"],
-                                              Email = user_instance["email"],
-                                              DateOfBirth = user_instance["dateofbirth"],
-                                              Password = user_instance["password"],
-                                              CreatedAt = user_instance["created_at"],
-                                              UpdatedAt = user_instance["updated_at"])
+        user_map_db_instance=UsersModel(Username=user_instance["username"],
+                                              FirstName=user_instance["firstname"],
+                                              LastName=user_instance["lastname"],
+                                              Email=user_instance["email"],
+                                              DateOfBirth=user_instance["dateofbirth"],
+                                              Password=user_instance["password"],
+                                              CreatedAt=user_instance["created_at"],
+                                              UpdatedAt=user_instance["updated_at"])
         registration_app_logger.info("Mapping the request data to the database model:: [SUCCESS]")
         registration_session = res_app_obj.get_session_for_service()
         if registration_session is None:
@@ -52,8 +53,8 @@ def add_user():
             registration_app_logger.info("Data added into  DataBase session {0}:: [SUCCESS]".format(user_map_db_instance))
             registration_session.commit()  # Commit the change
             registration_app_logger.info("Added Data is committed into  DataBase {0}:: [SUCCESS]".format(registration_session))
-            user_instance = User.convert_db_model_to_response(user_map_db_instance)
-            success_user_response = User.generate_success_response(user_instance)
+            user_instance=User.convert_db_model_to_response(user_map_db_instance)
+            success_user_response=User.generate_success_response(user_instance)
             registration_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(success_user_response))
             return jsonify(success_user_response), 201
 
@@ -70,18 +71,15 @@ def add_user():
             res_app_obj.close_session_for_service(registration_session)  # Close the change
 
 
-
-
-
-def check_user_credentails(userID):
+def check_user_credentials(userid):
     try:
-        registration_session = res_app_obj.get_session_for_service()
+        registration_session=res_app_obj.get_session_for_service()
         if registration_session is not None:
-            row = registration_session.query(UsersModel).get(userID)
+            row=registration_session.query(UsersModel).get(userid)
             if row is not None:
                 return row.ID, True
             else:
-                return userID, False
+                return userid, False
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return userID, False
+        return userid, False
