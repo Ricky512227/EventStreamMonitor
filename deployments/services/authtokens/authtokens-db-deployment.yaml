@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authtokens-db-deployment
+  name: miniapp-authtokendb
   namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authtokens-db
+      app: authtoken-dbapp
   template:
     metadata:
       labels:
-        app: authtokens-db
+        app: authtoken-dbapp
     spec:
       containers:
         - name: postgres-db-token-app

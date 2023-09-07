@@ -2,6 +2,7 @@ import sys
 import grpc
 from src.airliner_grpc import token_pb2_grpc
 from src.airliner_grpc import token_pb2
+from google.protobuf.json_format import MessageToJson
 from src.authtoken_service import authtoken_app_logger
 
 

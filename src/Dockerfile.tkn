@@ -1,0 +1,28 @@
+FROM python:slim-bookworm
+ENV TERM xterm
+LABEL authors="kamalsaidevarapalli"
+LABEL service="AUTHTOKEN"
+
+ARG AIRLINER_PROJECT_DIR=/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration
+ARG AIRLINER_SRC_DIR=$AIRLINER_PROJECT_DIR/src
+ARG AUTHTOKEN_APP_DIR=$AIRLINER_SRC_DIR/authtoken_service
+ARG AUTHTOKEN_APP=$AUTHTOKEN_APP_DIR/authtoken_service/authtoken_service.py
+
+WORKDIR $AIRLINER_PROJECT_DIR
+
+COPY airliner_common $AIRLINER_SRC_DIR/airliner_common
+COPY airliner_grpc $AIRLINER_SRC_DIR/airliner_grpc
+COPY authtoken_service $AIRLINER_SRC_DIR/authtoken_service
+
+RUN chmod 777 -R $AIRLINER_PROJECT_DIR
+
+RUN apt-get update && apt-get install -y python3 python3-pip build-essential python3-dev libffi-dev
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+
+RUN pip3 install -r $AUTHTOKEN_APP_DIR/requirements.txt
+
+EXPOSE 9093
+
+CMD ["gunicorn", "-b", "0.0.0.0:9093", "src.authtoken_service.authtoken_service:authtoken_app"]
+

@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registrations-db-deployment
+  name: miniapp-registrationdb
   namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registrations-db
+      app: registration-dbapp
   template:
     metadata:
       labels:
-        app: registrations-db
+        app: registration-dbapp
     spec:
       containers:
         - name: postgres-db-reg-app

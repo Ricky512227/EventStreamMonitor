@@ -1,23 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registrations-service-deployment
+  name:  miniapp-registration
   namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registrations-service
+      app: registration-app
   template:
     metadata:
       labels:
-        app: registrations-service
+        app: registration-app
     spec:
       containers:
-        - name: registrations-app
-          image: registrations:v1
+        - name: reg-app
+          image: registration:v1
           ports:
             - containerPort: 9091
           envFrom:
             - configMapRef:
-                name: registrations-configmap
+                name: miniapp-registration-configmap
+          resources:
+            requests:
+              memory: "256Mi"  
+              cpu: "100m"     
+            limits:
+              memory: "512Mi"  
+              cpu: "200m"

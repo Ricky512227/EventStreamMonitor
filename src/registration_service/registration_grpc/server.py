@@ -4,6 +4,9 @@ from src.airliner_grpc import token_pb2
 from google.protobuf.json_format import MessageToJson
 from src.registration_service.controllers.registration_controller import check_user_credentials
 from src.registration_service import registration_app_logger
+
+
+
 class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTokenGenerationServicer):
     def ValidateUserCredentials(self, request, context):
         token_res_message = None

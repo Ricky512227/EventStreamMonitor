@@ -50,7 +50,7 @@ Base = declarative_base()
 
 class UsersModel(Base):
     __tablename__ = 'users'
-    ID = Column(BigInteger,Sequence('user_id_seq',start=1000), primary_key=True)
+    ID = Column(BigInteger, Sequence('user_id_seq',start=1000), primary_key=True)
     Username = Column(String(255), nullable=False)
     FirstName = Column(String(255), nullable=False)
     LastName = Column(String(255), nullable=False)

@@ -12,7 +12,7 @@ services:
   registration-service:
 #    build:
 #      context: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration
-#      dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile
+#      dockerfile: /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/Dockerfile.reg
     image: registrations:v1
     ports:
       - "5001:9091"

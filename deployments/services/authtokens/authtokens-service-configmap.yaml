@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: authtokens-configmap
+  name: miniapp-authtoken-configmap
   namespace: miniapp
 data:
   FLASK_ENV: "development"
@@ -13,8 +13,8 @@ data:
   DB_DRIVER_NAME: "postgresql"
   DB_USER: "airlineradmin"
   DB_PASSWORD: "testeventstreammonitor#123"
-  DB_IPADDRESS: "authtokens-db"
-  DB_PORT: "5432"
+  DB_IPADDRESS: "miniapp-authtokendb"
+  DB_PORT: "5434"
   DB_NAME: "AUTHTOKENS"
   POOL_SIZE: "100"
   MAX_OVERFLOW: "20"

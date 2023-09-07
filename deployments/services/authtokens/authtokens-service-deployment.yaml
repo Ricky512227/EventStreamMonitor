@@ -1,23 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authtokens-service-deployment
+  name: miniapp-authtoken
   namespace: miniapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authtokens-service
+      app: authtoken-app
   template:
     metadata:
       labels:
-        app: authtokens-service
+        app: authtoken-app
     spec:
       containers:
-        - name: authtokens-app
-          image: authtokens:v1
+        - name: token-app
+          image: authtoken:v1
           ports:
             - containerPort: 9093
           envFrom:
             - configMapRef:
-                name: authtokens-configmap
+                name: miniapp-authtoken-configmap
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"

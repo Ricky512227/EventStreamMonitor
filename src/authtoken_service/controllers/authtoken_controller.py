@@ -3,11 +3,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask import jsonify, request, abort
 from src.authtoken_service.tokens.token import Token
 from src.authtoken_service.models.token_model import TokensModel
-from src.authtoken_service import authtoken_app_logger, gen_token_headers_schema, gen_token_req_schema, authtoken_app_obj
+from src.authtoken_service import authtoken_app_logger, authtoken_app_obj, gen_token_req_schema, gen_token_req_headers_schema, authtoken_app
 from src.authtoken_service.authtoken_grpc.client import gRPCTokenClient
-from src.airliner_common.req_header_validation import generate_req_missing_params
-
-
 
 
 def create_token():
@@ -15,30 +12,22 @@ def create_token():
         authtoken_app_logger.info('REQUEST ==> Received Endpoint :: {0}'.format(request.endpoint))
         rec_req_headers = dict(request.headers)
         authtoken_app_logger.info("Received Headers from the request :: {0}".format(rec_req_headers))
-        authtoken_app_logger.info("Validation for Request-Header is  :: [STARTED]")
-        headers_result = generate_req_missing_params(rec_req_headers, gen_token_headers_schema)
-        # Header Validation
-        if len(headers_result.keys()) != 0:
-            authtoken_app_logger.error("Validation for Request-Header is  :: [FAILED]")
-            headers_result["message"] = "Request Header Missing"
-            authtoken_app_logger.info("Sending Error response back to client :: {0}".format(headers_result))
-            abort(400, description=headers_result)
-        authtoken_app_logger.info("Validation for Request-Header is  :: [SUCCESS]")
-        # Method Validation
+        header_result = authtoken_app_obj.generate_req_missing_params(rec_req_headers, gen_token_req_headers_schema)
+        if len(header_result.keys()) != 0:
+            header_result["message"] = "Request Header Missing"
+            authtoken_app_logger.info("Sending Error response back to client :: {0}".format(header_result))
+            abort(400, description=header_result)
         if request.method == 'POST':
             rec_req_data = request.get_json()
+            body_result = authtoken_app_obj.generate_req_missing_params(rec_req_data, gen_token_req_schema)
+            if len(body_result.keys()) != 0:
+                body_result["message"] = "Request Params Missing"
+                authtoken_app_logger.info("Sending Error response back to client :: {0}".format(body_result))
+                abort(400, description=body_result)
             userid = rec_req_data['userId']
             username = rec_req_data['username']
             password = rec_req_data['password']
-            # PAYLOAD VALIDATION
-            authtoken_app_logger.info("Validation for Request-Body is  :: [STARTED]")
-            payload_result = generate_req_missing_params(rec_req_data, gen_token_req_schema)
-            if len(payload_result.keys()) != 0:
-                authtoken_app_logger.error("Validation for Request-Body is  :: [FAILED]")
-                payload_result["message"] = "Request Params Missing"
-                authtoken_app_logger.info("Sending Error response back to client :: {0}".format(payload_result))
-                abort(400, description=payload_result)
-
+            authtoken_app_logger.info("Processing the request data... :: [STARTED]")
             # Create a session
             token_session = authtoken_app_obj.get_session_for_service()
             if token_session is None:
@@ -47,7 +36,6 @@ def create_token():
 
             authtoken_app_logger.info("Checking for the token which is already exists or not for the user")
             token_record = token_session.query(TokensModel).filter_by(UserID=userid).first()
-
             if token_record is not None:
                 authtoken_app_logger.info("Already token exists for the user not need to generate a new token.")
                 token_instance = Token.convert_db_model_to_response(token_record)
@@ -57,7 +45,7 @@ def create_token():
 
             authtoken_app_logger.info("Token not exists, so Validating whether it is registered user  :: [STARTED]")
             authtoken_app_logger.info("Sending gRPC message to Registration Service :: [STARTED]")
-            token_grpc_client = gRPCTokenClient("0.0.0.0", "9092")
+            token_grpc_client = gRPCTokenClient(grpc_auth_token_client_ip=authtoken_app.config["REGISTRATION_GRPC_SERVER_IP"], grpc_auth_token_client_port=authtoken_app.config["REGISTRATION_GRPC_SERVER_PORT"])
             tokenstub, grpc_client_status = token_grpc_client.create_channel_stub()
             if not grpc_client_status:
                 authtoken_app_logger.error("Channel/stub  Creation :: [FAILED]")
@@ -84,16 +72,19 @@ def create_token():
             token_map_db_instance = TokensModel(UserID=token_instance["userid"], Token=token_instance["token"], Expiry=token_instance["expiry"],
                                                 CreatedAt=token_instance["created_at"], UpdatedAt=token_instance["updated_at"])
 
+            authtoken_app_logger.info("Mapping the request data to the database model:: [SUCCESS]")
+            token_session = authtoken_app_obj.get_session_for_service()
+            if token_session is None:
+                abort(500, description={'message': 'Create Session Failed'})
+
             try:
+                authtoken_app_logger.info("Data adding into  DataBase session {0}:: [STARTED]".format(token_map_db_instance))
                 token_session.add(token_map_db_instance)
                 authtoken_app_logger.info("Data added into  DataBase session {0}:: [SUCCESS]".format(token_map_db_instance))
                 token_session.commit()  # Commit the change
                 authtoken_app_logger.info("Added Data is committed into  DataBase {0}:: [SUCCESS]".format(token_session))
-                print("Commit the  changes  {0}:: SUCCESS".format(token_session))
-                authtoken_app_logger.info("Generating Success response  :: [STARTED]")
                 token_instance = Token.convert_db_model_to_response(token_map_db_instance)
                 token_user_response = Token.generate_success_response(token_instance)
-                authtoken_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(token_user_response))
                 return jsonify(token_user_response), 201
             except SQLAlchemyError as ex:
                 token_session.rollback()
@@ -105,9 +96,7 @@ def create_token():
                 print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
                 return jsonify({"message": "Internal Server Error"}), 500
             finally:
-                print("Closing the  session  {0}:: [STARTED]".format(token_session))
-                token_session.close()  # Close the change
-                print("Closed the  session  {0}:: [SUCCESS]".format(token_session))
+                authtoken_app_obj.close_session_for_service(token_session) # Close the change
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"message": "Internal Server Error"}), 500
