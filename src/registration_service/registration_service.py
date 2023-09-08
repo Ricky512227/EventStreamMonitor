@@ -10,6 +10,6 @@ if __name__ == "__main__":
             registration_app.config['REGISTRATION_SERVER_IPADDRESS'],
             registration_app.config['REGISTRATION_SERVER_PORT']))
         registration_app_logger.info("Application is ready to server traffic.")
-        registration_app.run()
+        registration_app.run(host=registration_app.config['REGISTRATION_SERVER_IPADDRESS'], port=registration_app.config['REGISTRATION_SERVER_PORT'])
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))

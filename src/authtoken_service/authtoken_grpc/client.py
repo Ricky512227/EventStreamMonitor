@@ -1,9 +1,10 @@
 import sys
 import grpc
-from src.airliner_grpc import token_pb2_grpc
-from src.airliner_grpc import token_pb2
+from src.admin_grpc import token_pb2_grpc
+from src.admin_grpc import token_pb2
 from google.protobuf.json_format import MessageToJson
 from src.authtoken_service import authtoken_app_logger
+import uuid
 
 
 class gRPCTokenClient:
@@ -55,15 +56,23 @@ class gRPCTokenClient:
             authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return token_req_message
 
+    @staticmethod
+    def generate_request_id():
+        authtoken_app_logger.info("Generated a UUID as the request ID :: {0}".format(str(uuid.uuid4())))
+        return str(uuid.uuid4())
+
     def trigger_request(self):
         try:
             if self.token_channel:
-                self.resp_data = self.tokenstub.ValidateUserCredentials(self.data_to_send, timeout=2)
-                authtoken_app_logger.info(f"Received Response from grpc :: {0}".format(self.resp_data))
+                metadata = [('x-request-id', self.generate_request_id()), ('timeout', '5000')]
+                self.resp_data = self.tokenstub.ValidateUserCredentials(self.data_to_send, metadata=metadata)
+                authtoken_app_logger.info("Received Response from grpc :: {0}".format(self.resp_data))
                 self.resp_status = True
         except grpc.RpcError as ex:
+            authtoken_app_logger.error("Sending gRPC message to Registration Service :: [FAILED]")
             authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex.debug_error_string(), sys.exc_info()[2].tb_lineno))
         except Exception as ex:
+            authtoken_app_logger.error("Sending gRPC message to Registration Service :: [FAILED]")
             authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.resp_data, self.resp_status
 

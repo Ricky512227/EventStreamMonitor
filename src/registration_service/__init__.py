@@ -22,7 +22,7 @@ try:
         # Setting the env variable and binding to the application.
         FLASK_ENV = os.environ.get("FLASK_ENV")
         DEBUG = os.environ.get("DEBUG")
-        SECRET_KEY = os.environ.get("SECRET_KEY")
+        JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
         FLASK_APP = os.environ.get("FLASK_APP")
 
         REGISTRATION_SERVER_IPADDRESS = os.environ.get("REGISTRATION_SERVER_IPADDRESS")
@@ -54,8 +54,10 @@ try:
 
         registration_app.config["FLASK_ENV"] = FLASK_ENV
         registration_app.config["DEBUG"] = DEBUG
-        registration_app.config["SECRET_KEY"] = SECRET_KEY
+        registration_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
         registration_app.config["FLASK_APP"] = FLASK_APP
+
+        registration_app_jwt = reg_app_obj.init_jwt_manger()
 
         registration_app.config["REGISTRATION_SERVER_IPADDRESS"] = REGISTRATION_SERVER_IPADDRESS
         registration_app.config["REGISTRATION_SERVER_PORT"] = REGISTRATION_SERVER_PORT
@@ -81,7 +83,7 @@ try:
 
         # Create the blueprint for the registration service
         registration_bp = reg_app_obj.create_blueprint()
-        # Register the blueprint for the registration service
+        # Display Register the blueprint for the registration service
         reg_app_obj.display_registered_blueprints_for_service()
         # Create a database engine
         registration_db_engine, is_engine_created = reg_app_obj.create_db_engine()
@@ -95,6 +97,8 @@ try:
                     if reg_app_obj.create_tables_associated_to_db_model():
                         # Bind the application with the sqlAlchemy.
                         registration_SQLAlchemy = reg_app_obj.bind_db_app()
+                        # Bind the application with the migrations
+                        registration_migrate = reg_app_obj.migrate_db_bind_app()
                         # Initialize/Create a pool of connections for the service
                         registration_connection_pool, _ = reg_app_obj.create_pool_of_connections()
                         # Display the  pool of connections for the service which was initialized

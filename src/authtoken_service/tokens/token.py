@@ -64,11 +64,11 @@ class Token:
         return model_dict
 
     @staticmethod
-    def generate_success_response(token_instance):
+    def generate_success_response(token_instance, token_message):
         authtoken_app_logger .info("Generating Success response  :: [STARTED]")
         succ_res_dict = {}
         try:
-            succ_res_dict.update({'message': 'Token  is created'})
+            succ_res_dict.update({'message': token_message})
             succ_res_dict.update(
                 {
                     "token":{

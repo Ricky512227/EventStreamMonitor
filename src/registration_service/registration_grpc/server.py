@@ -2,7 +2,7 @@ import sys
 from src.admin_grpc import token_pb2_grpc
 from src.admin_grpc import token_pb2
 from google.protobuf.json_format import MessageToJson
-from src.registration_service.controllers.user_controller import is_user_exists
+from src.registration_service.controllers.user_controller import is_userid_exists
 from src.registration_service import registration_app_logger
 
 
@@ -11,10 +11,8 @@ class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTo
         token_res_message = None
         try:
             registration_app_logger.info("Received request from client ::\n{0}".format(request))
-            metadata = dict(context.invocation_metadata())
-            registration_app_logger.info("Metadata :: {0}".format(metadata))
             token_res_message = token_pb2.TokenResMessage()
-            user_data, is_exists = is_user_exists(request.userid)
+            user_data, is_exists = is_userid_exists(request.userid)
             if is_exists:
                 registration_app_logger.info("Received response after trigger rpc :: {0}".format(user_data))
                 token_res_message.userid = str(user_data[0])

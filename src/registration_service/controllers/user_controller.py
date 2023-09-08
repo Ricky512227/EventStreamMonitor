@@ -1,10 +1,11 @@
 import sys
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import or_
 from flask import jsonify, request, abort
 from src.registration_service.users.user import User
 from src.registration_service.models.user_model import UsersModel
 from src.registration_service import registration_app_logger, req_headers_schema, getuser_headers_schema, \
-    deluser_headers_schema, reg_user_req_schema, reg_app_obj
+    del_user_headers_schema, reg_user_req_schema, reg_app_obj
 
 
 def register_user():
@@ -31,6 +32,10 @@ def register_user():
             password = rec_req_data['password']
             dateofbirth = rec_req_data['dateOfBirth']
             registration_app_logger.info("Processing the request data... :: [STARTED]")
+            # Doing the pre-validation checks before procession the request.
+            if is_username_email_already_exists(uname=username, email=emailaddres):
+                return jsonify({"message":"Username or EmailAddress already exists"}), 400
+
             user_obj = User(username=username, firstname=firstname, lastname=lastname, dateofbirth=dateofbirth,
                             email=emailaddres, pwd=password)
             if user_obj is None:
@@ -51,19 +56,14 @@ def register_user():
                 abort(500, description={'message': 'Create Session Failed'})
 
             try:
-                registration_app_logger.info(
-                    "Data adding into  DataBase session {0}:: [STARTED]".format(user_map_db_instance))
+                registration_app_logger.info("Data adding into  DataBase session {0}:: [STARTED]".format(user_map_db_instance))
                 registration_session.add(user_map_db_instance)
-                registration_app_logger.info(
-                    "Data added into  DataBase session {0}:: [SUCCESS]".format(user_map_db_instance))
+                registration_app_logger.info("Data added into  DataBase session {0}:: [SUCCESS]".format(user_map_db_instance))
                 registration_session.commit()  # Commit the change
-                registration_app_logger.info(
-                    "Added Data is committed into  DataBase {0}:: [SUCCESS]".format(registration_session))
+                registration_app_logger.info("Added Data is committed into  DataBase {0}:: [SUCCESS]".format(registration_session))
                 user_instance = User.convert_db_model_to_response(user_map_db_instance)
-                success_user_response = User.generate_success_response(user_instance=user_instance,
-                                                                       messagedata="User Created")
-                registration_app_logger.info(
-                    "Generating Success response  :: [STARTED] :: {0}".format(success_user_response))
+                success_user_response = User.generate_success_response(user_instance=user_instance, messagedata="User Created")
+                registration_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(success_user_response))
                 return jsonify(success_user_response), 201
 
             except SQLAlchemyError as ex:
@@ -76,33 +76,47 @@ def register_user():
                 print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
                 return jsonify({"message": "Internal Server Error"}), 500
             finally:
-                reg_app_obj.close_session_for_service(registration_session)  # Close the change
+                reg_app_obj.close_session_for_service(registration_session)  # Close the session
 
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"message": "Internal Server Error"}), 500
 
 
-def is_user_exists(userid):
+def is_userid_exists(userid):
     try:
         registration_session = reg_app_obj.get_session_for_service()
         if registration_session is not None:
             registration_app_logger.info(
                 "Querying Userid in the Database to check the if user exists :: {0}".format(userid))
-            row = registration_session.query(UsersModel).get(userid)
-            if row is not None:
-                registration_app_logger.info(
-                    "Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, True))
-                return row.ID, True
+            user_row = registration_session.query(UsersModel).get(userid)
+            if user_row is not None:
+                registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, True))
+                return user_row.ID, True
             else:
-                registration_app_logger.info(
-                    "Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, False))
+                registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, False))
                 return userid, False
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        registration_app_logger.info("Querying Userid to check the if user exists :: {0} - {1}".format(userid, False))
+        registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, False))
         return userid, False
 
+def is_username_email_already_exists(uname, email):
+    try:
+        registration_session = reg_app_obj.get_session_for_service()
+        if registration_session is not None:
+            registration_app_logger.info("Querying UserName :: {0} , Email :: {1} in the Database to check the if already exists :: ".format(uname, email))
+            user_row = registration_session.query(UsersModel).filter(or_(UsersModel.Username ==uname, UsersModel.Email == email)).first()
+            if user_row is not None:
+                registration_app_logger.info("Result for the Query Response :: {0}".format(True))
+                return True
+            else:
+                registration_app_logger.info("Result for the Query Response :: {0}".format(False))
+                return False
+    except Exception as ex:
+        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        registration_app_logger.info("Result for the Query Response :: {0}".format(False))
+        return False
 
 def get_user_info(userid):
     try:
@@ -119,7 +133,7 @@ def get_user_info(userid):
             registration_app_logger.info("Processing the request data... :: [STARTED]")
             registration_app_logger.info("Mapping the request data to the database model:: [STARTED]")
 
-            user_id, is_exists = is_user_exists(userid)
+            user_id, is_exists = is_userid_exists(userid)
             if is_exists:
                 getuser_session = reg_app_obj.get_session_for_service()
                 try:
@@ -156,7 +170,7 @@ def remove_user(userid):
         registration_app_logger.info('REQUEST ==> Received Endpoint :: {0}'.format(request.endpoint))
         rec_req_headers = dict(request.headers)
         registration_app_logger.info("Received Headers from the request :: {0}".format(rec_req_headers))
-        header_result = reg_app_obj.generate_req_missing_params(rec_req_headers, deluser_headers_schema)
+        header_result = reg_app_obj.generate_req_missing_params(rec_req_headers, del_user_headers_schema)
         if len(header_result.keys()) != 0:
             header_result["message"] = "Request Header Missing"
             registration_app_logger.info("Sending Error response back to client :: {0}".format(header_result))
@@ -166,7 +180,7 @@ def remove_user(userid):
             registration_app_logger.info("Processing the request data... :: [STARTED]")
             registration_app_logger.info("Mapping the request data to the database model:: [STARTED]")
 
-            user_id, is_exists = is_user_exists(userid)
+            user_id, is_exists = is_userid_exists(userid)
             if is_exists:
                 delete_user_session = reg_app_obj.get_session_for_service()
                 try:

@@ -28,7 +28,6 @@ def create_token():
             username = rec_req_data['username']
             password = rec_req_data['password']
             authtoken_app_logger.info("Processing the request data... :: [STARTED]")
-            # Create a session
             token_session = authtoken_app_obj.get_session_for_service()
             if token_session is None:
                 authtoken_app_logger.info("Session Creation for the token :: [FAILED]")
@@ -39,7 +38,7 @@ def create_token():
             if token_record is not None:
                 authtoken_app_logger.info("Already token exists for the user not need to generate a new token.")
                 token_instance = Token.convert_db_model_to_response(token_record)
-                token_user_response = Token.generate_success_response(token_instance)
+                token_user_response = Token.generate_success_response(token_instance, "Token Already Exists")
                 authtoken_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(token_user_response))
                 return jsonify(token_user_response), 200
 
@@ -48,17 +47,17 @@ def create_token():
             token_grpc_client = gRPCTokenClient(grpc_auth_token_client_ip=authtoken_app.config["REGISTRATION_GRPC_SERVER_IP"], grpc_auth_token_client_port=authtoken_app.config["REGISTRATION_GRPC_SERVER_PORT"])
             tokenstub, grpc_client_status = token_grpc_client.create_channel_stub()
             if not grpc_client_status:
-                authtoken_app_logger.error("Channel/stub  Creation :: [FAILED]")
+                authtoken_app_logger.error("Channel/stub  Creation, , Sending error response  :: [FAILED]")
                 return jsonify({"message": "Internal Server Error"}), 500
 
             message_to_send = token_grpc_client.TokenGrpcRequestPreparation(userid=userid, username=username, passcode=password)
             if message_to_send is None:
-                authtoken_app_logger.error("gRPC Message to preparation  :: [FAILED]")
+                authtoken_app_logger.error("gRPC Message to preparation, Sending error response :: [FAILED]")
                 return jsonify({"message": "Internal Server Error"}), 500
             token_grpc_client.data_to_send = message_to_send
             resp_data, resp_status = token_grpc_client.trigger_request()
             if not resp_status:
-                authtoken_app_logger.error("Sending gRPC message to Registration Service :: [FAILED]")
+                authtoken_app_logger.error("Request of gRPC Message, Sending error response :: [FAILED]")
                 return jsonify({"message": "Internal Server Error"}), 500
 
             authtoken_app_logger.info("gRPC Response data :: {0}, Response status :: {1}".format(resp_data, resp_status))
@@ -96,7 +95,7 @@ def create_token():
                 print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
                 return jsonify({"message": "Internal Server Error"}), 500
             finally:
-                authtoken_app_obj.close_session_for_service(token_session) # Close the change
+                authtoken_app_obj.close_session_for_service(token_session) # Close the session
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"message": "Internal Server Error"}), 500

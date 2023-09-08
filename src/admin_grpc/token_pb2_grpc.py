@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import src.airliner_grpc.token_pb2 as token__pb2
+import src.admin_grpc.token_pb2 as token__pb2
 
 
 class UserValidationForTokenGenerationStub(object):
