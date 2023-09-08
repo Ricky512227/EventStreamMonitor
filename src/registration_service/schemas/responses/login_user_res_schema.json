@@ -21,5 +21,10 @@
       "description": "A message indicating the success of the login"
     }
   },
-  "required": ["accessToken", "expiresIn", "tokenType", "message"]
+  "required": [
+    "accessToken",
+    "expiresIn",
+    "tokenType",
+    "message"
+  ]
 }

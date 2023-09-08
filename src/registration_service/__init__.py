@@ -3,10 +3,9 @@ import sys
 import grpc
 from dotenv import load_dotenv
 from concurrent import futures
-from src.airliner_grpc import token_pb2_grpc
-from src.airliner_common.create_app import CreatFlaskApp
+from src.admin_grpc import token_pb2_grpc
+from src.admin_common.create_app import CreatFlaskApp
 from src.registration_service.models.user_model import Base
-
 
 try:
     # Set the registration service directory as the current dir
@@ -42,7 +41,7 @@ try:
         POOL_SIZE = int(os.environ.get("POOL_SIZE"))
         MAX_OVERFLOW = int(os.environ.get("MAX_OVERFLOW"))
         RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL"))
-        
+
         # Initialize the ap for registration service
         reg_app_obj = CreatFlaskApp(service_name=SERVICE_NAME, db_driver=DB_DRIVER_NAME, db_user=DB_USER,
                                     db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT,
@@ -73,8 +72,10 @@ try:
 
         # Load and Validate Schema Files which are read.
         req_headers_schema_status, req_headers_schema = reg_app_obj.read_json_schema(req_headers_schema_filepath)
-        getuser_headers_schema_status, getuser_headers_schema = reg_app_obj.read_json_schema(getuser_headers_schema_filepath)
-        del_user_headers_schema_status, del_user_headers_schema = reg_app_obj.read_json_schema(del_user_headers_schema_filepath)
+        getuser_headers_schema_status, getuser_headers_schema = reg_app_obj.read_json_schema(
+            getuser_headers_schema_filepath)
+        del_user_headers_schema_status, del_user_headers_schema = reg_app_obj.read_json_schema(
+            del_user_headers_schema_filepath)
 
         reg_user_req_schema_status, reg_user_req_schema = reg_app_obj.read_json_schema(reg_user_req_schema_filepath)
 
@@ -103,17 +104,19 @@ try:
                             - attach the routes to the created blueprint
                             - register the blueprint
                         '''
-                        from src.registration_service.controllers.user_controller import register_user, get_user_info, remove_user
+                        from src.registration_service.controllers.user_controller import register_user, get_user_info, \
+                            remove_user
 
                         registration_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(register_user)
                         registration_bp.route('/api/v1/airliner/getUser/<int:userid>', methods=['GET'])(get_user_info)
-                        registration_bp.route('/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE'])(remove_user)
+                        registration_bp.route('/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE'])(
+                            remove_user)
 
                         reg_app_obj.register_blueprint()
                         reg_app_obj.display_registered_blueprints_for_service()
 
                         # Registering the custom error handlers  to the application instance
-                        from src.airliner_common.airliner_err_handlers import internal_server_error, bad_request, \
+                        from src.admin_common.admin_err_handlers import internal_server_error, bad_request, \
                             not_found
 
                         reg_app_obj.register_err_handler(500, internal_server_error)
@@ -123,8 +126,10 @@ try:
 
                         from src.registration_service.registration_grpc.server import \
                             UserValidationForTokenGenerationService
-                        ''' Create/Initialise the grpc server for the registration service'''
-                        server = grpc.server(futures.ThreadPoolExecutor(max_workers=registration_app.config["REGISTRATION_GRPC_MAX_WORKERS"]))
+
+                        # Create/Initialise the grpc server for the registration service
+                        server = grpc.server(futures.ThreadPoolExecutor(
+                            max_workers=registration_app.config["REGISTRATION_GRPC_MAX_WORKERS"]))
                         registration_app_logger.info("Created GRPC server with the workers of max :: {0}".format(10))
                         token_pb2_grpc.add_UserValidationForTokenGenerationServicer_to_server(
                             UserValidationForTokenGenerationService(), server)

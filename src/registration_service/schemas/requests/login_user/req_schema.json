@@ -13,5 +13,8 @@
       "description": "User's password"
     }
   },
-  "required": ["username", "password"]
+  "required": [
+    "username",
+    "password"
+  ]
 }

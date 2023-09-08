@@ -44,15 +44,24 @@
           "format": "date-time"
         },
         "UpdatedAtTime": {
-        "type": "string",
-        "format": "date-time"
+          "type": "string",
+          "format": "date-time"
         }
       },
-      "required": ["userId", "username", "email", "firstName", "lastName"],
+      "required": [
+        "userId",
+        "username",
+        "email",
+        "firstName",
+        "lastName"
+      ],
       "additionalProperties": false,
       "description": "User details"
     }
   },
-  "required": ["message", "user"],
+  "required": [
+    "message",
+    "user"
+  ],
   "additionalProperties": false
 }

@@ -17,5 +17,9 @@
       "description": "Type of the token (e.g., 'bearer')"
     }
   },
-  "required": ["accessToken", "expiresIn", "tokenType"]
+  "required": [
+    "accessToken",
+    "expiresIn",
+    "tokenType"
+  ]
 }

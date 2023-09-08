@@ -1,6 +1,6 @@
 import sys
-from src.airliner_grpc import token_pb2_grpc
-from src.airliner_grpc import token_pb2
+from src.admin_grpc import token_pb2_grpc
+from src.admin_grpc import token_pb2
 from google.protobuf.json_format import MessageToJson
 from src.registration_service.controllers.user_controller import is_user_exists
 from src.registration_service import registration_app_logger
@@ -23,6 +23,7 @@ class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTo
                 json_str_oneline = json_str.replace("\n", " ")
                 registration_app_logger.info(f"Sending response back to gRPC client :: {json_str_oneline}")
         except Exception as ex:
-            registration_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            registration_app_logger.error(
+                "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return token_res_message

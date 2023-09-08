@@ -3,8 +3,9 @@ from sqlalchemy import Column, String, DateTime, Integer, BigInteger, ForeignKey
 from sqlalchemy.schema import Sequence
 from sqlalchemy.orm import relationship, deferred
 
-
 Base = declarative_base()
+
+
 # class AerPlaneDBModel(Base):
 #     __tablename__ = "AeroPlanes"
 #     AeroPlaneID = Column(BigInteger, Sequence('aeroplane_id_seq',start=3000),primary_key=True)
@@ -49,7 +50,7 @@ Base = declarative_base()
 
 class UsersModel(Base):
     __tablename__ = 'users'
-    ID = Column(BigInteger, Sequence('user_id_seq',start=1000), primary_key=True)
+    ID = Column(BigInteger, Sequence('user_id_seq', start=1000), primary_key=True)
     Username = Column(String(255), nullable=False)
     FirstName = Column(String(255), nullable=False)
     LastName = Column(String(255), nullable=False)
@@ -71,15 +72,3 @@ class UsersModel(Base):
 # @event.listens_for(AerPlaneDBModel, 'after_insert', propagate=True)
 # def after_insert_listener(mapper, connection, target):
 #     target.after_insert(mapper, connection, target)
-
-
-
-
-
-
-
-
-
-
-
-

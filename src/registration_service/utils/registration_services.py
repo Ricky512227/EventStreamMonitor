@@ -1,6 +1,7 @@
 from src.registration_service.registration_service import registration_app_logger
 import sys
 
+
 def generate_success_user_response(user_map_db_instance):
     succ_user_res_dict = {}
     try:
@@ -14,7 +15,7 @@ def generate_success_user_response(user_map_db_instance):
                     'firstName': user_map_db_instance.FirstName,
                     'lastName': user_map_db_instance.LastName,
                     'CreatedAt': user_map_db_instance.CreatedAtTime,
-                    'UpdatedAt':user_map_db_instance.UpdatedAtTime,
+                    'UpdatedAt': user_map_db_instance.UpdatedAtTime,
                 }
             }
         )
@@ -22,10 +23,12 @@ def generate_success_user_response(user_map_db_instance):
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         registration_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
     return succ_user_res_dict
+
+
 #
 
 def convert_db_model_to_response(model_instance):
-    model_dict= {}
+    model_dict = {}
     try:
         model_dict['data'] = {col.name: getattr(model_instance, col.name) for col in model_instance.__table__.columns}
         if 'CreatedAtTime' in model_dict['data'].keys():
@@ -37,5 +40,3 @@ def convert_db_model_to_response(model_instance):
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         registration_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
     return model_dict
-
-

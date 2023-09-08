@@ -17,5 +17,9 @@
       "description": "User's password"
     }
   },
-  "required": ["userId", "username", "password"]
+  "required": [
+    "userId",
+    "username",
+    "password"
+  ]
 }

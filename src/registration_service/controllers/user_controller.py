@@ -3,7 +3,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask import jsonify, request, abort
 from src.registration_service.users.user import User
 from src.registration_service.models.user_model import UsersModel
-from src.registration_service import registration_app_logger, req_headers_schema, getuser_headers_schema, deluser_headers_schema, reg_user_req_schema, reg_app_obj
+from src.registration_service import registration_app_logger, req_headers_schema, getuser_headers_schema, \
+    deluser_headers_schema, reg_user_req_schema, reg_app_obj
 
 
 def register_user():
@@ -59,7 +60,8 @@ def register_user():
                 registration_app_logger.info(
                     "Added Data is committed into  DataBase {0}:: [SUCCESS]".format(registration_session))
                 user_instance = User.convert_db_model_to_response(user_map_db_instance)
-                success_user_response = User.generate_success_response(user_instance=user_instance, messagedata="User Created")
+                success_user_response = User.generate_success_response(user_instance=user_instance,
+                                                                       messagedata="User Created")
                 registration_app_logger.info(
                     "Generating Success response  :: [STARTED] :: {0}".format(success_user_response))
                 return jsonify(success_user_response), 201
@@ -85,13 +87,16 @@ def is_user_exists(userid):
     try:
         registration_session = reg_app_obj.get_session_for_service()
         if registration_session is not None:
-            registration_app_logger.info("Querying Userid in the Database to check the if user exists :: {0}".format(userid))
+            registration_app_logger.info(
+                "Querying Userid in the Database to check the if user exists :: {0}".format(userid))
             row = registration_session.query(UsersModel).get(userid)
             if row is not None:
-                registration_app_logger.info("Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, True))
+                registration_app_logger.info(
+                    "Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, True))
                 return row.ID, True
             else:
-                registration_app_logger.info("Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, False))
+                registration_app_logger.info(
+                    "Querying Userid in the Database to check the if user exists :: {0} - {1}".format(userid, False))
                 return userid, False
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
@@ -124,8 +129,10 @@ def get_user_info(userid):
                     '''Converting the database model of user to defined user object'''
                     user_instance = User.convert_db_model_to_response(get_user_map_db_instance)
                     '''Using the user object, Generating the success response object'''
-                    success_get_user_response = User.generate_success_response(user_instance=user_instance, messagedata="Retrieved User")
-                    registration_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(success_get_user_response))
+                    success_get_user_response = User.generate_success_response(user_instance=user_instance,
+                                                                               messagedata="Retrieved User")
+                    registration_app_logger.info(
+                        "Generating Success response  :: [STARTED] :: {0}".format(success_get_user_response))
                     return jsonify(success_get_user_response), 200
                 except SQLAlchemyError as ex:
                     getuser_session.rollback()
