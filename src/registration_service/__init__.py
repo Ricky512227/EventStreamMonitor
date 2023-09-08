@@ -10,13 +10,10 @@ from src.registration_service.models.user_model import Base
 
 try:
     currentDir = "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/"
-    # registration_env_filepath = os.path.join(currentDir, ".env.dev")
-    registration_env_filepath = os.path.join(currentDir, ".env.prod")
-
-
+    registration_env_filepath = os.path.join(currentDir, ".env.dev")
+    # registration_env_filepath = os.path.join(currentDir, ".env.prod")
     print("Loading .Env File path :: {0}".format(registration_env_filepath))
     loaded = load_dotenv(registration_env_filepath)
-
     if loaded:
         print("Environment variables file loaded from :: {0} ".format(registration_env_filepath))
         FLASK_ENV = os.environ.get("FLASK_ENV")
@@ -40,13 +37,13 @@ try:
         MAX_OVERFLOW = int(os.environ.get("MAX_OVERFLOW"))
         RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL"))
 
-        res_app_obj = CreatFlaskApp(service_name=SERVICE_NAME, db_driver=DB_DRIVER_NAME, db_user=DB_USER,
+        reg_app_obj = CreatFlaskApp(service_name=SERVICE_NAME, db_driver=DB_DRIVER_NAME, db_user=DB_USER,
                                     db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT,
                                     db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW,
                                     retry_interval=RETRY_INTERVAL, base=Base)
 
-        registration_app_logger = res_app_obj.app_logger
-        registration_app = res_app_obj.create_app_instance()
+        registration_app_logger = reg_app_obj.app_logger
+        registration_app = reg_app_obj.create_app_instance()
 
         registration_app.config["FLASK_ENV"] = FLASK_ENV
         registration_app.config["DEBUG"] = DEBUG
@@ -62,34 +59,43 @@ try:
         # Read Schema File
         reg_user_req_schema_filepath = os.path.join(currentDir, "schemas/requests/register_user/req_schema.json")
         req_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/reg_headers_schema.json")
+        getuser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/getuser_headers_schema.json")
+        deluser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/deluser_headers_schema.json")
 
-        req_headers_schema_status, req_headers_schema = res_app_obj.read_json_schema(req_headers_schema_filepath)
-        reg_user_req_schema_status, reg_user_req_schema = res_app_obj.read_json_schema(reg_user_req_schema_filepath)
+        req_headers_schema_status, req_headers_schema = reg_app_obj.read_json_schema(req_headers_schema_filepath)
+        getuser_headers_schema_status, getuser_headers_schema = reg_app_obj.read_json_schema(getuser_headers_schema_filepath)
+        deluser_headers_schema_status, deluser_headers_schema = reg_app_obj.read_json_schema(deluser_headers_schema_filepath)
 
-        registration_bp = res_app_obj.create_blueprint()
-        res_app_obj.display_registered_blueprints_for_service()
 
-        registration_db_engine, is_engine_created = res_app_obj.create_db_engine()
+        reg_user_req_schema_status, reg_user_req_schema = reg_app_obj.read_json_schema(reg_user_req_schema_filepath)
+
+        registration_bp = reg_app_obj.create_blueprint()
+        reg_app_obj.display_registered_blueprints_for_service()
+
+        registration_db_engine, is_engine_created = reg_app_obj.create_db_engine()
         if is_engine_created:
-            if res_app_obj.check_db_connectivity_and_retry():
-                if res_app_obj.init_databases_for_service():
-                    if res_app_obj.create_tables_associated_to_db_model():
-                        registration_SQLAlchemy = res_app_obj.bind_db_app()
-                        registration_connection_pool, _ = res_app_obj.create_pool_of_connections()
-                        res_app_obj.display_pool_info()
-                        from src.registration_service.controllers.registration_controller import add_user
+            if reg_app_obj.check_db_connectivity_and_retry():
+                if reg_app_obj.init_databases_for_service():
+                    if reg_app_obj.create_tables_associated_to_db_model():
+                        registration_SQLAlchemy = reg_app_obj.bind_db_app()
+                        registration_connection_pool, _ = reg_app_obj.create_pool_of_connections()
+                        reg_app_obj.display_pool_info()
+                        from src.registration_service.controllers.user_controller import register_user, get_user_info, remove_user
 
-                        registration_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(add_user)
-                        res_app_obj.register_blueprint()
-                        res_app_obj.display_registered_blueprints_for_service()
+                        registration_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(register_user)
+                        registration_bp.route('/api/v1/airliner/getUser/<int:userid>', methods=['GET'])(get_user_info)
+                        registration_bp.route('/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE'])(remove_user)
+
+                        reg_app_obj.register_blueprint()
+                        reg_app_obj.display_registered_blueprints_for_service()
 
                         from src.airliner_common.airliner_err_handlers import internal_server_error, bad_request, \
                             not_found
 
-                        res_app_obj.register_err_handler(500, internal_server_error)
-                        res_app_obj.register_err_handler(400, bad_request)
-                        res_app_obj.register_err_handler(404, not_found)
-                        res_app_obj.display_registered_err_handlers()
+                        reg_app_obj.register_err_handler(500, internal_server_error)
+                        reg_app_obj.register_err_handler(400, bad_request)
+                        reg_app_obj.register_err_handler(404, not_found)
+                        reg_app_obj.display_registered_err_handlers()
 
                         from src.registration_service.registration_grpc.server import \
                             UserValidationForTokenGenerationService

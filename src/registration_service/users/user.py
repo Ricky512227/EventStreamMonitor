@@ -15,7 +15,7 @@ class User:
         self.user_obj = None
         registration_app_logger.info("Initialised User object ...")
 
-    def add_user(self):
+    def create_user(self):
         try:
             registration_app_logger.info("Received :: username :: {0}, firstname :: {1}, lastname :: {2}, emailaddress :: {3}, dateofbirth :: {4}".format(self.username, self.firstname, self.lastname, self.email, self.dateofbirth))
             self.user_obj = {
@@ -55,11 +55,11 @@ class User:
         return model_dict
 
     @staticmethod
-    def generate_success_response(user_instance):
+    def generate_success_response(user_instance, messagedata):
         registration_app_logger.info("Generating Success response  :: [STARTED]")
         succ_res_dict = {}
         try:
-            succ_res_dict.update({'message': 'User  is created'})
+            succ_res_dict.update({'message': messagedata})
             succ_res_dict.update(
                 {
                     'user': {

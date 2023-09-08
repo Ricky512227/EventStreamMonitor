@@ -1,0 +1,17 @@
+2023-09-07 01:35:47 - INFO - [base_logger.py : create_logger_for_service - 30] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-09-07 01:35:47 - INFO - [create_app.py : create_app_instance - 61] :: Received Service [registration]
+2023-09-07 01:35:47 - INFO - [create_app.py : create_app_instance - 63] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-09-07 01:35:47 - INFO - [create_app.py : read_json_schema - 285] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json
+2023-09-07 01:35:47 - INFO - [create_app.py : read_json_schema - 295] :: Schema Validation True
+2023-09-07 01:35:47 - INFO - [create_app.py : read_json_schema - 285] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json
+2023-09-07 01:35:47 - INFO - [create_app.py : read_json_schema - 295] :: Schema Validation True
+2023-09-07 01:35:47 - INFO - [create_app.py : create_blueprint - 79] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-09-07 01:35:47 - INFO - [create_app.py : display_registered_blueprints_for_service - 111] :: Added Blueprints :: /static/<path:filename>
+2023-09-07 01:35:47 - INFO - [create_app.py : create_db_engine - 131] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-09-07 01:35:47 - INFO - [create_app.py : get_database_uri - 120] :: Preparing DatabaseURI for Service :: [registration]
+2023-09-07 01:35:47 - INFO - [create_app.py : get_database_uri - 122] :: Prepared DatabaseURI for Service :: [registration] - postgresql://airlineradmin:Ishi%2306041995@registration-db:5432/REGISTRATIONS
+2023-09-07 01:35:47 - INFO - [create_app.py : create_db_engine - 136] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://airlineradmin:***@registration-db:5432/REGISTRATIONS)]
+2023-09-07 01:35:47 - INFO - [create_app.py : check_database_connectivity - 235] :: Current Connection status set to :: False for the service :: registration
+2023-09-07 01:35:47 - INFO - [create_app.py : check_database_connectivity - 236] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-09-07 01:35:48 - ERROR - [create_app.py : check_database_connectivity - 246] :: Current Connection status set to :: False
+2023-09-07 01:35:48 - INFO - [create_app.py : check_db_connectivity_and_retry - 230] :: Going for retry .. RETRY_INTERVAL :: 5 sec

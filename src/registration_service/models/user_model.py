@@ -2,7 +2,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime, Integer, BigInteger, ForeignKeyConstraint, ForeignKey
 from sqlalchemy.schema import Sequence
 from sqlalchemy.orm import relationship, deferred
-from sqlalchemy import event
 
 
 Base = declarative_base()

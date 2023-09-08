@@ -1,8 +1,9 @@
-
 class AirlinerErrorDetails:
     def __init__(self, message=None, error_details=None):
         self.message = message
         self.error_details = error_details
+
+
 
 class AirlinerError500(AirlinerErrorDetails):
     error = "INTERNAL_SERVER_ERROR"
@@ -10,7 +11,7 @@ class AirlinerError500(AirlinerErrorDetails):
     def __init__(self):
         super().__init__()
     def to_dict(self):
-        response_500={
+        response_500 = {
                         "status_code": self.status_code,
                         "error": self.error,
                         "message": self.message,
@@ -21,6 +22,7 @@ class AirlinerError500(AirlinerErrorDetails):
         if self.error_details is None:
             del response_500["errors"]
         return response_500
+
 
 class AirlinerError400(AirlinerErrorDetails):
     error = "BAD_REQUEST"
@@ -43,6 +45,7 @@ class AirlinerError400(AirlinerErrorDetails):
             del response_400["errors"]
 
         return response_400
+
 
 class AirlinerError404(AirlinerErrorDetails):
     error = "NOT_FOUND"
@@ -83,31 +86,6 @@ class AirlinerError405(AirlinerErrorDetails):
 
 
 
-# internal_server_error = AirlinerError500()
-# # internal_server_error.message = "An internal server error occurred."
-# # internal_server_error.error_details = "Additional details about the error."
-# error_dict = internal_server_error.to_dict()
-# print(error_dict)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # sqlalchemy.exc.IntegrityError: This exception is raised when there is a violation of the database's integrity constraints. For example, if you try to insert a record with a duplicate primary key or violate a unique constraint, an IntegrityError will be raised.
 #
 # sqlalchemy.exc.FlushError: This exception is raised if there is an error during the process of flushing changes to the database. The flush process is part of the commit() operation.
@@ -126,23 +104,6 @@ class AirlinerError405(AirlinerErrorDetails):
 #
 # Here's an example of how you can handle exceptions during the add() operation:
 #
-#
-#
-#
-#
-#
-#
-
-
-
-
-
-
-
-
-
-
-
 
 #
 #     "InternalServerError": {

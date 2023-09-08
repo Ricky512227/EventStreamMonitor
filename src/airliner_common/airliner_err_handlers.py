@@ -18,6 +18,7 @@ def bad_request(error_data):
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"status": 500, "message": "INTERNAL_SERVER_ERROR"}), 500
 
+
 def method_not_allowed(error_data):
     try:
         print("Preparing Err_response :: {0}".format(error_data))
@@ -48,6 +49,7 @@ def internal_server_error(error_data):
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"status": 500, "message": "INTERNAL_SERVER_ERROR"}), 500
 
+
 def not_found(error_data):
     try:
         print("Preparing Err_response :: {0}".format(error_data))
@@ -61,4 +63,3 @@ def not_found(error_data):
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return jsonify({"status": 500, "message": "INTERNAL_SERVER_ERROR"}), 500
-

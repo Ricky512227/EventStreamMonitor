@@ -1,0 +1,40 @@
+2023-09-07 15:47:34 - INFO - [base_logger.py : create_logger_for_service - 30] :: Initialized logger for the service [registration] :: [SUCCESS]
+2023-09-07 15:47:34 - INFO - [create_app.py : create_app_instance - 61] :: Received Service [registration]
+2023-09-07 15:47:34 - INFO - [create_app.py : create_app_instance - 63] :: Flask of Application Instance created for service [registration] ,  App Name :: [<Flask 'registration'>] ==> SUCCESS
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 285] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/reg_headers_schema.json
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 295] :: Schema Validation True
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 285] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/headers/getuser_headers_schema.json
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 295] :: Schema Validation True
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 285] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/registration_service/schemas/requests/register_user/req_schema.json
+2023-09-07 15:47:34 - INFO - [create_app.py : read_json_schema - 295] :: Schema Validation True
+2023-09-07 15:47:34 - INFO - [create_app.py : create_blueprint - 79] :: Created Blueprint :: <Blueprint 'registration_bp'> for the Application service ::registration
+2023-09-07 15:47:34 - INFO - [create_app.py : display_registered_blueprints_for_service - 111] :: Added Blueprints :: /static/<path:filename>
+2023-09-07 15:47:34 - INFO - [create_app.py : create_db_engine - 131] :: Creating DB-Engine using DatabaseURI for Service :: [registration]
+2023-09-07 15:47:34 - INFO - [create_app.py : get_database_uri - 120] :: Preparing DatabaseURI for Service :: [registration]
+2023-09-07 15:47:34 - INFO - [create_app.py : get_database_uri - 122] :: Prepared DatabaseURI for Service :: [registration] - postgresql://airlineradmin:Ishi%2306041995@127.0.0.1:3304/REGISTRATIONS
+2023-09-07 15:47:34 - INFO - [create_app.py : create_db_engine - 136] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://airlineradmin:***@127.0.0.1:3304/REGISTRATIONS)]
+2023-09-07 15:47:34 - INFO - [create_app.py : check_database_connectivity - 235] :: Current Connection status set to :: False for the service :: registration
+2023-09-07 15:47:34 - INFO - [create_app.py : check_database_connectivity - 236] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-09-07 15:47:35 - INFO - [create_app.py : check_database_connectivity - 240] :: Established the connection to the database :: [SUCCESS]
+2023-09-07 15:47:35 - INFO - [create_app.py : check_database_connectivity - 242] :: Current Connection status set to :: True for the service :: registration
+2023-09-07 15:47:35 - INFO - [create_app.py : check_database_connectivity - 244] :: Closing the Current Connection as the connection was established for the service :: registration
+2023-09-07 15:47:35 - INFO - [create_app.py : init_databases_for_service - 277] :: Database already exists :: REGISTRATIONS
+2023-09-07 15:47:35 - INFO - [create_app.py : create_tables_associated_to_db_model - 253] :: Trying to create the tables if not present in the database...
+2023-09-07 15:47:35 - INFO - [create_app.py : create_tables_associated_to_db_model - 255] :: Going to create the tables ...
+2023-09-07 15:47:35 - INFO - [create_app.py : create_tables_associated_to_db_model - 258] :: Created the tables ...
+2023-09-07 15:47:35 - INFO - [create_app.py : bind_db_app - 155] :: Binding SQLALCHEMY using DatabaseURI:: [postgresql://airlineradmin:Ishi%2306041995@127.0.0.1:3304/REGISTRATIONS] to Application Instance for Service :: [registration]
+2023-09-07 15:47:35 - INFO - [create_app.py : bind_db_app - 157] :: Binded SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [registration]
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 164] :: Creating Pool of connections for Service ==>[registration] :: [STARTED]
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 166] :: Created Pool of connections for Service ==>[registration] :: [SUCCESS]
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 167] :: Creating session using pool of connections  :: [STARTED]
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 168] :: Creating  a session maker for database interactions
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 170] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x1084e9430>
+2023-09-07 15:47:35 - INFO - [create_app.py : create_pool_of_connections - 171] :: Initialised a session maker for database interactions sessionmaker(class_='Session', bind=Engine(postgresql://airlineradmin:***@127.0.0.1:3304/REGISTRATIONS), autoflush=True, expire_on_commit=True)
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 212] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 213] :: Displaying Pool_Info for Service ==>[registration] 
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 214] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1084e9430> - ID: 4434334768
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 215] :: Current Pool Size ::  100
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 216] :: Checked Out Connections from Pool  0
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 217] :: Checked in Connections available in Pool :: 0
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 218] :: Current Pool Overflow Info :: -100
+2023-09-07 15:47:35 - INFO - [create_app.py : display_pool_info - 219] :: #---------------------------------[ POOL - INFO ]----------------------------------------#
