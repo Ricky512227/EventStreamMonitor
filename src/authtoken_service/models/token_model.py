@@ -1,18 +1,25 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, BigInteger
-from sqlalchemy.schema import Sequence
+from sqlalchemy import Column, String, BigInteger, Index
+from sqlalchemy.schema import Sequence, UniqueConstraint
 
 Base = declarative_base()
 class TokensModel(Base):
     __tablename__ = 'tokens'
-    ID = Column(BigInteger, Sequence('aeroplane_id_seq',start=2000), primary_key=True)
+    ID = Column(BigInteger, Sequence('token_id_seq',start=2000), primary_key=True)
     UserID = Column(BigInteger, unique=True, nullable=False)
-    Token = Column(String(512), nullable=False)
+    Token = Column(String(512), unique=True, nullable=False)
     Expiry = Column(String(255), nullable=False)
     CreatedAt = Column(String(255), nullable=False)
     UpdatedAt = Column(String(255), nullable=False)
 
-    # user = relationship('UsersModel', back_populates='token', uselist=False)
+    # Setting Index on the 'username' column
+    userid_index = Index('idx_userid', UserID)
+    # Setting Index on the 'email' column
+    token_index = Index('idx_token', Token)
+    __table_args__ = (
+        UniqueConstraint('UserID', 'Token', name='uq_userid_token'),
+    )
+
 
     def __repr__(self):
         return f'TokenID=\'{self.ID}\', UserID=\'{self.UserID}\', \

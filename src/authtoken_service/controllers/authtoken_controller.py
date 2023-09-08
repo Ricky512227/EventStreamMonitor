@@ -55,12 +55,12 @@ def create_token():
                 authtoken_app_logger.error("gRPC Message to preparation, Sending error response :: [FAILED]")
                 return jsonify({"message": "Internal Server Error"}), 500
             token_grpc_client.data_to_send = message_to_send
-            resp_data, resp_status = token_grpc_client.trigger_request()
-            if not resp_status:
-                authtoken_app_logger.error("Request of gRPC Message, Sending error response :: [FAILED]")
-                return jsonify({"message": "Internal Server Error"}), 500
+            resp_data = token_grpc_client.trigger_request()
+            if not resp_data.isvalid:
+                authtoken_app_logger.info("InValid User, no need to create a new token")
+                return jsonify({"message": "INVALID_USER"}), 400
 
-            authtoken_app_logger.info("gRPC Response data :: {0}, Response status :: {1}".format(resp_data, resp_status))
+            authtoken_app_logger.info("gRPC Response data :: {0}, Response status :: {1}".format(resp_data.userid, resp_data.isvalid))
             token_grpc_client.close_channel_stub()  # Close the channel
             token_obj = Token(user_id=userid, user_name=username, pwd=password)
             token_instance = token_obj.add_token()
@@ -83,7 +83,7 @@ def create_token():
                 token_session.commit()  # Commit the change
                 authtoken_app_logger.info("Added Data is committed into  DataBase {0}:: [SUCCESS]".format(token_session))
                 token_instance = Token.convert_db_model_to_response(token_map_db_instance)
-                token_user_response = Token.generate_success_response(token_instance)
+                token_user_response = Token.generate_success_response(token_instance, "Token Created")
                 return jsonify(token_user_response), 201
             except SQLAlchemyError as ex:
                 token_session.rollback()

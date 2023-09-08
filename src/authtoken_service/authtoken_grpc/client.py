@@ -15,7 +15,6 @@ class gRPCTokenClient:
         self.tokenstub = None
         self.grpc_client_status = False
         self.resp_data = None
-        self.resp_status = False
         self.data_to_send =None
     def create_channel_stub(self):
         try:
@@ -66,15 +65,16 @@ class gRPCTokenClient:
             if self.token_channel:
                 metadata = [('x-request-id', self.generate_request_id()), ('timeout', '5000')]
                 self.resp_data = self.tokenstub.ValidateUserCredentials(self.data_to_send, metadata=metadata)
-                authtoken_app_logger.info("Received Response from grpc :: {0}".format(self.resp_data))
-                self.resp_status = True
+                print("Received Response from the gRPC Server :: {0}".format(self.resp_data))
+                print("Unpacking the received response from the gRPC Server userid :: {0} - isvalid :: {1}".format(
+                    self.resp_data.userid, self.resp_data.isvalid))
         except grpc.RpcError as ex:
-            authtoken_app_logger.error("Sending gRPC message to Registration Service :: [FAILED]")
+            authtoken_app_logger.error("Message Failed to send to teh gRPC Server")
             authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex.debug_error_string(), sys.exc_info()[2].tb_lineno))
         except Exception as ex:
-            authtoken_app_logger.error("Sending gRPC message to Registration Service :: [FAILED]")
+            authtoken_app_logger.error("Message Failed to send to teh gRPC Server")
             authtoken_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return self.resp_data, self.resp_status
+        return self.resp_data
 
 
 

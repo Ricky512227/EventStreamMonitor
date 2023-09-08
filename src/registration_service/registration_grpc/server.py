@@ -8,20 +8,19 @@ from src.registration_service import registration_app_logger
 
 class UserValidationForTokenGenerationService(token_pb2_grpc.UserValidationForTokenGenerationServicer):
     def ValidateUserCredentials(self, request, context):
-        token_res_message = None
+        registration_app_logger.info("Received request from client ::\n{0}".format(request))
+        token_res_message = token_pb2.TokenResMessage()
+        token_res_message.userid = request.userid
+        token_res_message.isvalid = False
+        print("Before token_res_message  :: {0}".format(token_res_message.userid))
+        print("Before token_res_message  :: {0}".format(token_res_message.isvalid))
         try:
-            registration_app_logger.info("Received request from client ::\n{0}".format(request))
-            token_res_message = token_pb2.TokenResMessage()
             user_data, is_exists = is_userid_exists(request.userid)
             if is_exists:
-                registration_app_logger.info("Received response after trigger rpc :: {0}".format(user_data))
-                token_res_message.userid = str(user_data[0])
+                token_res_message.userid = user_data
                 token_res_message.isvalid = True
-                json_str = MessageToJson(token_res_message)
-                json_str_oneline = json_str.replace("\n", " ")
-                registration_app_logger.info(f"Sending response back to gRPC client :: {json_str_oneline}")
         except Exception as ex:
-            registration_app_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            registration_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        registration_app_logger.info("Packing and sending response back to gRPC Client")
         return token_res_message

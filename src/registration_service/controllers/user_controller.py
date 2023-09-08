@@ -84,22 +84,22 @@ def register_user():
 
 
 def is_userid_exists(userid):
+    is_user_exists_status = False
     try:
         registration_session = reg_app_obj.get_session_for_service()
         if registration_session is not None:
-            registration_app_logger.info(
-                "Querying Userid in the Database to check the if user exists :: {0}".format(userid))
+            registration_app_logger.info("Querying Userid in the Database to check the if user exists :: {0}".format(userid))
             user_row = registration_session.query(UsersModel).get(userid)
             if user_row is not None:
-                registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, True))
-                return user_row.ID, True
+                is_user_exists_status = True
+                registration_app_logger.info("1 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
             else:
-                registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, False))
-                return userid, False
+                registration_app_logger.info("2 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        registration_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, False))
-        return userid, False
+    registration_app_logger.info("3 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
+    return userid, is_user_exists_status
+
 
 def is_username_email_already_exists(uname, email):
     try:
