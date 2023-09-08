@@ -25,6 +25,7 @@ try:
         REGISTRATION_SERVER_PORT = os.environ.get("REGISTRATION_SERVER_PORT")
         REGISTRATION_GRPC_SERVER_IP = os.environ.get("REGISTRATION_GRPC_SERVER_IP")
         REGISTRATION_GRPC_SERVER_PORT = os.environ.get("REGISTRATION_GRPC_SERVER_PORT")
+        REGISTRATION_GRPC_MAX_WORKERS = int(os.environ.get("REGISTRATION_GRPC_MAX_WORKERS"))
 
         SERVICE_NAME = os.environ.get("SERVICE_NAME")
         DB_DRIVER_NAME = os.environ.get("DB_DRIVER_NAME")
@@ -55,6 +56,7 @@ try:
 
         registration_app.config["REGISTRATION_GRPC_SERVER_IP"] = REGISTRATION_GRPC_SERVER_IP
         registration_app.config["REGISTRATION_GRPC_SERVER_PORT"] = REGISTRATION_GRPC_SERVER_PORT
+        registration_app.config["REGISTRATION_GRPC_MAX_WORKERS"] = REGISTRATION_GRPC_MAX_WORKERS
 
         # Read Schema File
         reg_user_req_schema_filepath = os.path.join(currentDir, "schemas/requests/register_user/req_schema.json")
@@ -65,7 +67,6 @@ try:
         req_headers_schema_status, req_headers_schema = reg_app_obj.read_json_schema(req_headers_schema_filepath)
         getuser_headers_schema_status, getuser_headers_schema = reg_app_obj.read_json_schema(getuser_headers_schema_filepath)
         deluser_headers_schema_status, deluser_headers_schema = reg_app_obj.read_json_schema(deluser_headers_schema_filepath)
-
 
         reg_user_req_schema_status, reg_user_req_schema = reg_app_obj.read_json_schema(reg_user_req_schema_filepath)
 
@@ -100,7 +101,7 @@ try:
                         from src.registration_service.registration_grpc.server import \
                             UserValidationForTokenGenerationService
 
-                        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+                        server = grpc.server(futures.ThreadPoolExecutor(max_workers=registration_app.config["REGISTRATION_GRPC_MAX_WORKERS"]))
                         registration_app_logger.info("Created GRPC server with the workers of max :: {0}".format(10))
                         token_pb2_grpc.add_UserValidationForTokenGenerationServicer_to_server(
                             UserValidationForTokenGenerationService(), server)
