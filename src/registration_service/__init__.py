@@ -119,15 +119,6 @@ try:
                         reg_app_obj.register_blueprint()
                         reg_app_obj.display_registered_blueprints_for_service()
 
-                        # Registering the custom error handlers  to the application instance
-                        from src.admin_common.admin_err_handlers import internal_server_error, bad_request, \
-                            not_found
-
-                        reg_app_obj.register_err_handler(500, internal_server_error)
-                        reg_app_obj.register_err_handler(400, bad_request)
-                        reg_app_obj.register_err_handler(404, not_found)
-                        reg_app_obj.display_registered_err_handlers()
-
                         from src.registration_service.registration_grpc.server import \
                             UserValidationForTokenGenerationService
 

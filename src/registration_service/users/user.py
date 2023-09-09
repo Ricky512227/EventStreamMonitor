@@ -1,3 +1,4 @@
+import json
 import sys
 import datetime, bcrypt
 from src.registration_service import registration_app_logger
@@ -42,16 +43,16 @@ class User:
         return self.user_obj
 
     @staticmethod
-    def convert_db_model_to_response(model_instance):
+    def convert_db_model_to_resp(model_instance):
         registration_app_logger.info("Converting db model to response obj :: [STARTED]")
         model_dict = {}
         try:
             model_dict['data'] = {col.name: getattr(model_instance, col.name) for col in
                                   model_instance.__table__.columns}
             if 'CreatedAtTime' in model_dict['data'].keys():
-                model_dict['data']['CreatedAtTime'] = str(model_dict['data']['CreatedAtTime'])
+                model_dict['data']['CreatedAtTime'] = model_dict['data']['CreatedAtTime']
             if 'UpdatedAtTime' in model_dict['data'].keys():
-                model_dict['data']['UpdatedAtTime'] = str(model_dict['data']['UpdatedAtTime'])
+                model_dict['data']['UpdatedAtTime'] = model_dict['data']['UpdatedAtTime']
             model_dict.update({"message": ""})
             registration_app_logger.info("Converting db model to response obj :: [SUCCESS]")
         except Exception as ex:
@@ -62,8 +63,8 @@ class User:
         return model_dict
 
     @staticmethod
-    def generate_success_response(user_instance, messagedata):
-        registration_app_logger.info("Generating Success response  :: [STARTED]")
+    def generate_custom_response_body(user_instance, messagedata):
+        registration_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(user_instance))
         succ_res_dict = {}
         try:
             succ_res_dict.update({'message': messagedata})
@@ -76,15 +77,15 @@ class User:
                         'dateOfBirth': user_instance['data']['DateOfBirth'],
                         'firstName': user_instance['data']['FirstName'],
                         'lastName': user_instance['data']['LastName'],
-                        'CreatedAt': user_instance['data']['CreatedAt'],
-                        'UpdatedAt': user_instance['data']['UpdatedAt'],
+                        'CreatedAt': user_instance['data']['CreatedAt'].strftime("%Y-%m-%d %H:%M:%S"),
+                        'UpdatedAt': user_instance['data']['UpdatedAt'].strftime("%Y-%m-%d %H:%M:%S"),
                     }
                 }
             )
-            registration_app_logger.info("Generating Success response  :: [SUCCESS]")
+            succ_res_json_obj = json.dumps(succ_res_dict)
+            registration_app_logger.info("Generating Success response  :: [SUCCESS] :: {0}".format(succ_res_json_obj))
         except Exception as ex:
             registration_app_logger.info("Generating Success response  :: [FAILED]")
-            registration_app_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            registration_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return succ_res_dict
