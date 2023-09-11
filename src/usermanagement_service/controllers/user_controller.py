@@ -2,7 +2,7 @@ import json
 import sys
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import or_
-from flask import jsonify, request, abort, make_response
+from flask import request, make_response
 from src.usermanagement_service.users.user import User
 from src.usermanagement_service.models.user_model import UsersModel
 from src.usermanagement_service import user_management_app_logger, req_headers_schema, getuser_headers_schema, \
@@ -16,13 +16,6 @@ def register_user():
         user_management_app_logger.info('REQUEST ==> Received Endpoint for the request:: {0}'.format(request.endpoint))
         user_management_app_logger.info('REQUEST ==> Received url for the request :: {0}'.format(request.url))
         if request.method == 'POST':
-            try:
-                rec_req_data = request.get_json()
-            except:
-                invalid_body_err_res = PyPortalAdminInvalidRequestError(message="Empty data payload received",
-                                                                        logger=user_management_app_logger)
-                print("Object ID of invalid_header_err_res:", id(invalid_body_err_res))
-                return invalid_body_err_res.send_resposne_to_client()
             rec_req_headers = dict(request.headers)
             user_management_app_logger.info("Received Headers from the request :: {0}".format(rec_req_headers))
             ''' 
@@ -32,11 +25,10 @@ def register_user():
             '''
             reg_header_result = usermanager.generate_req_missing_params(rec_req_headers, req_headers_schema)
             if len(reg_header_result.keys()) != 0:
-                invalid_header_err_res = PyPortalAdminInvalidRequestError(message="Request Headers Missing",
-                                                                          error_details=reg_header_result,
-                                                                          logger=user_management_app_logger)
-                print("Object ID of invalid_header_err_res:", id(invalid_header_err_res))
+                invalid_header_err_res = PyPortalAdminInvalidRequestError(message="Request Headers Missing", error_details=reg_header_result, logger=user_management_app_logger)
                 return invalid_header_err_res.send_resposne_to_client()
+
+            rec_req_data = request.get_json()
             ''' 
                 1. Find the missing params, any schema related issue related to params in the request body
                 2. If any missing params or schema related issue , send the error response back to client.
@@ -44,9 +36,7 @@ def register_user():
             '''
             body_result = usermanager.generate_req_missing_params(rec_req_data, reg_user_req_schema)
             if len(body_result.keys()) != 0:
-                invalid_body_err_res = PyPortalAdminInvalidRequestError(message="Request Params Missing",
-                                                                        error_details=body_result,
-                                                                        logger=user_management_app_logger)
+                invalid_body_err_res = PyPortalAdminInvalidRequestError(message="Request Params Missing", error_details=body_result, logger=user_management_app_logger)
                 print("Object ID of invalid_header_err_res:", id(invalid_body_err_res))
                 return invalid_body_err_res.send_resposne_to_client()
 
@@ -193,18 +183,16 @@ def get_user_info(userid):
         user_management_app_logger.info('REQUEST ==> Received Endpoint for the request:: {0}'.format(request.endpoint))
         user_management_app_logger.info('REQUEST ==> Received url for the request :: {0}'.format(request.url))
         if request.method == 'GET':
-            rec_req_headers = dict(request.headers)
-            user_management_app_logger.info("Received Headers from the request :: {0}".format(rec_req_headers))
+            get_req_headers = dict(request.headers)
+            user_management_app_logger.info("Received Headers from the request :: {0}".format(get_req_headers))
             ''' 
                 1. Find the missing headers, any schema related issue related to headers in the request
                 2. If any missing headers or schema related issue , send the error response back to client.
                 3. Custom error response contains the information about headers related to missing/schema issue, with status code as 400,BAD_REQUEST
             '''
-            get_header_result = usermanager.generate_req_missing_params(rec_req_headers, getuser_headers_schema)
+            get_header_result = usermanager.generate_req_missing_params(get_req_headers, getuser_headers_schema)
             if len(get_header_result.keys()) != 0:
-                invalid_header_err_res = PyPortalAdminInvalidRequestError(message="Request Headers Missing",
-                                                                          error_details=get_header_result,
-                                                                          logger=user_management_app_logger)
+                invalid_header_err_res = PyPortalAdminInvalidRequestError(message="Request Headers Missing", error_details=get_header_result, logger=user_management_app_logger)
                 return invalid_header_err_res.send_resposne_to_client()
 
             get_user_management_session = usermanager.get_session_for_service()
@@ -234,8 +222,7 @@ def get_user_info(userid):
             except SQLAlchemyError as ex:
                 return teardown_db_session(error_message="Database Error", session_name=get_user_management_session)
             except Exception as ex:
-                return teardown_db_session(error_message="Internal Server Error",
-                                           session_name=get_user_management_session)
+                return teardown_db_session(error_message="Internal Server Error", session_name=get_user_management_session)
             finally:
                 usermanager.close_session_for_service(get_user_management_session)
 
@@ -296,6 +283,5 @@ def remove_user(userid):
 
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        invalid_req_err_res = PyPortalAdminInternalServerError(message="Unknown error caused",
-                                                               logger=user_management_app_logger)
+        invalid_req_err_res = PyPortalAdminInternalServerError(message="Unknown error caused", logger=user_management_app_logger)
         return invalid_req_err_res.send_response_to_client()
