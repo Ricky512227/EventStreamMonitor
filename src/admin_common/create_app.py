@@ -21,8 +21,19 @@ class CreatFlaskApp(LogMonitor):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     def __init__(self, service_name, db_driver, db_user, db_ip_address, db_password, db_port, db_name, db_pool_size,
-                 db_pool_max_overflow, retry_interval, base):
+                 db_pool_max_overflow, retry_interval, max_retries,  base):
         self.service_name = service_name
+        self.db_driver = db_driver
+        self.db_user = db_user
+        self.db_password = db_password
+        self.db_ip_address = db_ip_address
+        self.db_port = db_port
+        self.db_name = db_name
+        self.db_pool_size = db_pool_size
+        self.db_pool_max_overflow = db_pool_max_overflow
+        self.base = base
+        self.retry_interval = retry_interval
+        self.max_retries = max_retries
         self.app_logger = super().create_logger_for_service(self.service_name)
         self.app_instance = None
         self.blueprint_instance = None
@@ -40,23 +51,12 @@ class CreatFlaskApp(LogMonitor):
         self.loaded_status = False
         self.loaded_schema = None
         self.SQLALCHEMY_DATABASE_URI = None
-        self.missing_params_err_obj = {}
         self.rec_req_params = None
         self.required_properties = []
-        self.missing_params = []
         self.schema_file_path = None
         self.schema_file = None
 
-        self.db_driver = db_driver
-        self.db_user = db_user
-        self.db_password = db_password
-        self.db_ip_address = db_ip_address
-        self.db_port = db_port
-        self.db_name = db_name
-        self.db_pool_size = db_pool_size
-        self.db_pool_max_overflow = db_pool_max_overflow
-        self.base = base
-        self.retry_interval = retry_interval
+
 
     def create_app_instance(self):
         try:
@@ -133,12 +133,11 @@ class CreatFlaskApp(LogMonitor):
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.database_uri
 
-    def create_db_engine(self, max_retries=3, retry_delay=5):
+    def create_db_engine(self):
         retries = 0
-        while retries < max_retries:
+        while retries < self.max_retries:
             try:
-                self.app_logger.info(
-                    "Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
+                self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
                 self.SQLALCHEMY_DATABASE_URI = self.get_database_uri()
                 self.app_instance.config['SQLALCHEMY_DATABASE_URI'] = self.SQLALCHEMY_DATABASE_URI
                 self.app_db_engine = create_engine(self.app_instance.config['SQLALCHEMY_DATABASE_URI'])
@@ -150,9 +149,9 @@ class CreatFlaskApp(LogMonitor):
                 print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
                 self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
                 retries += 1
-                if retries < max_retries:
-                    self.app_logger.info(f"Retrying in {retry_delay} seconds...")
-                    time.sleep(retry_delay)
+                if retries < self.max_retries:
+                    self.app_logger.info(f"Retrying in {self.retry_interval} seconds...")
+                    time.sleep(self.retry_interval)
                 else:
                     self.is_engine_created = False  # Set the flag to False on max retries
                     self.app_db_engine = None  # Set the engine to None in case of an error
@@ -204,8 +203,7 @@ class CreatFlaskApp(LogMonitor):
         try:
             self.app_logger.error("Creating session using pool of connections  :: [STARTED]")
             self.session_instance = self.Session()
-            self.app_logger.info(
-                "Using session to store the data in to DataBase Session-Id  :: {0}".format(self.session_instance))
+            self.app_logger.info("Using session  to DataBase Session-Id  :: {0}".format(self.session_instance))
             self.display_pool_info()
         except Exception as ex:
             self.app_logger.error("Creating session using pool of connections  :: [FAILED]")
@@ -235,18 +233,14 @@ class CreatFlaskApp(LogMonitor):
     def display_pool_info(self):
         try:
             if self.connection_pool:
-                self.app_logger.info(
-                    "#---------------------------------[ POOL - INFO ]----------------------------------------#")
+                self.app_logger.info("#---------------------------------[ POOL - INFO ]----------------------------------------#")
                 self.app_logger.info("Displaying Pool_Info for Service ==>[{0}] ".format(self.service_name))
-                self.app_logger.info(
-                    "Current Pool Info :: {0} - ID: {1}".format(self.connection_pool, id(self.connection_pool)))
+                self.app_logger.info("Current Pool Info :: {0} - ID: {1}".format(self.connection_pool, id(self.connection_pool)))
                 self.app_logger.info("Current Pool Size ::  {0}".format(self.connection_pool.size()))
                 self.app_logger.info("Checked Out Connections from Pool  {0}".format(self.connection_pool.checkedin()))
-                self.app_logger.info(
-                    "Checked in Connections available in Pool :: {0}".format(self.connection_pool.checkedout()))
+                self.app_logger.info("Checked in Connections available in Pool :: {0}".format(self.connection_pool.checkedout()))
                 self.app_logger.info("Current Pool Overflow Info :: {0}".format(self.connection_pool.overflow()))
-                self.app_logger.info(
-                    "#---------------------------------[ POOL - INFO ]----------------------------------------#")
+                self.app_logger.info("#---------------------------------[ POOL - INFO ]----------------------------------------#")
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
@@ -333,11 +327,11 @@ class CreatFlaskApp(LogMonitor):
 
     def generate_req_missing_params(self, rec_req_params, loaded_schema):
         try:
+            missing_params_err_obj = {}
             self.app_logger.info("Validation for Request is  :: [STARTED]")
             for key, value in rec_req_params.items():
-                self.app_logger.info(
-                    "REQUEST <==> params ==> Param :: {0} :: Value :: {1} :: Type ::{2} ".format(key, value,
-                                                                                                 type(value)))
+                self.app_logger.info("REQUEST <==> params ==> Param :: {0} :: Value :: {1} :: Type ::{2} ".format(key, value, type(value)))
+
             try:
                 jsonschema.validate(instance=rec_req_params, schema=loaded_schema)
             except jsonschema.exceptions.ValidationError as ex:
@@ -346,14 +340,13 @@ class CreatFlaskApp(LogMonitor):
                 self.required_properties = loaded_schema.get("required", [])
                 self.app_logger.info("Required_Properties_As_Per_Schema :: {0}".format(self.required_properties))
                 # Get the list of missing required properties from the validation error
-                self.missing_params = [property_name for property_name in self.required_properties if
-                                       property_name not in ex.instance]
-                self.app_logger.error("Missing params found :: {0}".format(self.missing_params))
-                self.missing_params_err_obj = {'details': {'params': self.missing_params}}
-                self.app_logger.error(
-                    "Packing message for missing property which are found :: {0}".format(self.missing_params))
+                missing_params = [property_name for property_name in self.required_properties if property_name not in ex.instance]
+                self.app_logger.error("Missing params found :: {0}".format(missing_params))
+                missing_params_err_obj = {'details': {'params': missing_params}}
+                self.app_logger.error("Packing message for missing property which are found :: {0}".format(missing_params))
                 self.app_logger.info("Validation for Request is  :: [SUCCESS]")
         except Exception as ex:
+            missing_params_err_obj = {}
             self.app_logger.info("Validation for Request is  :: [FAILED]")
             self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return self.missing_params_err_obj
+        return missing_params_err_obj

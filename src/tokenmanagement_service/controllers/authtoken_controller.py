@@ -1,10 +1,10 @@
 import sys
 from sqlalchemy.exc import SQLAlchemyError
 from flask import jsonify, request, abort
-from src.authtoken_service.tokens.token import Token
-from src.authtoken_service.models.token_model import TokensModel
-from src.authtoken_service import authtoken_app_logger, authtoken_app_obj, gen_token_req_schema, gen_token_req_headers_schema, authtoken_app
-from src.authtoken_service.authtoken_grpc.client import gRPCTokenClient
+from src.tokenmanagement_service.tokens.token import Token
+from src.tokenmanagement_service.models.token_model import TokensModel
+from src.tokenmanagement_service import authtoken_app_logger, authtoken_app_obj, gen_token_req_schema, gen_token_req_headers_schema, authtoken_app
+from src.tokenmanagement_service.authtoken_grpc.client import gRPCTokenClient
 
 
 def create_token():

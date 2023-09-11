@@ -57,7 +57,7 @@ class PyPortalAdminInvalidRequestError(PyPortalAdminBaseError):
     def __init__(self, message=None, error_details=None, logger=None):
         super().__init__(message=message, error_details=error_details)
         self.logger = logger
-        self.final_error_resposne = None
+        self.final_error_response = None
         self.error_data_prepared = None
 
     def get_custom_error(self):
@@ -66,12 +66,10 @@ class PyPortalAdminInvalidRequestError(PyPortalAdminBaseError):
     def get_custom_status_code(self):
         return self.status_code
 
-
-
     def send_resposne_to_client(self):
         self.error_data_prepared = self.prepare_error_response()
-        self.final_error_resposne = self.serialize_prepared_error_response()
-        return self.final_error_resposne
+        self.final_error_response = self.serialize_prepared_error_response()
+        return self.final_error_response
 
 
 
@@ -82,9 +80,9 @@ class PyPortalAdminInternalServerError(PyPortalAdminBaseError):
 
     def __init__(self, message=None, error_details=None, logger=None):
         super().__init__(message=message, error_details=error_details)
-        self.final_error_resposne = None
+        self.final_error_response = None
         self.error_data_prepared = None
-        self.logger= logger
+        self.logger = logger
     def get_custom_error(self):
         return self.error
 
@@ -93,8 +91,9 @@ class PyPortalAdminInternalServerError(PyPortalAdminBaseError):
 
     def send_response_to_client(self):
         self.error_data_prepared = self.prepare_error_response()
-        self.final_error_resposne = self.serialize_prepared_error_response()
-        return self.final_error_resposne
+        self.final_error_response = self.serialize_prepared_error_response()
+        return self.final_error_response
+
 
 class PyPortalAdminNotFoundError(PyPortalAdminBaseError):
     error = "NOT_FOUND"
@@ -102,7 +101,7 @@ class PyPortalAdminNotFoundError(PyPortalAdminBaseError):
 
     def __init__(self, message=None, error_details=None, logger=None):
         super().__init__(message=message, error_details=error_details)
-        self.final_error_resposne = None
+        self.final_error_response = None
         self.error_data_prepared = None
         self.logger = logger
 
@@ -114,14 +113,10 @@ class PyPortalAdminNotFoundError(PyPortalAdminBaseError):
 
     def send_response_to_client(self):
         self.error_data_prepared = self.prepare_error_response()
-        self.final_error_resposne = self.serialize_prepared_error_response()
-        return self.final_error_resposne
+        self.final_error_response = self.serialize_prepared_error_response()
+        return self.final_error_response
 
 
-
-
-
-#
 #
 # # sqlalchemy.exc.IntegrityError: This exception is raised when there is a violation of the database's integrity constraints. For example, if you try to insert a record with a duplicate primary key or violate a unique constraint, an IntegrityError will be raised.
 # #
