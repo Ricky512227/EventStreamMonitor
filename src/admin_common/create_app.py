@@ -49,7 +49,6 @@ class CreatFlaskApp(LogMonitor):
         self.app_db = None
         self.connection_pool = None
         self.Session = None
-        self.session_instance = None
         self.loaded_status = False
         self.loaded_schema = None
         self.SQLALCHEMY_DATABASE_URI = None
@@ -195,11 +194,9 @@ class CreatFlaskApp(LogMonitor):
 
     def create_pool_of_connections(self):
         try:
-            self.app_logger.info(
-                "Creating Pool of connections for Service ==>[{0}] :: [STARTED]".format(self.service_name))
+            self.app_logger.info("Creating Pool of connections for Service ==>[{0}] :: [STARTED]".format(self.service_name))
             self.connection_pool = QueuePool(creator=self.app_db_engine, pool_size=self.db_pool_size, recycle=self.db_pool_recycle, timeout=self.db_pool_timeout,max_overflow=self.db_pool_max_overflow)
-            self.app_logger.info(
-                "Created Pool of connections for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
+            self.app_logger.info("Created Pool of connections for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
             self.app_logger.info("Creating session using pool of connections  :: [STARTED]")
             self.app_logger.info("Creating  a session maker for database interactions")
             self.Session = sessionmaker(bind=self.app_db_engine)
@@ -211,22 +208,29 @@ class CreatFlaskApp(LogMonitor):
         return self.connection_pool, self.Session
 
     def get_session_from_conn_pool(self):
+        session_instance = None
         try:
             self.app_logger.error("Creating session using pool of connections  :: [STARTED]")
-            self.session_instance = self.Session()
-            self.app_logger.info("Using session  to DataBase Session-Id  :: {0}".format(self.session_instance))
+            session_instance = self.Session()
+            self.app_logger.info("Using session  to DataBase Session-Id  :: {0}".format(session_instance))
+        except sqlalchemy.exc.TimeoutError as ex:
+            self.app_logger.error("Timeout error occurred while creating a session from the connection pool")
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         except Exception as ex:
             self.app_logger.error("Creating session using pool of connections  :: [FAILED]")
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return self.session_instance
+        return session_instance
 
     def close_session(self, sessionname):
         is_session_closed = False
         try:
             self.app_logger.info("Closing the  session  {0}:: [STARTED]".format(sessionname))
-            sessionname.close()
-            is_session_closed = True
-            self.app_logger.info("Closed session of Session-Id {0}:: [SUCCESS]".format(sessionname))
+            if sessionname.is_active:
+                sessionname.close()
+                is_session_closed = True
+                self.app_logger.info("Closed session of Session-Id {0}:: [SUCCESS]".format(sessionname))
+            else:
+                self.app_logger.info("Session of Session-Id {0} is not active or closed:: [SUCCESS]".format(sessionname))
         except Exception as ex:
             self.app_logger.info("Closing the  session  {0}:: [FAILED]".format(sessionname))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
@@ -278,9 +282,7 @@ class CreatFlaskApp(LogMonitor):
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
     def check_database_connectivity(self):
-        self.app_logger.info(
-            "Current Connection status set to :: {0} for the service :: {1}".format(self.db_connection_status,
-                                                                                    self.service_name))
+        self.app_logger.info("Current Connection status set to :: {0} for the service :: {1}".format(self.db_connection_status, self.service_name))
         self.app_logger.info("Trying to establish the connection to the database :: [IN-PROGRESS]")
         try:
             # Handle the connection event before_connect :: [Triggered before a connection to the database is established.]
