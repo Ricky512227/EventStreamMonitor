@@ -36,9 +36,8 @@ class User:
             user_management_app_logger.info("Returning :: {0} , ID :: {1}".format(self.user_obj, id(self.user_obj)))
             user_management_app_logger.info("Instance creation for User :: [SUCCESS] :: {0}".format(self.user_obj))
         except Exception as ex:
-            user_management_app_logger.info("Instance creation for User :: [FAILED] :: {0}".format(self.user_obj))
-            user_management_app_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            user_management_app_logger.error("Instance creation for User :: [FAILED] :: {0}".format(self.user_obj))
+            user_management_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.user_obj
 
@@ -56,7 +55,7 @@ class User:
             model_dict.update({"message": ""})
             user_management_app_logger.info("Converting db model to response obj :: [SUCCESS]")
         except Exception as ex:
-            user_management_app_logger.info("Converting db model to response obj :: [FAILED]")
+            user_management_app_logger.error("Converting db model to response obj :: [FAILED]")
             user_management_app_logger.error(
                 "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
@@ -85,7 +84,7 @@ class User:
             succ_res_json_obj = json.dumps(succ_res_dict)
             user_management_app_logger.info("Generating Success response  :: [SUCCESS] :: {0}".format(succ_res_json_obj))
         except Exception as ex:
-            user_management_app_logger.info("Generating Success response  :: [FAILED]")
+            user_management_app_logger.error("Generating Success response  :: [FAILED]")
             user_management_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return succ_res_dict

@@ -1,5 +1,6 @@
-import json
 import sys
+
+import sqlalchemy.orm.exc
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import or_
 from flask import request, make_response
@@ -37,7 +38,6 @@ def register_user():
             body_result = usermanager.generate_req_missing_params(rec_req_data, reg_user_req_schema)
             if len(body_result.keys()) != 0:
                 invalid_body_err_res = PyPortalAdminInvalidRequestError(message="Request Params Missing", error_details=body_result, logger=user_management_app_logger)
-                print("Object ID of invalid_header_err_res:", id(invalid_body_err_res))
                 return invalid_body_err_res.send_resposne_to_client()
 
             # Read the content which was received in the request
@@ -49,24 +49,25 @@ def register_user():
             dateofbirth = rec_req_data['dateOfBirth']
             user_management_app_logger.info("Processing the request data... :: [STARTED]")
             # Doing the pre-validation checks before procession the request.
-            if is_username_email_already_exists(uname=username, email=emailaddress):
-                invalid_req_err_res = PyPortalAdminInvalidRequestError(
-                    message="Username or EmailAddress already exists", logger=user_management_app_logger)
+            user_management_session = usermanager.get_session_from_conn_pool()
+            if user_management_session is None:
+                invalid_req_err_res = PyPortalAdminInternalServerError(message="Create Session Failed", logger=user_management_app_logger)
+                return invalid_req_err_res.send_response_to_client()
+            if is_username_email_already_exists_in_db(sessionname=user_management_session, uname=username, email=emailaddress):
+                invalid_req_err_res = PyPortalAdminInvalidRequestError(message="Username or EmailAddress already exists", logger=user_management_app_logger)
+                usermanager.close_session(sessionname=user_management_session)
                 return invalid_req_err_res.send_resposne_to_client()
 
-            user_obj = User(username=username, firstname=firstname, lastname=lastname, dateofbirth=dateofbirth,
-                            email=emailaddress, pwd=password)
+            user_obj = User(username=username, firstname=firstname, lastname=lastname, dateofbirth=dateofbirth, email=emailaddress, pwd=password)
             if user_obj is None:
-                invalid_req_err_res = PyPortalAdminInternalServerError(message="Create User Failed",
-                                                                       logger=user_management_app_logger)
+                invalid_req_err_res = PyPortalAdminInternalServerError(message="Create User Failed", logger=user_management_app_logger)
                 return invalid_req_err_res.send_response_to_client()
 
             user_instance = user_obj.create_user()
             user_management_app_logger.info("Mapping the request data to the database model:: [STARTED]")
-            user_management_session = usermanager.get_session_for_service()
+            user_management_session = usermanager.get_session_from_conn_pool()
             if user_management_session is None:
-                invalid_req_err_res = PyPortalAdminInternalServerError(message="Create Session Failed",
-                                                                       logger=user_management_app_logger)
+                invalid_req_err_res = PyPortalAdminInternalServerError(message="Create Session Failed", logger=user_management_app_logger)
                 return invalid_req_err_res.send_response_to_client()
             #  Map the user obj to User model using ORM
             user_map_db_instance = UsersModel(Username=user_instance["username"],
@@ -78,104 +79,85 @@ def register_user():
                                               CreatedAt=user_instance["created_at"],
                                               UpdatedAt=user_instance["updated_at"])
             user_management_app_logger.info("Mapping the request data to the database model:: [SUCCESS]")
-
             ''' 
                 Add the user model to the database and commit the changes
                 Any exception occur, logs the exception and sends back the error response to the client as internal_server_error
             '''
             try:
-                user_management_app_logger.info(
-                    "Data adding into  DataBase session {0}:: [STARTED]".format(user_map_db_instance))
-                user_management_session.add(user_map_db_instance)
-                user_management_app_logger.info(
-                    "Data added into  DataBase session {0}:: [SUCCESS]".format(user_map_db_instance))
-                user_management_session.commit()
-                user_management_app_logger.info(
-                    "Added Data is committed into  DataBase {0}:: [SUCCESS]".format(user_management_session))
+                with user_management_session.begin():
+                    user_management_app_logger.info("Data adding into  DataBase session {0}:: [STARTED]".format(user_map_db_instance))
+                    user_management_session.add(user_map_db_instance)
+                    user_management_app_logger.info("Data added into  DataBase session {0}:: [SUCCESS]".format(user_map_db_instance))
+                    user_management_app_logger.info("Added Data is committed into  DataBase {0}:: [SUCCESS]".format(user_management_session))
             except SQLAlchemyError as ex:
-                db_err_res = teardown_db_session(error_message="Database Error", session_name=user_management_session)
+                usermanager.rollback_session(sessionname=user_management_session)
+                usermanager.close_session(sessionname=user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                db_err_res = PyPortalAdminInternalServerError(message="Database Error", logger=user_management_app_logger)
                 return db_err_res.send_response_to_client()
             except Exception as ex:
-                db_err_res = teardown_db_session(error_message="Internal Server Error",
-                                                 session_name=user_management_session)
-                return db_err_res.send_response_to_client()
-            ''' 
-                1. Converting the database model of user to defined user and serialize to json
-                2. Using the serialize , Generating the success custom response , headers 
-                3. Sending the response back to client 
-            '''
-            user_instance = User.convert_db_model_to_resp(user_map_db_instance)
-            custom_user_response_body = User.generate_custom_response_body(user_instance=user_instance,
-                                                                           messagedata="User Created")
-            reg_usr_response = make_response(custom_user_response_body)
-            reg_usr_response.headers["location"] = request.url + "/" + str(custom_user_response_body["user"]["userId"])
-            reg_usr_response.headers['Content-Type'] = 'application/json'
-            reg_usr_response.headers['Cache-Control'] = 'no-cache'
-            reg_usr_response.status_code = 201
-            user_management_app_logger.info(
-                "Prepared success response and sending back to client  {0}:: [STARTED]".format(reg_usr_response))
-            usermanager.close_session_for_service(user_management_session)
-            return reg_usr_response
+                usermanager.rollback_session(sessionname=user_management_session)
+                usermanager.close_session(sessionname=user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                internal_err_res = PyPortalAdminInternalServerError(message="Internal Server Error", logger=user_management_app_logger)
+                return internal_err_res.send_response_to_client()
+
+            else:
+                ''' 
+                    1. Converting the database model of user to defined user and serialize to json
+                    2. Using the serialize , Generating the success custom response , headers 
+                    3. Sending the response back to client 
+                '''
+                user_instance = User.convert_db_model_to_resp(user_map_db_instance)
+                custom_user_response_body = User.generate_custom_response_body(user_instance=user_instance, messagedata="User Created")
+                reg_usr_response = make_response(custom_user_response_body)
+                reg_usr_response.headers["location"] = request.url + "/" + str(custom_user_response_body["user"]["userId"])
+                reg_usr_response.headers['Content-Type'] = 'application/json'
+                reg_usr_response.headers['Cache-Control'] = 'no-cache'
+                reg_usr_response.status_code = 201
+                user_management_app_logger.info("Prepared success response and sending back to client  {0}:: [STARTED]".format(reg_usr_response))
+                if user_management_session.is_active:
+                    usermanager.close_session(sessionname=user_management_session)
+
+                return reg_usr_response
 
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        invalid_req_err_res = PyPortalAdminInternalServerError(message="Unknown error caused",
-                                                               logger=user_management_app_logger)
+        invalid_req_err_res = PyPortalAdminInternalServerError(message="Unknown error caused", logger=user_management_app_logger)
         return invalid_req_err_res.send_response_to_client()
 
 
-def teardown_db_session(error_message, session_name):
-    try:
-        session_name.rollback()
-        usermanager.close_session_for_service(session_name)
-        err_response = PyPortalAdminInternalServerError(message=error_message)
-        user_management_app_logger.info("Sending Error response back to client :: {0}".format(err_response))
-        return err_response
-    except Exception as ex:
-        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-
-
-def is_userid_exists(userid):
+def is_userid_exists(sessionname, userid):
+    user_management_app_logger.info("Querying Userid in the Database to check the if user exists :: {0}".format(userid))
     is_user_exists_status = False
     try:
-        user_management_session = usermanager.get_session_for_service()
-        if user_management_session is not None:
-            user_management_app_logger.info(
-                "Querying Userid in the Database to check the if user exists :: {0}".format(userid))
-            user_row = user_management_session.query(UsersModel).get(userid)
-            if user_row is not None:
-                is_user_exists_status = True
-                user_management_app_logger.info(
-                    "1 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
-            else:
-                user_management_app_logger.info(
-                    "2 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
-    except Exception as ex:
+        user_row = sessionname.query(UsersModel).get(userid)
+        if user_row is not None:
+            is_user_exists_status = True
+            user_management_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
+        else:
+            user_management_app_logger.info("Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
+    except sqlalchemy.orm.exc.NoResultFound as ex:
+        user_management_app_logger.info("Result for the Query Response :: {0}".format(False))
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-    user_management_app_logger.info(
-        "3 Result for the Query Response :: {0} - {1}".format(userid, is_user_exists_status))
     return userid, is_user_exists_status
 
 
-def is_username_email_already_exists(uname, email):
+def is_username_email_already_exists_in_db(sessionname, uname, email):
+    is_username_email_already_exists_status = False
+    user_management_app_logger.info("Querying UserName :: {0} , Email :: {1} in the Database to check the if already exists :: ".format(uname, email))
     try:
-        user_management_session = usermanager.get_session_for_service()
-        if user_management_session is not None:
-            user_management_app_logger.info(
-                "Querying UserName :: {0} , Email :: {1} in the Database to check the if already exists :: ".format(
-                    uname, email))
-            user_row = user_management_session.query(UsersModel).filter(
-                or_(UsersModel.Username == uname, UsersModel.Email == email)).first()
-            if user_row is not None:
-                user_management_app_logger.info("Result for the Query Response :: {0}".format(True))
-                return True
-            else:
-                user_management_app_logger.info("Result for the Query Response :: {0}".format(False))
-                return False
-    except Exception as ex:
-        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        user_row = sessionname.query(UsersModel).filter(or_(UsersModel.Username == uname, UsersModel.Email == email)).first()
+        if user_row is not None:
+            is_username_email_already_exists_status = True
+            user_management_app_logger.info("Result for the Query Response :: {0}".format(is_username_email_already_exists_status))
+            return is_username_email_already_exists_status
+        else:
+            user_management_app_logger.info("Result for the Query Response :: {0}".format(is_username_email_already_exists_status))
+    except sqlalchemy.orm.exc.NoResultFound as ex:
         user_management_app_logger.info("Result for the Query Response :: {0}".format(False))
-        return False
+        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+    return is_username_email_already_exists_status
 
 
 def get_user_info(userid):
@@ -195,7 +177,7 @@ def get_user_info(userid):
                 invalid_header_err_res = PyPortalAdminInvalidRequestError(message="Request Headers Missing", error_details=get_header_result, logger=user_management_app_logger)
                 return invalid_header_err_res.send_resposne_to_client()
 
-            get_user_management_session = usermanager.get_session_for_service()
+            get_user_management_session = usermanager.get_session_from_conn_pool()
             if get_user_management_session is None:
                 invalid_req_err_res = PyPortalAdminInternalServerError(message="Create Session Failed",
                                                                        logger=user_management_app_logger)
@@ -216,16 +198,20 @@ def get_user_info(userid):
                 get_usr_response.headers['Content-Type'] = 'application/json'
                 get_usr_response.headers['Cache-Control'] = 'no-cache'
                 get_usr_response.status_code = 200
-                user_management_app_logger.info(
-                    "Prepared success response and sending back to client  {0}:: [STARTED]".format(get_usr_response))
+                user_management_app_logger.info("Prepared success response and sending back to client  {0}:: [STARTED]".format(get_usr_response))
                 return get_usr_response
             except SQLAlchemyError as ex:
-                return teardown_db_session(error_message="Database Error", session_name=get_user_management_session)
+                usermanager.rollback_session(sessionname=get_user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                db_err_res = PyPortalAdminInternalServerError(message="Database Error", logger=user_management_app_logger)
+                return db_err_res.send_response_to_client()
             except Exception as ex:
-                return teardown_db_session(error_message="Internal Server Error", session_name=get_user_management_session)
+                usermanager.rollback_session(sessionname=get_user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                internal_err_res = PyPortalAdminInternalServerError(message="Internal Server Error", logger=user_management_app_logger)
+                return internal_err_res.send_response_to_client()
             finally:
-                usermanager.close_session_for_service(get_user_management_session)
-
+                usermanager.close_session(sessionname=get_user_management_session)
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         invalid_req_err_res = PyPortalAdminInternalServerError(message="Unknown error caused",
@@ -252,7 +238,7 @@ def remove_user(userid):
                                                                           logger=user_management_app_logger)
                 return invalid_header_err_res.send_resposne_to_client()
 
-            del_user_management_session = usermanager.get_session_for_service()
+            del_user_management_session = usermanager.get_session_from_conn_pool()
             if del_user_management_session is None:
                 invalid_req_err_res = PyPortalAdminInternalServerError(message="Create Session Failed",
                                                                        logger=user_management_app_logger)
@@ -274,12 +260,18 @@ def remove_user(userid):
                 user_management_app_logger.info("Prepared success response and sending back to client  {0}:: [STARTED]".format(del_usr_response))
                 return del_usr_response
             except SQLAlchemyError as ex:
-                db_err_res = teardown_db_session(error_message="Database Error", session_name=del_user_management_session)
+                usermanager.rollback_session(sessionname=del_user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                db_err_res = PyPortalAdminInternalServerError(message="Database Error", logger=user_management_app_logger)
                 return db_err_res.send_response_to_client()
             except Exception as ex:
-                db_err_res = teardown_db_session(error_message="Internal Server Error",
-                                                 session_name=del_user_management_session)
-                return db_err_res.send_response_to_client()
+                usermanager.rollback_session(sessionname=del_user_management_session)
+                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                internal_err_res = PyPortalAdminInternalServerError(message="Internal Server Error",
+                                                                    logger=user_management_app_logger)
+                return internal_err_res.send_response_to_client()
+            finally:
+                usermanager.close_session(sessionname=del_user_management_session)
 
     except Exception as ex:
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))

@@ -21,7 +21,7 @@ class CreatFlaskApp(LogMonitor):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     def __init__(self, service_name, db_driver, db_user, db_ip_address, db_password, db_port, db_name, db_pool_size,
-                 db_pool_max_overflow, retry_interval, max_retries,  base):
+                 db_pool_max_overflow, db_pool_recycle, db_pool_timeout, retry_interval, max_retries,  base):
         self.service_name = service_name
         self.db_driver = db_driver
         self.db_user = db_user
@@ -30,6 +30,8 @@ class CreatFlaskApp(LogMonitor):
         self.db_port = db_port
         self.db_name = db_name
         self.db_pool_size = db_pool_size
+        self.db_pool_recycle = db_pool_recycle
+        self.db_pool_timeout = db_pool_timeout
         self.db_pool_max_overflow = db_pool_max_overflow
         self.base = base
         self.retry_interval = retry_interval
@@ -56,16 +58,14 @@ class CreatFlaskApp(LogMonitor):
         self.schema_file_path = None
         self.schema_file = None
 
-
-
     def create_app_instance(self):
         try:
             self.app_logger.info("Received Service [{0}]".format(self.service_name))
             self.app_instance = Flask(self.service_name)
-            self.app_logger.info(
-                "Flask of Application Instance created for service [{0}] ,  App Name :: [{1}] ==> SUCCESS".format(
+            self.app_logger.info("Flask of Application Instance created for service [{0}] ,  App Name :: [{1}] ==> SUCCESS".format(
                     self.service_name, self.app_instance))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.app_instance
 
@@ -75,6 +75,7 @@ class CreatFlaskApp(LogMonitor):
             return self.jwt_instance
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             return None
 
     def create_blueprint(self):
@@ -84,6 +85,7 @@ class CreatFlaskApp(LogMonitor):
                 "Created Blueprint :: {0} for the Application service ::{1}".format(self.blueprint_instance,
                                                                                     self.service_name))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.blueprint_instance
 
@@ -102,6 +104,7 @@ class CreatFlaskApp(LogMonitor):
                                                                                  err_handler_func_name))
             return self.app_instance.register_error_handler(status_code, err_handler_func_name)
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return None
 
@@ -110,6 +113,7 @@ class CreatFlaskApp(LogMonitor):
             for error_code, handler_info in self.app_instance.error_handler_spec.items():
                 self.app_logger.info(f"Error Code: {error_code}, Handler Function: {handler_info[0]}")
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return None
 
@@ -118,6 +122,7 @@ class CreatFlaskApp(LogMonitor):
             for rule in self.app_instance.url_map.iter_rules():
                 self.app_logger.info("Added Blueprints :: {0}".format(rule))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return None
 
@@ -127,35 +132,39 @@ class CreatFlaskApp(LogMonitor):
             self.app_logger.info("Preparing DatabaseURI for Service :: [{0}]".format(self.service_name))
             self.database_uri = self.db_driver + "://" + self.db_user + ":" + quote_plus(
                 self.db_password) + "@" + self.db_ip_address + ":" + str(self.db_port) + "/" + self.db_name
-            self.app_logger.info(
-                "Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, self.database_uri))
+            self.app_logger.info("Prepared DatabaseURI for Service :: [{0}] - {1}".format(self.service_name, self.database_uri))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.database_uri
 
     def create_db_engine(self):
-        retries = 0
-        while retries < self.max_retries:
-            try:
-                self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
-                self.SQLALCHEMY_DATABASE_URI = self.get_database_uri()
-                self.app_instance.config['SQLALCHEMY_DATABASE_URI'] = self.SQLALCHEMY_DATABASE_URI
-                self.app_db_engine = create_engine(self.app_instance.config['SQLALCHEMY_DATABASE_URI'])
-                self.is_engine_created = True
-                self.app_logger.info(
-                    "Created DB-Engine using DatabaseURI for Service :: [{0}]".format(self.app_db_engine))
-                return self.app_db_engine, self.is_engine_created
-            except Exception as ex:
-                print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                retries += 1
-                if retries < self.max_retries:
-                    self.app_logger.info(f"Retrying in {self.retry_interval} seconds...")
-                    time.sleep(self.retry_interval)
-                else:
-                    self.is_engine_created = False  # Set the flag to False on max retries
-                    self.app_db_engine = None  # Set the engine to None in case of an error
+        try:
+            retries = 0
+            while retries < self.max_retries:
+                try:
+                    self.app_logger.info("Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(self.service_name))
+                    self.SQLALCHEMY_DATABASE_URI = self.get_database_uri()
+                    self.app_instance.config['SQLALCHEMY_DATABASE_URI'] = self.SQLALCHEMY_DATABASE_URI
+                    self.app_db_engine = create_engine(self.app_instance.config['SQLALCHEMY_DATABASE_URI'])
+                    self.is_engine_created = True
+                    self.app_logger.info(
+                        "Created DB-Engine using DatabaseURI for Service :: [{0}]".format(self.app_db_engine))
                     return self.app_db_engine, self.is_engine_created
+                except Exception as ex:
+                    print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                    self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                    retries += 1
+                    if retries < self.max_retries:
+                        self.app_logger.info(f"Retrying in {self.retry_interval} seconds...")
+                        time.sleep(self.retry_interval)
+                    else:
+                        self.is_engine_created = False  # Set the flag to False on max retries
+                        self.app_db_engine = None  # Set the engine to None in case of an error
+                        return self.app_db_engine, self.is_engine_created
+        except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
     def bind_db_app(self):
         try:
@@ -168,6 +177,7 @@ class CreatFlaskApp(LogMonitor):
                 "Bound SQLALCHEMY :: [{0}] to Application Instance for Service :: [{1}]".format(self.app_db,
                                                                                                 self.service_name))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.app_db
 
@@ -180,14 +190,14 @@ class CreatFlaskApp(LogMonitor):
                 "Bound the db :: [{0}] to app instance :: [{1}] for migrations".format(self.app_db, self.app_instance))
         except Exception as ex:
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.migrate_instance
 
     def create_pool_of_connections(self):
         try:
             self.app_logger.info(
                 "Creating Pool of connections for Service ==>[{0}] :: [STARTED]".format(self.service_name))
-            self.connection_pool = QueuePool(creator=self.app_db_engine, pool_size=self.db_pool_size,
-                                             max_overflow=self.db_pool_max_overflow)
+            self.connection_pool = QueuePool(creator=self.app_db_engine, pool_size=self.db_pool_size, recycle=self.db_pool_recycle, timeout=self.db_pool_timeout,max_overflow=self.db_pool_max_overflow)
             self.app_logger.info(
                 "Created Pool of connections for Service ==>[{0}] :: [SUCCESS]".format(self.service_name))
             self.app_logger.info("Creating session using pool of connections  :: [STARTED]")
@@ -196,39 +206,46 @@ class CreatFlaskApp(LogMonitor):
             self.app_logger.info("Created session using Pool_info :: {0}".format(self.connection_pool))
             self.app_logger.info("Initialised a session maker for database interactions {0}".format(self.Session))
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.connection_pool, self.Session
 
-    def get_session_for_service(self):
+    def get_session_from_conn_pool(self):
         try:
             self.app_logger.error("Creating session using pool of connections  :: [STARTED]")
             self.session_instance = self.Session()
             self.app_logger.info("Using session  to DataBase Session-Id  :: {0}".format(self.session_instance))
-            self.display_pool_info()
         except Exception as ex:
             self.app_logger.error("Creating session using pool of connections  :: [FAILED]")
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return self.session_instance
 
-    # def rollback_session_for_service(self):
-    #     try:
-    #         self.app_logger.error("Rollback session  :: [STARTED]")
-    #
-    #         self.display_pool_info()
-    #     except Exception as ex:
-    #         self.app_logger.info("Rollback the  session  {0}:: [FAILED]".format(self.Session))
-    #         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-    #     return self.session_instance
-
-    def close_session_for_service(self, session):
+    def close_session(self, sessionname):
+        is_session_closed = False
         try:
-            self.app_logger.info("Closing the  session  {0}:: [STARTED]".format(session))
-            session.close()
-            self.app_logger.info("Closed session of Session-Id {0}:: [SUCCESS]".format(session))
+            self.app_logger.info("Closing the  session  {0}:: [STARTED]".format(sessionname))
+            sessionname.close()
+            is_session_closed = True
+            self.app_logger.info("Closed session of Session-Id {0}:: [SUCCESS]".format(sessionname))
         except Exception as ex:
-            self.app_logger.info("Closing the  session  {0}:: [FAILED]".format(session))
+            self.app_logger.info("Closing the  session  {0}:: [FAILED]".format(sessionname))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-        return self.session_instance
+        return is_session_closed
+
+    def rollback_session(self, sessionname):
+        is_session_rollbacked = False
+        try:
+            self.app_logger.info("Rollback the  session  {0}:: [STARTED]".format(sessionname))
+            sessionname.rollback()
+            is_session_rollbacked = True
+            self.app_logger.info("Rollback the  session  {0}:: [SUCCESS]".format(sessionname))
+            # app_name.close_session_for_service(session_name)
+            # err_response = PyPortalAdminInternalServerError(message=error_message)
+            # user_management_app_logger.info("Sending Error response back to client :: {0}".format(err_response))
+            # return err_response
+        except Exception as ex:
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        return is_session_rollbacked
 
     def display_pool_info(self):
         try:
@@ -242,18 +259,23 @@ class CreatFlaskApp(LogMonitor):
                 self.app_logger.info("Current Pool Overflow Info :: {0}".format(self.connection_pool.overflow()))
                 self.app_logger.info("#---------------------------------[ POOL - INFO ]----------------------------------------#")
         except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
     def check_db_connectivity_and_retry(self):
-        # Establishing the connection to the database and create a database/table if not exists
-        while True:
-            self.db_connection_status = self.check_database_connectivity()
-            if self.db_connection_status:
-                break
-            else:
-                self.app_logger.info("Going for retry .. RETRY_INTERVAL :: {0} sec".format(self.retry_interval))
-                time.sleep(self.retry_interval)
-        return self.db_connection_status
+        try:
+            # Establishing the connection to the database and create a database/table if not exists
+            while True:
+                self.db_connection_status = self.check_database_connectivity()
+                if self.db_connection_status:
+                    break
+                else:
+                    self.app_logger.info("Going for retry .. RETRY_INTERVAL :: {0} sec".format(self.retry_interval))
+                    time.sleep(self.retry_interval)
+            return self.db_connection_status
+        except Exception as ex:
+            self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
 
     def check_database_connectivity(self):
         self.app_logger.info(
@@ -317,10 +339,13 @@ class CreatFlaskApp(LogMonitor):
                 self.loaded_status = True
                 self.loaded_schema = dict(json.load(self.schema_file))
         except FileNotFoundError as ex:
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             self.app_logger.error(f"Schema file not found: {schema_file_path}")
         except json.JSONDecodeError as ex:
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             self.app_logger.error(f"Invalid JSON syntax in the schema file: {ex}")
         except Exception as ex:
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             self.app_logger.error('Error occurred :: {0} \tLine No: {1}'.format(ex, sys.exc_info()[2].tb_lineno))
         self.app_logger.info("Schema Validation {0}".format(self.loaded_status))
         return self.loaded_status, self.loaded_schema
@@ -348,5 +373,6 @@ class CreatFlaskApp(LogMonitor):
         except Exception as ex:
             missing_params_err_obj = {}
             self.app_logger.info("Validation for Request is  :: [FAILED]")
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             self.app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return missing_params_err_obj

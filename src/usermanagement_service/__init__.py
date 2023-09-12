@@ -40,13 +40,15 @@ try:
         DB_NAME = os.environ.get("DB_NAME")
         POOL_SIZE = int(os.environ.get("POOL_SIZE"))
         MAX_OVERFLOW = int(os.environ.get("MAX_OVERFLOW"))
+        POOL_RECYCLE = int(os.environ.get("POOL_RECYCLE"))
+        POOL_TIMEOUT = int(os.environ.get("POOL_TIMEOUT"))
         RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL"))
         MAX_RETRIES = int(os.environ.get("MAX_RETRIES"))
 
         # Initialize the ap for user_management service
         usermanager = CreatFlaskApp(service_name=SERVICE_NAME, db_driver=DB_DRIVER_NAME, db_user=DB_USER,
                                     db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT,
-                                    db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW,
+                                    db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW, db_pool_recycle=POOL_RECYCLE, db_pool_timeout=POOL_TIMEOUT,
                                     retry_interval=RETRY_INTERVAL, max_retries=MAX_RETRIES, base=Base)
 
         # Initialize the logger for the user_management service

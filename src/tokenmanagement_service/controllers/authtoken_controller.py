@@ -28,7 +28,7 @@ def create_token():
             username = rec_req_data['username']
             password = rec_req_data['password']
             authtoken_app_logger.info("Processing the request data... :: [STARTED]")
-            token_session = authtoken_app_obj.get_session_for_service()
+            token_session = authtoken_app_obj.get_session_from_conn_pool()
             if token_session is None:
                 authtoken_app_logger.info("Session Creation for the token :: [FAILED]")
                 return jsonify({"message": "Internal Server Error"}), 500
@@ -72,7 +72,7 @@ def create_token():
                                                 CreatedAt=token_instance["created_at"], UpdatedAt=token_instance["updated_at"])
 
             authtoken_app_logger.info("Mapping the request data to the database model:: [SUCCESS]")
-            token_session = authtoken_app_obj.get_session_for_service()
+            token_session = authtoken_app_obj.get_session_from_conn_pool()
             if token_session is None:
                 abort(500, description={'message': 'Create Session Failed'})
 

@@ -10,4 +10,5 @@ if __name__ == "__main__":
         user_management_app_logger.info("Application is ready to server traffic.")
         user_management_app.run(host=user_management_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"], port=user_management_app.config["USER_MANAGEMENT_SERVER_PORT"])
     except Exception as ex:
+        user_management_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
