@@ -56,8 +56,7 @@ class User:
             user_management_app_logger.info("Converting db model to response obj :: [SUCCESS]")
         except Exception as ex:
             user_management_app_logger.error("Converting db model to response obj :: [FAILED]")
-            user_management_app_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            user_management_app_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
             print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
         return model_dict
 
@@ -66,7 +65,7 @@ class User:
         user_management_app_logger.info("Generating Success response  :: [STARTED] :: {0}".format(user_instance))
         succ_res_dict = {}
         try:
-            if len(user_instance.keys()) < 0:
+            if len(user_instance.keys()) > 0:
                 succ_res_dict.update({'message': messagedata})
                 succ_res_dict.update(
                     {

@@ -1,7 +1,7 @@
 import sys
 from src.admin_grpc import token_pb2_grpc
 from src.admin_grpc import token_pb2
-from src.usermanagement_service.controllers.user_controller import is_userid_exists
+from src.usermanagement_service.utils.util_helpers import is_userid_exists
 from src.usermanagement_service import user_management_app_logger
 
 
