@@ -11,9 +11,20 @@ try:
     # Set the registration service directory as the current dir
     currentDir = os.getcwd()
     print("Current Directory :: {0}".format(currentDir))
-    # Enable/Disable the env file path according to the environment
+    # Enable/Disable the env file path according to the environment,Read Schema Files of headers/requests for all the diff operations.
     user_management_env_filepath = os.path.join(currentDir, ".env.dev")
-    # user_management_env_filepath = os.path.join(currentDir, ".env.prod")
+    reg_user_req_schema_filepath = os.path.join(currentDir, "schemas/requests/register_user/req_schema.json")
+    req_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/reg_headers_schema.json")
+    getuser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/getuser_headers_schema.json")
+    del_user_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/del_user_headers_schema.json")
+
+
+    # user_management_env_filepath = os.path.join(currentDir, "src/usermanagement_service/.env.prod")
+    # reg_user_req_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/requests/register_user/req_schema.json")
+    # req_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/reg_headers_schema.json")
+    # getuser_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/getuser_headers_schema.json")
+    # del_user_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/del_user_headers_schema.json")
+
     print("Loading Env File path :: {0}".format(user_management_env_filepath))
     # Load the env file.
     loaded = load_dotenv(user_management_env_filepath)
@@ -68,12 +79,6 @@ try:
         user_management_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"] = USER_MANAGEMENT_GRPC_MAX_WORKERS
 
         user_management_app_jwt = usermanager.init_jwt_manger()
-
-        # Read Schema Files of headers/requests for all the diff operations.
-        reg_user_req_schema_filepath = os.path.join(currentDir, "schemas/requests/register_user/req_schema.json")
-        req_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/reg_headers_schema.json")
-        getuser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/getuser_headers_schema.json")
-        del_user_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/del_user_headers_schema.json")
 
         # Load and Validate Schema Files which are read.
         req_headers_schema_status, req_headers_schema = usermanager.read_json_schema(req_headers_schema_filepath)

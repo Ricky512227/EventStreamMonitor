@@ -1,0 +1,28 @@
+FROM python:slim-bookworm
+ENV TERM xterm
+LABEL authors="kamalsaidevarapalli"
+LABEL service="USER_MANAGEMENT"
+
+ARG PYPORTAL_ADMIN_PROJECT_DIR=/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration
+ARG PYPORTAL_ADMIN_SRC_DIR=$PYPORTAL_ADMIN_PROJECT_DIR/src
+ARG USERMANAGEMENT_APP_DIR=$PYPORTAL_ADMIN_SRC_DIR/usermanagement_service
+ARG USERMANAGEMENT_APP=$USERMANAGEMENT_APP_DIR/usermanagement_service.py
+
+WORKDIR $PYPORTAL_ADMIN_PROJECT_DIR
+
+COPY admin_common $PYPORTAL_ADMIN_SRC_DIR/admin_common
+COPY admin_grpc $PYPORTAL_ADMIN_SRC_DIR/admin_grpc
+COPY usermanagement_service $PYPORTAL_ADMIN_SRC_DIR/usermanagement_service
+
+RUN chmod 777 -R $PYPORTAL_ADMIN_PROJECT_DIR
+
+RUN apt-get update && apt-get install -y python3 python3-pip build-essential python3-dev libffi-dev
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+
+RUN pip3 install -r $USERMANAGEMENT_APP_DIR/requirements.txt
+
+EXPOSE 9091
+
+CMD ["gunicorn", "-b", "0.0.0.0:9091", "src.usermanagement_service.usermanagement:user_management_app"]
+
