@@ -79,7 +79,7 @@ def register_user():
                         Create the initialised user object using the data received in the request, 
                         if the user instance holds none, close the active session  send the response back to client as the internal error
                     '''
-                    user_instance = user_obj.create_user()
+                    user_instance = user_obj.add_user()
                     if len(user_instance.keys()) <= 0:
                         invalid_req_err_res = PyPortalAdminInternalServerError(message="User Instance creation Failed", logger=user_management_app_logger)
                         usermanager.close_session(sessionname=session_to_create_new_user)

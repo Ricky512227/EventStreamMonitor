@@ -111,7 +111,7 @@ try:
                             - attach the routes to the created blueprint
                             - register the blueprint
                         '''
-                        from src.usermanagement_service.controllers.user_controller import register_user
+                        from src.usermanagement_service.controllers.create_user import register_user
                         from src.usermanagement_service.controllers.fetch_user import get_user_info
                         from src.usermanagement_service.controllers.remove_user import deregister_user
                         user_management_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(register_user)

@@ -18,7 +18,7 @@ class User:
         self.updated_at = str(datetime.datetime.now())
         user_management_app_logger.info("Initialised User object ...")
 
-    def create_user(self):
+    def add_user(self):
         user_obj = None
         try:
             user_management_app_logger.info("Received :: username :: {0}, firstname :: {1}, lastname :: {2}, emailaddress :: {3}, dateofbirth :: {4}".format(
