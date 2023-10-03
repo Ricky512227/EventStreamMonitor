@@ -21,8 +21,8 @@ Flask-JWT-Extended==4.5.2
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.5
 google==3.0.0
-grpcio==1.57.0
-grpcio-tools==1.57.0
+grpcio==1.43.0
+grpcio-tools==1.43.0
 html5lib==1.1
 idna==3.4
 importlib-metadata==6.8.0
@@ -52,7 +52,6 @@ pluggy==1.2.0
 poetry==1.5.1
 poetry-core==1.6.1
 poetry-plugin-export==1.4.0
-protobuf==4.24.0
 psycopg2-binary==2.9.6
 ptyprocess==0.7.0
 pycparser==2.21

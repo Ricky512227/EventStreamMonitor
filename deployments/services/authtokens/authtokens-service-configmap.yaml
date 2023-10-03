@@ -7,7 +7,7 @@ data:
   FLASK_ENV: "development"
   DEBUG: "True"
   SECRET_KEY: "12345abcd"
-  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/authtoken_service/authtoken_service.py"
+  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/AirlinerAdminstration/src/authtoken_service/tokenmanagement.py"
 
   SERVICE_NAME: "authtoken"
   DB_DRIVER_NAME: "postgresql"

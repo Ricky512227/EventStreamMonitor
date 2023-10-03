@@ -1,10 +1,9 @@
 import os
 import sys
-import grpc
 from dotenv import load_dotenv
-from concurrent import futures
-from src.admin_grpc import token_pb2_grpc
-from src.admin_common.create_app import CreatFlaskApp
+from src.pyportal_common.logging_handlers.base_logger import LogMonitor
+from src.pyportal_common.app_handlers.app_manager import AppHandler
+from src.pyportal_common.db_handlers.db_manager import DataBaseHandler
 from src.usermanagement_service.models.user_model import Base
 
 try:
@@ -18,7 +17,10 @@ try:
     getuser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/getuser_headers_schema.json")
     del_user_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/del_user_headers_schema.json")
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     # user_management_env_filepath = os.path.join(currentDir, "src/usermanagement_service/.env.prod")
     # reg_user_req_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/requests/register_user/req_schema.json")
     # req_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/reg_headers_schema.json")
@@ -56,21 +58,17 @@ try:
         RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL"))
         MAX_RETRIES = int(os.environ.get("MAX_RETRIES"))
 
-        # Initialize the ap for user_management service
-        usermanager = CreatFlaskApp(service_name=SERVICE_NAME, db_driver=DB_DRIVER_NAME, db_user=DB_USER,
-                                    db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT,
-                                    db_name=DB_NAME, db_pool_size=POOL_SIZE, db_pool_max_overflow=MAX_OVERFLOW, db_pool_recycle=POOL_RECYCLE, db_pool_timeout=POOL_TIMEOUT,
-                                    retry_interval=RETRY_INTERVAL, max_retries=MAX_RETRIES, base=Base)
-
         # Initialize the logger for the user_management service
-        user_management_app_logger = usermanager.app_logger
-        user_management_app = usermanager.create_app_instance()
+        user_management_logger = LogMonitor("usermanagement").logger
+        usermanager = AppHandler(logger_instance=user_management_logger)
 
-        user_management_app.config["FLASK_ENV"] = FLASK_ENV
-        user_management_app.config["DEBUG"] = DEBUG
-        user_management_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
-        user_management_app.config["FLASK_APP"] = FLASK_APP
+        usermanager_app = usermanager.create_app_instance()
+        usermanager_app.config["FLASK_ENV"] = FLASK_ENV
+        usermanager_app.config["DEBUG"] = DEBUG
+        usermanager_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+        usermanager_app.config["FLASK_APP"] = FLASK_APP
 
+<<<<<<< Updated upstream
         user_management_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"] = USER_MANAGEMENT_SERVER_IPADDRESS
         user_management_app.config["USER_MANAGEMENT_SERVER_PORT"] = USER_MANAGEMENT_SERVER_PORT
 
@@ -80,61 +78,103 @@ try:
 
         user_management_app_jwt = usermanager.init_jwt_manger()
 
+=======
+        usermanager_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"] = USER_MANAGEMENT_SERVER_IPADDRESS
+        usermanager_app.config["USER_MANAGEMENT_SERVER_PORT"] = USER_MANAGEMENT_SERVER_PORT
+
+        usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] = USER_MANAGEMENT_GRPC_SERVER_IP
+        usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"] = USER_MANAGEMENT_GRPC_SERVER_PORT
+        usermanager_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"] = USER_MANAGEMENT_GRPC_MAX_WORKERS
+>>>>>>> Stashed changes
         # Load and Validate Schema Files which are read.
         req_headers_schema_status, req_headers_schema = usermanager.read_json_schema(req_headers_schema_filepath)
         getuser_headers_schema_status, getuser_headers_schema = usermanager.read_json_schema(
             getuser_headers_schema_filepath)
         del_user_headers_schema_status, del_user_headers_schema = usermanager.read_json_schema(
             del_user_headers_schema_filepath)
-
         reg_user_req_schema_status, reg_user_req_schema = usermanager.read_json_schema(reg_user_req_schema_filepath)
 
+        if usermanager_app is None:
+            print("App creation failed")
+            sys.exit()
         # Create the blueprint for the user_management service
-        user_management_bp = usermanager.create_blueprint()
-        # Display Register the blueprint for the user_management service
-        usermanager.display_registered_blueprints_for_service()
+        usermanager_bp = usermanager.create_blueprint_instance()
+        # Create the jwt_manager for the user_management service
+        usermanager_app_jwt = usermanager.bind_jwt_manger_to_app_instance(app_instance=usermanager_app)
+
+        usermanager_db_obj = DataBaseHandler(logger_instance=user_management_logger, db_driver=DB_DRIVER_NAME,
+                                             db_user=DB_USER, db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD,
+                                             db_port=DB_PORT, db_name=DB_NAME, db_pool_size=POOL_SIZE,
+                                             db_pool_max_overflow=MAX_OVERFLOW, db_pool_recycle=POOL_RECYCLE,
+                                             db_pool_timeout=POOL_TIMEOUT, retry_interval=RETRY_INTERVAL,
+                                             max_retries=MAX_RETRIES, base=Base)
         # Create a database engine
-        user_management_db_engine, is_engine_created = usermanager.create_db_engine()
+        user_management_db_engine, is_engine_created = usermanager_db_obj.create_db_engine_for_service(
+            app_instance=usermanager_app)
         # If the engine doesn't create, then go for retry  of max_retries=3 with retry_delay=5.
         if is_engine_created:
             # If the engine is created then check the connection for the status of th db.
-            if usermanager.check_db_connectivity_and_retry():
+            if usermanager_db_obj.check_db_connectivity_and_retry(db_engine=user_management_db_engine):
                 # If the connection  health is connected, then initialise the database for the particular service.
-                if usermanager.init_databases_for_service():
+                if usermanager_db_obj.create_database_for_service():
                     # If the connection  health is connected, then create the tables for the services which was defined in the models.
-                    if usermanager.create_tables_associated_to_db_model():
+                    if usermanager_db_obj.create_tables_associated_to_db_model(db_engine=user_management_db_engine):
                         # Bind the application with the sqlAlchemy.
-                        user_management_SQLAlchemy = usermanager.bind_db_app()
+                        user_management_SQLAlchemy = usermanager_db_obj.bind_db_app(app_instance=usermanager_app)
                         # Bind the application with the migrations
-                        user_management_migrate = usermanager.migrate_db_bind_app()
+                        user_management_migrate = usermanager_db_obj.migrate_db_bind_app(app_instance=usermanager_app,
+                                                                                         app_db=user_management_SQLAlchemy)
                         # Initialize/Create a pool of connections for the service
-                        user_management_connection_pool, _ = usermanager.create_pool_of_connections()
+                        user_management_connection_pool = usermanager_db_obj.create_pool_of_connections(
+                            db_engine=user_management_db_engine)
+
+                        user_management_session_maker = usermanager_db_obj.create_session_maker_to_connectio_pool(
+                            db_engine=user_management_db_engine, connection_pool=user_management_connection_pool)
+
                         # Display the  pool of connections for the service which was initialized
-                        usermanager.display_pool_info()
+                        usermanager_db_obj.display_pool_info(connection_pool=user_management_connection_pool)
                         ''' 
-                        To create and initialize the controllers, we need to 
+                        To create and initialize the views, we need to 
                             - attach the routes to the created blueprint
                             - register the blueprint
                         '''
-                        from src.usermanagement_service.controllers.create_user import register_user
-                        from src.usermanagement_service.controllers.fetch_user import get_user_info
-                        from src.usermanagement_service.controllers.remove_user import deregister_user
-                        user_management_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(register_user)
-                        user_management_bp.route('/api/v1/airliner/getUser/<int:userid>', methods=['GET'])(get_user_info)
-                        user_management_bp.route('/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE'])(deregister_user)
+                        from src.usermanagement_service.views.create_user import register_user
 
-                        usermanager.register_blueprint()
-                        usermanager.display_registered_blueprints_for_service()
+                        # from src.usermanagement_service.views.fetch_user import get_user_info
+                        # from src.usermanagement_service.views.remove_user import deregister_user
+                        usermanager_bp.route('/api/v1/airliner/registerUser', methods=['POST'])(register_user)
+                        # usermanager_bp.route('/api/v1/airliner/getUser/<int:userid>', methods=['GET'])(get_user_info)
+                        # usermanager_bp.route('/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE'])(deregister_user)
 
-                        from src.usermanagement_service.usermanagement_grpc.server import UserValidationForTokenGenerationService
+                        usermanager.register_blueprint_for_service(app_instance=usermanager_app,
+                                                                   blueprint_instance=usermanager_bp)
+                        usermanager.display_registered_blueprints_for_service(app_instance=usermanager_app)
 
-                        # Create/Initialise the grpc server for the user_management service
-                        server = grpc.server(futures.ThreadPoolExecutor(max_workers=user_management_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"]))
-                        user_management_app_logger.info("Created GRPC server with the workers of max :: {0}".format(USER_MANAGEMENT_GRPC_MAX_WORKERS))
-                        token_pb2_grpc.add_UserValidationForTokenGenerationServicer_to_server(UserValidationForTokenGenerationService(), server)
-                        user_management_app_logger.info("Registered GRPC server to the server :: {0}".format("UserValidationForTokenGenerationService"))
-                        server.add_insecure_port(user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] + ":" + user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"])
-                        user_management_app_logger.info("Starting GRPC server for the Token-User service with the IP & PORT:: {0}:{1}".format(user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"], user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"]))
+                        from src.pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server import \
+                            PyPortalGrpcBaseServer
+                        from src.proto_def.token_proto_v1.token_pb2_grpc import \
+                            add_UserValidationForTokenGenerationServiceServicer_to_server
+                        from src.usermanagement_service.user_management_grpc.user_grpc_server import UserValidationForTokenGenerationService
+
+                        my_grpc_server = PyPortalGrpcBaseServer(logger_instance=user_management_logger, grpc_server_ip="127.0.0.1", grpc_server_port=50051, max_workers_for_service=4)
+                        my_grpc_server.bind_ip_port_server()
+                        if my_grpc_server is not None:
+                            my_grpc_server.bind_rpc_method_server(
+                                name_service_servicer_to_server=add_UserValidationForTokenGenerationServiceServicer_to_server,
+                                name_service=UserValidationForTokenGenerationService
+                            )
+
+
+
+
+                        # Create/Initialise the user_management_grpc server for the user_management service
+                        # server = user_management_grpc.server(futures.ThreadPoolExecutor(max_workers=4))
+                        # print("server :: {0}".format(server))
+                        # user_management_logger.info("Created GRPC server with the workers of max :: {0}".format(USER_MANAGEMENT_GRPC_MAX_WORKERS))
+                        # token_pb2_grpc.add_UserValidationForTokenGenerationServiceServicer_to_server(UserValidationForTokenGenerationService(), server)
+                        # user_management_logger.info("Registered GRPC server to the server :: {0}".format("UserValidationForTokenGenerationService"))
+                        # server.add_insecure_port(usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] + ":" + usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"])
+                        # user_management_logger.info("Starting GRPC server for the Token-User service with the IP & PORT:: {0}:{1}".format(usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"], usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"]))
 
     else:
         print("File not found or not loaded :: {0} ".format(user_management_env_filepath))
