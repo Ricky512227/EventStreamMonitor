@@ -17,10 +17,6 @@ try:
     getuser_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/getuser_headers_schema.json")
     del_user_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/del_user_headers_schema.json")
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     # user_management_env_filepath = os.path.join(currentDir, "src/usermanagement_service/.env.prod")
     # reg_user_req_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/requests/register_user/req_schema.json")
     # req_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/reg_headers_schema.json")
@@ -68,24 +64,15 @@ try:
         usermanager_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
         usermanager_app.config["FLASK_APP"] = FLASK_APP
 
-<<<<<<< Updated upstream
-        user_management_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"] = USER_MANAGEMENT_SERVER_IPADDRESS
-        user_management_app.config["USER_MANAGEMENT_SERVER_PORT"] = USER_MANAGEMENT_SERVER_PORT
 
-        user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] = USER_MANAGEMENT_GRPC_SERVER_IP
-        user_management_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"] = USER_MANAGEMENT_GRPC_SERVER_PORT
-        user_management_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"] = USER_MANAGEMENT_GRPC_MAX_WORKERS
 
-        user_management_app_jwt = usermanager.init_jwt_manger()
 
-=======
         usermanager_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"] = USER_MANAGEMENT_SERVER_IPADDRESS
         usermanager_app.config["USER_MANAGEMENT_SERVER_PORT"] = USER_MANAGEMENT_SERVER_PORT
 
         usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] = USER_MANAGEMENT_GRPC_SERVER_IP
         usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"] = USER_MANAGEMENT_GRPC_SERVER_PORT
         usermanager_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"] = USER_MANAGEMENT_GRPC_MAX_WORKERS
->>>>>>> Stashed changes
         # Load and Validate Schema Files which are read.
         req_headers_schema_status, req_headers_schema = usermanager.read_json_schema(req_headers_schema_filepath)
         getuser_headers_schema_status, getuser_headers_schema = usermanager.read_json_schema(
@@ -178,7 +165,5 @@ try:
 
     else:
         print("File not found or not loaded :: {0} ".format(user_management_env_filepath))
-
-
 except Exception as ex:
     print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))

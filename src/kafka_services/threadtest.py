@@ -1,34 +1,33 @@
 import threading
 
 
-def writedattofile(tmpfilename):
-    rcounter = 0
+def write_date_to_file(tmpfilename):
+    r_counter = 0
     while True:
-        mylock.acquire()
-        with open(tmpfilename, "a") as wfile:
-            rcounter = rcounter + 1
-            wfile.write("Hi .. write line - {0}\n".format(rcounter))
-        mylock.release()
+        my_lock.acquire()
+        with open(tmpfilename, "a") as wrfile:
+            r_counter = r_counter + 1
+            wrfile.write("Hi .. write line - {0}\n".format(r_counter))
+        my_lock.release()
 
 
-def readdattofile(tmpfilename):
+def read_data_to_file(tmp_file_name):
     while True:
-        mylock.acquire()
-        with open(tmpfilename, "r") as rfile:
-            rfile.seek(0, 2)
-            linetoread = rfile.readline()
-            print("Line readed :: {0}".format(linetoread))
-        mylock.release()
+        my_lock.acquire()
+        with open(tmp_file_name, "r") as rfile:
+            line_to_read = rfile.readline()
+            print("Line read :: {0}".format(line_to_read))
+        my_lock.release()
 
 
 if __name__ == "__main__":
     tmpfilename = "/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/kafka_services/datafile.txt"
 
-    t1 = threading.Thread(target=writedattofile, args=(tmpfilename,))
-    t2 = threading.Thread(target=readdattofile, args=(tmpfilename,))
-    mylock = threading.Lock()
-    t1.start()
-    t2.start()
+    write_thread = threading.Thread(target=write_date_to_file, args=(tmpfilename,))
+    read_thread = threading.Thread(target=read_data_to_file, args=(tmpfilename,))
+    my_lock = threading.Lock()
+    write_thread.start()
+    read_thread.start()
 
-    t1.join()
-    t2.join()
+    write_thread.join()
+    read_thread.join()

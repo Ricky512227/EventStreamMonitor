@@ -1,6 +1,4 @@
 import json
-import time
-
 from kafka import KafkaConsumer
 NOTIF_EMAIL_TOPIC = "emailtobenotfiedtouser"
 
