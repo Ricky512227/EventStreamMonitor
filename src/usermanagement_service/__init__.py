@@ -1,10 +1,15 @@
 import os
 import sys
 from logging import Logger
-from flask import Flask
+from typing import Optional
+
+from flask import Flask, Blueprint
 from dotenv import load_dotenv
 
-from pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import PyPortalKafkaProducer
+from pyportal_common.app_handlers.app_manager import AppHandler
+from pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import (
+    PyPortalKafkaProducer,
+)
 from src.pyportal_common.logging_handlers.base_logger import LogMonitor
 from src.pyportal_common.app_handlers.app_manager import AppHandler
 from src.usermanagement_service.models.user_model import UserBase
@@ -62,9 +67,11 @@ try:
 
         # Initialize the logger for the user_management service
         user_management_logger: Logger = LogMonitor("usermanagement").logger
-        usermanager = AppHandler(logger_instance=user_management_logger)
-
-        usermanager_app: Flask = usermanager.create_app_instance
+        usermanager: AppHandler = AppHandler(logger_instance=user_management_logger)
+        usermanager_app: Flask = usermanager.create_app_instance()
+        if usermanager_app is None:
+            user_management_logger.error("App creation failed")
+            sys.exit()
         usermanager_app.config["FLASK_ENV"] = FLASK_ENV
         usermanager_app.config["DEBUG"] = DEBUG
         usermanager_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
@@ -87,9 +94,10 @@ try:
             "USER_MANAGEMENT_GRPC_MAX_WORKERS"
         ] = USER_MANAGEMENT_GRPC_MAX_WORKERS
         # Load and Validate Schema Files which are read.
-        req_headers_schema_status, req_headers_schema = usermanager.read_json_schema(
-            req_headers_schema_filepath
-        )
+        (
+            req_headers_schema_status,
+            req_headers_schema,
+        ) = usermanager.read_json_schema(req_headers_schema_filepath)
         (
             getuser_headers_schema_status,
             getuser_headers_schema,
@@ -98,15 +106,16 @@ try:
             del_user_headers_schema_status,
             del_user_headers_schema,
         ) = usermanager.read_json_schema(del_user_headers_schema_filepath)
-        reg_user_req_schema_status, reg_user_req_schema = usermanager.read_json_schema(
-            reg_user_req_schema_filepath
-        )
+        (
+            reg_user_req_schema_status,
+            reg_user_req_schema,
+        ) = usermanager.read_json_schema(reg_user_req_schema_filepath)
 
-        if usermanager_app is None:
-            print("App creation failed")
-            sys.exit()
         # Create the blueprint for the user_management service
-        usermanager_bp = usermanager.create_blueprint_instance()
+        usermanager_bp: Blueprint = usermanager.create_blueprint_instance()
+        if usermanager_bp is None:
+            user_management_logger.error("Blue print creation failed for the App")
+            sys.exit()
         # Create the jwt_manager for the user_management service
         usermanager_app_jwt = usermanager.bind_jwt_manger_to_app_instance(
             app_instance=usermanager_app
@@ -137,7 +146,7 @@ try:
                 app_instance=usermanager_app
             )
 
-            from src.pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server import (
+            from src.pyportal_common.grpc_service_handlers.grpc_server_handler.grpc_base_server import (
                 PyPortalGrpcBaseServer,
             )
 
@@ -148,7 +157,7 @@ try:
             from src.usermanagement_service.user_management_grpc.user_grpc_server import (
                 UserValidationForTokenGenerationService,
             )
-            from src.pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server_init import (
+            from src.pyportal_common.grpc_service_handlers.grpc_server_handler.grpc_base_server_init import (
                 init_pyportal_grpc_base_server,
             )
 
@@ -164,7 +173,9 @@ try:
                 init_pyportal_kafka_producer,
             )
 
-            my_kafka_producer: PyPortalKafkaProducer = init_pyportal_kafka_producer(user_management_logger)
+            my_kafka_producer: PyPortalKafkaProducer = init_pyportal_kafka_producer(
+                user_management_logger
+            )
             if my_kafka_producer:
                 pass
 

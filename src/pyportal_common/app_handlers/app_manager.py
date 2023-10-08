@@ -27,7 +27,6 @@ class AppHandler:
         for key, value in vars(self).items():
             self.cmn_logger.info(f"Initialized {key} with value: {value}")
 
-    @property
     def create_app_instance(self) -> Union[Flask, None]:
         """
         Create a Flask application instance.

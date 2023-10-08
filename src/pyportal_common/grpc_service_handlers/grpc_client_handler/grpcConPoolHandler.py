@@ -11,7 +11,7 @@ import grpc
 # }
 from src.proto_def.token_proto_v1.token_pb2_grpc import (
     UserValidationForTokenGenerationServiceStub, )
-from src.pyportal_common.grpc_handlers.grpc_client_handler.grpc_base_client import (
+from src.pyportal_common.grpc_service_handlers.grpc_client_handler.grpc_base_client import (
     PyportalGrpcBaseClient, )
 from queue import Queue
 from grpc.experimental import aio

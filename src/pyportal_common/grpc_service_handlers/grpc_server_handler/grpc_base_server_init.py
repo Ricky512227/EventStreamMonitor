@@ -1,4 +1,4 @@
-from src.pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server import PyPortalGrpcBaseServer
+from src.pyportal_common.grpc_service_handlers.grpc_server_handler.grpc_base_server import PyPortalGrpcBaseServer
 
 
 def init_pyportal_grpc_base_server(cmn_logger):
