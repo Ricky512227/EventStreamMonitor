@@ -6,6 +6,7 @@ async def task1():
     await task2()
     print("Completes task1")
 
+
 async def task2():
     print("Executing task2")
     await task3()

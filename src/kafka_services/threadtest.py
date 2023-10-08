@@ -23,8 +23,10 @@ def read_data_to_file(tmp_file_name):
 if __name__ == "__main__":
     tmpfilename = "/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/kafka_services/datafile.txt"
 
-    write_thread = threading.Thread(target=write_date_to_file, args=(tmpfilename,))
-    read_thread = threading.Thread(target=read_data_to_file, args=(tmpfilename,))
+    write_thread = threading.Thread(target=write_date_to_file,
+                                    args=(tmpfilename, ))
+    read_thread = threading.Thread(target=read_data_to_file,
+                                   args=(tmpfilename, ))
     my_lock = threading.Lock()
     write_thread.start()
     read_thread.start()

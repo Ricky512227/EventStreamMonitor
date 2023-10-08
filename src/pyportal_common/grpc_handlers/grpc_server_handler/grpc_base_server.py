@@ -4,12 +4,14 @@ from concurrent import futures
 
 
 class PyPortalGrpcBaseServer:
-    def __init__(self, logger_instance, grpc_server_ip, grpc_server_port, max_workers_for_service):
-        self.cmn_logger = logger_instance
-        self.grpc_server_ip = grpc_server_ip
-        self.grpc_server_port = grpc_server_port
-        self.max_workers_for_service = max_workers_for_service
-        self.base_grpc_server = grpc.server(futures.ThreadPoolExecutor(max_workers=self.max_workers_for_service))
+    def __init__(self, **kwargs):
+        self.cmn_logger = kwargs.get('logger_instance')
+        self.grpc_server_ip = kwargs.get('grpc_server_ip')
+        self.grpc_server_port = kwargs.get('grpc_server_port')
+        self.max_workers_for_service = kwargs.get('max_workers_for_service')
+        self.base_grpc_server = grpc.server(
+            futures.ThreadPoolExecutor(max_workers=self.max_workers_for_service)
+        )
         for key, value in vars(self).items():
             self.cmn_logger.info(f"Initialized {key} with value: {value}")
 
@@ -19,13 +21,25 @@ class PyPortalGrpcBaseServer:
             self.base_grpc_server.add_insecure_port(server_address)
             self.cmn_logger.info("Registered GRPC server :: {0}".format(server_address))
         except Exception as ex:
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-            self.cmn_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            print(
+                "Error occurred :: {0}\tLine No:: {1}".format(
+                    ex, sys.exc_info()[2].tb_lineno
+                )
+            )
+            self.cmn_logger.error(
+                "Error occurred :: {0}\tLine No:: {1}".format(
+                    ex, sys.exc_info()[2].tb_lineno
+                )
+            )
 
     def bind_rpc_method_server(self, name_service_servicer_to_server, name_service):
         if self.base_grpc_server is not None:
             name_service_servicer_to_server(name_service, self.base_grpc_server)
-            self.cmn_logger.info("Registered RPC call to the server of :: {0} :: {1}".format(self.base_grpc_server, name_service))
+            self.cmn_logger.info(
+                "Registered RPC call to the server of :: {0} :: {1}".format(
+                    self.base_grpc_server, name_service
+                )
+            )
 
     def start_base_server(self):
         self.cmn_logger.info("Started GRPC Server")
@@ -34,6 +48,7 @@ class PyPortalGrpcBaseServer:
     def block_base_server(self):
         self.base_grpc_server.wait_for_termination()
         self.cmn_logger.info("Terminated GRPC Server")
+
 
 # if __name__ == "__main__":
 #     # Example for UserValidationForTokenGenerationService

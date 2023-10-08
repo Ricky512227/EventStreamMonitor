@@ -1,17 +1,16 @@
-from flask import make_response, json
 import sys
+from flask import make_response, json
 from abc import ABC, abstractmethod
 from typing import Union
 
 
 class PyPortalAdminBaseError(ABC):
+
     def __init__(self, logger, message=None, error_details=None) -> None:
         self.message = message
         self.error_details = error_details
         self.cmn_logger = logger
-        self.cmn_logger.info("Initializing PyPortalAdminBaseError object ID: {0}".format(id(self)))
-
-
+        self.cmn_logger.info(f"Initializing PyPortalAdminBaseError object ID: {id(self)}")
 
     @abstractmethod
     def get_custom_status_code(self) -> int:
@@ -21,6 +20,7 @@ class PyPortalAdminBaseError(ABC):
     def get_custom_error(self) -> str:
         pass
 
+    @property
     def prepare_error_response(self) -> Union[dict, None]:
         try:
             error_res = {}
@@ -30,38 +30,43 @@ class PyPortalAdminBaseError(ABC):
                 error_res.update({"message": self.message})
             if self.error_details is not None:
                 error_res.update({"error_details": self.error_details})
-            self.cmn_logger.info("Prepared Err_response :: [SUCCESS] : {0}".format(error_res))
+            self.cmn_logger.info(
+                "Prepared Err_response :: [SUCCESS] : {0}".format(error_res))
             return error_res
         except Exception as ex:
-            self.cmn_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            self.cmn_logger.error(
+                "Error occurred :: {0}\tLine No:: {1}".format(
+                    ex,
+                    sys.exc_info()[2].tb_lineno))
 
-    def serialize_prepared_error_response(self, prep_error_res: dict) -> Union[make_response, None]:
+    def serialize_prepared_error_response(
+            self, prep_error_res: dict) -> Union[make_response, None]:
+
         try:
-            self.cmn_logger.debug("Before Serializing the error response body :: {0}".format(prep_error_res))
+            self.cmn_logger.debug(
+                f"Before Serializing the error response body :: {prep_error_res}")
             serialized_err_res = json.dumps(prep_error_res)
-            self.cmn_logger.debug("After Serializing the error response body :: {0}".format(serialized_err_res))
+            self.cmn_logger.debug(
+                f"After Serializing the error response body :: {serialized_err_res}")
             err_response = make_response(serialized_err_res)
-            err_response.headers['Content-Type'] = 'application/problem+json'
-            err_response.headers['Cache-Control'] = 'no-cache'
+            err_response.headers["Content-Type"] = "application/problem+json"
+            err_response.headers["Cache-Control"] = "no-cache"
             err_response.status_code = self.get_custom_status_code()
-            self.cmn_logger.debug("Packed Response headers:: {0}".format(err_response.headers))
-            self.cmn_logger.debug("Packed Response response:: {0}".format(err_response.data))
-            self.cmn_logger.debug("Prepared Err_response :: [SUCCESS]:: {0}".format(err_response))
+            self.cmn_logger.debug(f"Packed Response headers:: {err_response.headers}")
+            self.cmn_logger.debug(f"Packed Response response:: {err_response.data}")
+            self.cmn_logger.debug(
+                f"Prepared Err_response :: [SUCCESS]:: {err_response}")
             return err_response
         except Exception as ex:
-            self.cmn_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
 
+    @property
     def send_response_to_client(self) -> Union[make_response, None]:
-        prepared_error = self.prepare_error_response()
-        final_error_response = self.serialize_prepared_error_response(prepared_error)
+        prepared_error = self.prepare_error_response
+        final_error_response = self.serialize_prepared_error_response(
+            prepared_error)
         return final_error_response
-
-
-
-
-
-
-
 
 
 #

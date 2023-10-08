@@ -1,0 +1,20 @@
+syntax="proto3";
+
+
+// buf:lint:ignore SERVICE_SUFFIX
+service UserValidationForTokenGenerationService{
+  // buf:lint:ignore RPC_REQUEST_STANDARD_NAME
+  // buf:lint:ignore RPC_RESPONSE_STANDARD_NAME
+  rpc ValidateUserCredentials(TokenRequestMessage) returns (TokenResponseMessage){}
+};
+
+message TokenRequestMessage{
+  string userid = 1;
+  string username = 2;
+  string passcode = 3;
+}
+
+message TokenResponseMessage{
+  string userid = 1;
+  bool isvalid = 2;
+}

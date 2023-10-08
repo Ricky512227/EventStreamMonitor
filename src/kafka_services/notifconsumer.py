@@ -1,8 +1,10 @@
 import json
 from kafka import KafkaConsumer
+
 NOTIF_EMAIL_TOPIC = "emailtobenotfiedtouser"
 
-consumer: KafkaConsumer = KafkaConsumer(NOTIF_EMAIL_TOPIC, bootstrap_servers="localhost:29092")
+consumer: KafkaConsumer = KafkaConsumer(NOTIF_EMAIL_TOPIC,
+                                        bootstrap_servers="localhost:29092")
 
 print("Consumer starts consuming.. the topic ::{0}".format(NOTIF_EMAIL_TOPIC))
 while True:

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from concurrent import futures
 from pyportal_common.logging_handlers.base_logger import LogMonitor
 from src.pyportal_common.app_handlers.app_manager import AppHandler
-from src.pyportal_common.db_handlers.db_manager import DataBaseHandler
+from src.pyportal_common.db_handlers.db_conn_manager import DataBaseConnectionHandler
 from src.tokenmanagement_service.models.token_model import Base
 
 try:
@@ -61,7 +61,7 @@ try:
         user_management_logger = LogMonitor("usermanagement").logger
         usermanager = AppHandler(logger_instance=user_management_logger)
 
-        usermanager_app = usermanager.create_app_instance()
+        usermanager_app = usermanager.create_app_instance
         usermanager_app.config["FLASK_ENV"] = FLASK_ENV
         usermanager_app.config["DEBUG"] = DEBUG
         usermanager_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
@@ -88,8 +88,8 @@ try:
         # Create the jwt_manager for the user_management service
         usermanager_app_jwt = usermanager.bind_jwt_manger_to_app_instance(app_instance=usermanager_app)
 
-        usermanager_db_obj = DataBaseHandler(logger_instance=user_management_logger, db_driver=DB_DRIVER_NAME, db_user=DB_USER, db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT, db_name=DB_NAME, db_pool_size=POOL_SIZE,
-                 db_pool_max_overflow=MAX_OVERFLOW, db_pool_recycle=POOL_RECYCLE, db_pool_timeout=POOL_TIMEOUT, retry_interval=RETRY_INTERVAL, max_retries=MAX_RETRIES, base=Base)
+        usermanager_db_obj = DataBaseConnectionHandler(logger_instance=user_management_logger, db_driver=DB_DRIVER_NAME, db_user=DB_USER, db_ip_address=DB_IPADDRESS, db_password=DB_PASSWORD, db_port=DB_PORT, db_name=DB_NAME, db_pool_size=POOL_SIZE,
+                                                       db_pool_max_overflow=MAX_OVERFLOW, db_pool_recycle=POOL_RECYCLE, db_pool_timeout=POOL_TIMEOUT, retry_interval=RETRY_INTERVAL, max_retries=MAX_RETRIES, base=Base)
         # Create a database engine
         user_management_db_engine, is_engine_created = usermanager_db_obj.create_db_engine_for_service(app_instance=usermanager_app)
         # If the engine doesn't create, then go for retry  of max_retries=3 with retry_delay=5.
