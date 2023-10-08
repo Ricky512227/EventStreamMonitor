@@ -21,7 +21,7 @@ def read_data_to_file(tmp_file_name):
 
 
 if __name__ == "__main__":
-    tmpfilename = "/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/kafka_services/datafile.txt"
+    tmpfilename = "/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/kafka_service_handlers/datafile.txt"
 
     write_thread = threading.Thread(target=write_date_to_file,
                                     args=(tmpfilename, ))

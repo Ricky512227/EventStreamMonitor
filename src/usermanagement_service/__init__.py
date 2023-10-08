@@ -4,7 +4,7 @@ from logging import Logger
 from flask import Flask
 from dotenv import load_dotenv
 
-from kafka_services.notfication_producer import PyPortalKafkaProducer
+from pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import PyPortalKafkaProducer
 from src.pyportal_common.logging_handlers.base_logger import LogMonitor
 from src.pyportal_common.app_handlers.app_manager import AppHandler
 from src.usermanagement_service.models.user_model import UserBase
@@ -148,7 +148,7 @@ try:
             from src.usermanagement_service.user_management_grpc.user_grpc_server import (
                 UserValidationForTokenGenerationService,
             )
-            from pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server_init import (
+            from src.pyportal_common.grpc_handlers.grpc_server_handler.grpc_base_server_init import (
                 init_pyportal_grpc_base_server,
             )
 
@@ -160,7 +160,7 @@ try:
                         name_service_servicer_to_server=add_UserValidationForTokenGenerationServiceServicer_to_server,
                         name_service=UserValidationForTokenGenerationService,
                     )
-            from src.kafka_services.producer_handlers.base_producer_init import (
+            from src.pyportal_common.kafka_service_handlers.producer_handlers.base_producer_init import (
                 init_pyportal_kafka_producer,
             )
 
