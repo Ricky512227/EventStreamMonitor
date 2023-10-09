@@ -1,3 +1,5 @@
+# pylint: disable=line-too-long
+
 """
 This module contains the main entry point for the User Management service.
 
@@ -15,8 +17,8 @@ if __name__ == "__main__":
         my_grpc_server.start_base_server()
         user_management_logger.info(
             "Bound USER-MANAGEMENT-SERVICE at IP-ADDRESS:PORT :: %s:%s",
-            usermanager_app.config['USER_MANAGEMENT_SERVER_IPADDRESS'],
-            usermanager_app.config['USER_MANAGEMENT_SERVER_PORT'],
+            usermanager_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"],
+            usermanager_app.config["USER_MANAGEMENT_SERVER_PORT"],
         )
         user_management_logger.info("Started the USER-MANAGEMENT server ...")
         user_management_logger.info("Application is ready to serve traffic.")
@@ -26,5 +28,7 @@ if __name__ == "__main__":
         )
 
     except Exception as ex:
-        user_management_logger.exception("Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno)
+        user_management_logger.exception(
+            "Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno
+        )
         print("Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno)

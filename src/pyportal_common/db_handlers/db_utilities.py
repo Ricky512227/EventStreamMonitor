@@ -1,3 +1,5 @@
+# pylint: disable=line-too-long
+
 import sys
 from typing import Union
 import sqlalchemy

@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Module: create_user_success_response.py
 
@@ -9,7 +10,8 @@ Classes:
 """
 from src.usermanagement_service import user_management_logger
 from src.usermanagement_service.users.response_handlers.user_success_response import (
-    SuccessBaseResponseBody, )
+    SuccessBaseResponseBody,
+)
 
 
 class CreateSuccessResponse(SuccessBaseResponseBody):
@@ -25,9 +27,9 @@ class CreateSuccessResponse(SuccessBaseResponseBody):
         get_assigned_resp_msg(): Get the assigned response message.
     """
 
-    def __init__(self,
-                 response_body=None,
-                 response_message="User Created Successfully"):
+    def __init__(
+        self, response_body=None, response_message="User Created Successfully"
+    ):
         """
         Initialize a CreateSuccessResponse instance.
 
@@ -36,13 +38,13 @@ class CreateSuccessResponse(SuccessBaseResponseBody):
             response_message (str, optional): The message associated with the success response.
         """
         user_management_logger.info(
-            "Initializing SuccessBaseResponseBody object ID: %s", id(self))
+            "Initializing CreateSuccessResponse object ID: %s", id(self)
+        )
         super().__init__(response_body)
-        self.response_message = response_message
-        user_management_logger.info(
-            "Received response_message: %s", self.response_message)
-        user_management_logger.info(
-            "Initialized SuccessBaseResponseBody object ID: %s", id(self))
+        self._response_message = response_message
+        # Log all parameters
+        for key, value in vars(self).items():
+            user_management_logger.info("Initialized %s with value: %s", key, value)
 
     def get_assigned_resp_body(self):
         """
@@ -51,7 +53,7 @@ class CreateSuccessResponse(SuccessBaseResponseBody):
         Returns:
             dict: The response data containing user information.
         """
-        return self.response_body
+        return self._response_body
 
     def get_assigned_resp_msg(self):
         """
@@ -60,4 +62,10 @@ class CreateSuccessResponse(SuccessBaseResponseBody):
         Returns:
             str: The message associated with the success response.
         """
-        return self.response_message
+        return self._response_message
+
+
+def generate_success_response(user_instance):
+    suc_res_obj = CreateSuccessResponse(response_body=user_instance)
+    custom_user_response_body = suc_res_obj.generate_response()
+    return custom_user_response_body

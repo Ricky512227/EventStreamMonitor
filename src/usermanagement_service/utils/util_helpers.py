@@ -61,7 +61,7 @@ def is_username_email_already_exists_in_db(
     return is_username_email_already_exists_status
 
 
-def convert_db_model_to_resp(model_instance):
+def convert_db_model_to_resp(model_instance: object) -> dict:
     user_management_logger.info("Converting db model to response obj :: [STARTED]")
     model_dict = {}
     try:

@@ -1,3 +1,5 @@
+# pylint: disable=line-too-long
+
 import sys
 import time
 from typing import Union, Optional

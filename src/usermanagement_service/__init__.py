@@ -1,13 +1,10 @@
+# pylint: disable=line-too-long
 import os
 import sys
 from logging import Logger
-from typing import Optional
-
 from flask import Flask, Blueprint
 from dotenv import load_dotenv
-
-from pyportal_common.app_handlers.app_manager import AppHandler
-from pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import (
+from src.pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import (
     PyPortalKafkaProducer,
 )
 from src.pyportal_common.logging_handlers.base_logger import LogMonitor
@@ -120,7 +117,7 @@ try:
         usermanager_app_jwt = usermanager.bind_jwt_manger_to_app_instance(
             app_instance=usermanager_app
         )
-        from pyportal_common.db_handlers.db_init import start_database_creation_work
+        from src.pyportal_common.db_handlers.db_init import start_database_creation_work
 
         session_maker_obj = start_database_creation_work(
             user_management_logger, UserBase, usermanager_app
