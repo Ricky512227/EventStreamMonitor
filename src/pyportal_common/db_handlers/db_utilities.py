@@ -13,7 +13,7 @@ from sqlalchemy.exc import (
 )
 from sqlalchemy.orm import sessionmaker
 
-def get_session_from_pool(session_maker_to_get_session: sessionmaker) -> Union[sqlalchemy.orm.Session, None]:
+def get_session_from_connection(session_maker_to_get_session: sessionmaker) -> Union[sqlalchemy.orm.Session, None]:
     try:
         if not session_maker_to_get_session:
             # self.cmn_logger.info(

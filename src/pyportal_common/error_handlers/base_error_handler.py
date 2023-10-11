@@ -10,7 +10,6 @@ class PyPortalAdminBaseError(ABC):
         self.message = message
         self.error_details = error_details
         self.cmn_logger = logger
-        self.cmn_logger.info(f"Initializing PyPortalAdminBaseError object ID: {id(self)}")
 
     @abstractmethod
     def get_custom_status_code(self) -> int:

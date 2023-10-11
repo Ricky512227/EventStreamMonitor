@@ -63,7 +63,7 @@ def start_database_creation_work(cmn_logger, base, app_specific_flask_instance):
                         )
                     )
                     app_db_session_maker = (
-                        app_manager_db_obj.create_session_maker_to_connectio_pool(
+                        app_manager_db_obj.create_session_maker_to_connection_pool(
                             db_engine=app_db_engine,
                             connection_pool=app_db_connection_pool,
                         )

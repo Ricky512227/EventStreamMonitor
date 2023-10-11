@@ -14,8 +14,7 @@ class PyPortalAdminInvalidRequestError(PyPortalAdminBaseError):
         # Log all parameters
         for key, value in vars(self).items():
             self.cmn_logger.info(f"Initialized {key} with value: {value}")
-        self.cmn_logger.info(
-            "Initialed PyPortalAdminBaseError object ID: {0}".format(id(self)))
+        self.cmn_logger.info("Initialed PyPortalAdminInvalidRequestError object ID: %s", id(self))
 
     def get_custom_error(self):
         return self.error

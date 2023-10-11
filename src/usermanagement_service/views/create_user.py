@@ -5,7 +5,7 @@ import sqlalchemy.orm.exc
 from flask import request, make_response
 
 from src.pyportal_common.db_handlers.db_utilities import (
-    get_session_from_pool,
+    get_session_from_connection,
     close_session,
 )
 from src.usermanagement_service.users.request_handlers.user import User
@@ -80,7 +80,7 @@ def register_user():
             password = rec_req_data["password"]
             dateofbirth = rec_req_data["dateOfBirth"]
             user_management_logger.info("Processing the request data... :: [STARTED]")
-            session_to_validate_existing_user = get_session_from_pool(
+            session_to_validate_existing_user = get_session_from_connection(
                 session_maker_to_get_session=session_maker_obj
             )
             if session_to_validate_existing_user is None:
@@ -129,7 +129,7 @@ def register_user():
                 """
                     Using the session begin the transaction, and add the user into the database using ORM.
                 """
-                session_to_create_new_user = get_session_from_pool(
+                session_to_create_new_user = get_session_from_connection(
                     session_maker_to_get_session=session_maker_obj
                 )
                 if session_to_create_new_user is None:

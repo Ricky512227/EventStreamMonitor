@@ -1,134 +1,134 @@
-2023-10-09 16:42:47 - INFO - [base_logger.py : initialize_logger - 77] :: Initialized logger for the service [usermanagement] :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [app_manager.py : __init__ - 29] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/reg_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/getuser_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/del_user_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/requests/register_user/req_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_blueprint_instance - 103] :: Created Blueprint :: <Blueprint 'usermanagement_bp'> for the Application service ::usermanagement
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_driver with value: postgresql
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_user with value: usermanageradmin
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_password with value: testeventstreammonitor#123
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_ip_address with value: 127.0.0.1
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_port with value: 3304
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_name with value: USERS
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized base with value: <class 'sqlalchemy.orm.decl_api.Base'>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _retry_interval with value: 5
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _max_retries with value: 3
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _database_uri with value: None
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_size with value: 30
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_recycle with value: 60
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_timeout with value: 10
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_max_overflow with value: 20
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_db_engine_for_service - 86] :: Creating DB-Engine using DatabaseURI for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _prepare_database_uri - 53] :: Preparing DatabaseURI for Service :: [<Logger usermanagement (DEBUG)>]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _prepare_database_uri - 70] :: Prepared DatabaseURI for Service :: [usermanagement] - postgresql://usermanageradmin:Ishi%2306041995@127.0.0.1:3304/USERS
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_db_engine_for_service - 95] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS)]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 300] :: Current Connection status set to :: False for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 306] :: Trying to establish the connection to the database :: [IN-PROGRESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 310] :: Established the connection to the database :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 314] :: Current Connection status set to :: True for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 320] :: Closing the Current Connection as the connection was established for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_database_for_service - 148] :: Database already exists :: USERS
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 341] :: Trying to create the tables if not present in the database...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 345] :: Going to create the tables ...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 348] :: Created the tables ...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : bind_db_app - 168] :: Binding SQLALCHEMY  to Application Instance for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : bind_db_app - 174] :: Bound SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : migrate_db_bind_app - 196] :: Binding the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : migrate_db_bind_app - 202] :: Bound the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_pool_of_connections - 38] :: Creating Pool of connections for Service ==>[usermanagement] :: [STARTED]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_pool_of_connections - 54] :: Created Pool of connections for Service ==>[usermanagement] :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 74] :: Creating session maker for managing database sessions/interactions  :: [STARTED]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 78] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x107f4e6a0>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 81] :: Created a session maker for database interactions sessionmaker(class_='Session', bind=Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS), autoflush=True, expire_on_commit=True) :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 223] :: #---------------------------------[ POOL INFO ]----------------------------------------#
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 226] :: Displaying Pool Info for Service ==>[usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 231] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x107f4e6a0> - ID: 4428457632
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 236] :: Current Pool Size :: 30
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 239] :: Checked Out Connections from Pool: 0
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 244] :: Checked in Connections available in Pool: 0
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 249] :: Current Pool Overflow Info: -30
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 252] :: #---------------------------------[ POOL INFO ]----------------------------------------#
-2023-10-09 16:42:47 - INFO - [app_manager.py : __init__ - 29] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/reg_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/getuser_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/del_user_headers_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/requests/register_user/req_schema.json
-2023-10-09 16:42:47 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
-2023-10-09 16:42:47 - INFO - [app_manager.py : create_blueprint_instance - 103] :: Created Blueprint :: <Blueprint 'usermanagement_bp'> for the Application service ::usermanagement
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_driver with value: postgresql
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_user with value: usermanageradmin
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_password with value: testeventstreammonitor#123
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_ip_address with value: 127.0.0.1
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_port with value: 3304
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_name with value: USERS
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized base with value: <class 'sqlalchemy.orm.decl_api.Base'>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _retry_interval with value: 5
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _max_retries with value: 3
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _database_uri with value: None
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_size with value: 30
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_recycle with value: 60
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_timeout with value: 10
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_max_overflow with value: 20
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_db_engine_for_service - 86] :: Creating DB-Engine using DatabaseURI for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _prepare_database_uri - 53] :: Preparing DatabaseURI for Service :: [<Logger usermanagement (DEBUG)>]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _prepare_database_uri - 70] :: Prepared DatabaseURI for Service :: [usermanagement] - postgresql://usermanageradmin:Ishi%2306041995@127.0.0.1:3304/USERS
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_db_engine_for_service - 95] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS)]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 300] :: Current Connection status set to :: False for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 306] :: Trying to establish the connection to the database :: [IN-PROGRESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 310] :: Established the connection to the database :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 314] :: Current Connection status set to :: True for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : _check_database_connectivity - 320] :: Closing the Current Connection as the connection was established for the service :: usermanagement
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_database_for_service - 148] :: Database already exists :: USERS
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 341] :: Trying to create the tables if not present in the database...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 345] :: Going to create the tables ...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 348] :: Created the tables ...
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : bind_db_app - 168] :: Binding SQLALCHEMY  to Application Instance for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : bind_db_app - 174] :: Bound SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : migrate_db_bind_app - 196] :: Binding the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : migrate_db_bind_app - 202] :: Bound the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_pool_of_connections - 38] :: Creating Pool of connections for Service ==>[usermanagement] :: [STARTED]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_pool_of_connections - 54] :: Created Pool of connections for Service ==>[usermanagement] :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 74] :: Creating session maker for managing database sessions/interactions  :: [STARTED]
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 78] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x107ff0ca0>
-2023-10-09 16:42:47 - INFO - [db_pool_manager.py : create_session_maker_to_connectio_pool - 81] :: Created a session maker for database interactions sessionmaker(class_='Session', bind=Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS), autoflush=True, expire_on_commit=True) :: [SUCCESS]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 223] :: #---------------------------------[ POOL INFO ]----------------------------------------#
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 226] :: Displaying Pool Info for Service ==>[usermanagement]
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 231] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x107ff0ca0> - ID: 4429122720
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 236] :: Current Pool Size :: 30
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 239] :: Checked Out Connections from Pool: 0
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 244] :: Checked in Connections available in Pool: 0
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 249] :: Current Pool Overflow Info: -30
-2023-10-09 16:42:47 - INFO - [db_conn_manager.py : display_pool_info - 252] :: #---------------------------------[ POOL INFO ]----------------------------------------#
-2023-10-09 16:42:47 - INFO - [app_manager.py : register_blueprint_for_service - 130] :: Registering blueprints to the service :: <Flask 'usermanagement'>
-2023-10-09 16:42:47 - INFO - [app_manager.py : display_registered_blueprints_for_service - 151] :: Added Blueprints :: /static/<path:filename>
-2023-10-09 16:42:47 - INFO - [app_manager.py : display_registered_blueprints_for_service - 151] :: Added Blueprints :: /api/v1/airliner/registerUser
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized grpc_server_ip with value: 127.0.0.1
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized grpc_server_port with value: 50051
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized max_workers_for_service with value: 4
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized base_grpc_server with value: <grpc._server._Server object at 0x1082724f0>
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : bind_ip_port_server - 22] :: Registered GRPC server :: 127.0.0.1:50051
-2023-10-09 16:42:47 - INFO - [grpc_base_server.py : bind_rpc_method_server - 38] :: Registered RPC call to the server of :: <grpc._server._Server object at 0x1082724f0> :: <class 'src.usermanagement_service.user_management_grpc.user_grpc_server.UserValidationForTokenGenerationService'>
-2023-10-09 16:42:48 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-09 16:42:48 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer_ip_address with value: 127.0.0.1
-2023-10-09 16:42:48 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer_port with value: 29092
-2023-10-09 16:42:48 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized topic_to_set with value: None
-2023-10-09 16:42:48 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer with value: <kafka.producer.kafka.KafkaProducer object at 0x1082e33d0>
-2023-10-09 16:42:48 - INFO - [grpc_base_server.py : start_base_server - 45] :: Started GRPC Server
-2023-10-09 16:42:48 - INFO - [usermanagement.py : <module> - 18] :: Bound USER-MANAGEMENT-SERVICE at IP-ADDRESS:PORT :: 0.0.0.0:9091
-2023-10-09 16:42:48 - INFO - [usermanagement.py : <module> - 23] :: Started the USER-MANAGEMENT server ...
-2023-10-09 16:42:48 - INFO - [usermanagement.py : <module> - 24] :: Application is ready to serve traffic.
+2023-10-09 16:56:00 - INFO - [base_logger.py : initialize_logger - 77] :: Initialized logger for the service [usermanagement] :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [app_manager.py : __init__ - 29] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/reg_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/getuser_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/del_user_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/requests/register_user/req_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_blueprint_instance - 103] :: Created Blueprint :: <Blueprint 'usermanagement_bp'> for the Application service ::usermanagement
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_driver with value: postgresql
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_user with value: usermanageradmin
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_password with value: testeventstreammonitor#123
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_ip_address with value: 127.0.0.1
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_port with value: 3304
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_name with value: USERS
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized base with value: <class 'sqlalchemy.orm.decl_api.Base'>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _retry_interval with value: 5
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _max_retries with value: 3
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _database_uri with value: None
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_size with value: 30
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_recycle with value: 60
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_timeout with value: 10
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_max_overflow with value: 20
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_db_engine_for_service - 86] :: Creating DB-Engine using DatabaseURI for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _prepare_database_uri - 53] :: Preparing DatabaseURI for Service :: [<Logger usermanagement (DEBUG)>]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _prepare_database_uri - 70] :: Prepared DatabaseURI for Service :: [usermanagement] - postgresql://usermanageradmin:Ishi%2306041995@127.0.0.1:3304/USERS
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_db_engine_for_service - 95] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS)]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 300] :: Current Connection status set to :: False for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 306] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 310] :: Established the connection to the database :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 314] :: Current Connection status set to :: True for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 320] :: Closing the Current Connection as the connection was established for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_database_for_service - 148] :: Database already exists :: USERS
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 341] :: Trying to create the tables if not present in the database...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 345] :: Going to create the tables ...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 348] :: Created the tables ...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : bind_db_app - 168] :: Binding SQLALCHEMY  to Application Instance for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : bind_db_app - 174] :: Bound SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : migrate_db_bind_app - 196] :: Binding the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : migrate_db_bind_app - 202] :: Bound the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_pool_of_connections - 38] :: Creating Pool of connections for Service ==>[usermanagement] :: [STARTED]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_pool_of_connections - 54] :: Created Pool of connections for Service ==>[usermanagement] :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 74] :: Creating session maker for managing database sessions/interactions  :: [STARTED]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 78] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x105fbfd30>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 81] :: Created a session maker for database interactions sessionmaker(class_='Session', bind=Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS), autoflush=True, expire_on_commit=True) :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 223] :: #---------------------------------[ POOL INFO ]----------------------------------------#
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 226] :: Displaying Pool Info for Service ==>[usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 231] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x105fbfd30> - ID: 4395367728
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 236] :: Current Pool Size :: 30
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 239] :: Checked Out Connections from Pool: 0
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 244] :: Checked in Connections available in Pool: 0
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 249] :: Current Pool Overflow Info: -30
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 252] :: #---------------------------------[ POOL INFO ]----------------------------------------#
+2023-10-09 16:56:00 - INFO - [app_manager.py : __init__ - 29] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/reg_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/getuser_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/headers/del_user_headers_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 169] :: Received Schema File Path : /Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/schemas/requests/register_user/req_schema.json
+2023-10-09 16:56:00 - INFO - [app_manager.py : read_json_schema - 191] :: Schema Validation True
+2023-10-09 16:56:00 - INFO - [app_manager.py : create_blueprint_instance - 103] :: Created Blueprint :: <Blueprint 'usermanagement_bp'> for the Application service ::usermanagement
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_driver with value: postgresql
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_user with value: usermanageradmin
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_password with value: testeventstreammonitor#123
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _db_ip_address with value: 127.0.0.1
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_port with value: 3304
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_name with value: USERS
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized base with value: <class 'sqlalchemy.orm.decl_api.Base'>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _retry_interval with value: 5
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _max_retries with value: 3
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized _database_uri with value: None
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_size with value: 30
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_recycle with value: 60
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_timeout with value: 10
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : __init__ - 32] :: Initialized db_pool_max_overflow with value: 20
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_db_engine_for_service - 86] :: Creating DB-Engine using DatabaseURI for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _prepare_database_uri - 53] :: Preparing DatabaseURI for Service :: [<Logger usermanagement (DEBUG)>]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _prepare_database_uri - 70] :: Prepared DatabaseURI for Service :: [usermanagement] - postgresql://usermanageradmin:Ishi%2306041995@127.0.0.1:3304/USERS
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_db_engine_for_service - 95] :: Created DB-Engine using DatabaseURI for Service :: [Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS)]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 300] :: Current Connection status set to :: False for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 306] :: Trying to establish the connection to the database :: [IN-PROGRESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 310] :: Established the connection to the database :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 314] :: Current Connection status set to :: True for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : _check_database_connectivity - 320] :: Closing the Current Connection as the connection was established for the service :: usermanagement
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_database_for_service - 148] :: Database already exists :: USERS
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 341] :: Trying to create the tables if not present in the database...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 345] :: Going to create the tables ...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : create_tables_associated_to_db_model - 348] :: Created the tables ...
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : bind_db_app - 168] :: Binding SQLALCHEMY  to Application Instance for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : bind_db_app - 174] :: Bound SQLALCHEMY :: [<SQLAlchemy>] to Application Instance for Service :: [usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : migrate_db_bind_app - 196] :: Binding the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : migrate_db_bind_app - 202] :: Bound the db :: [<SQLAlchemy>] to app instance :: [<Flask 'usermanagement'>] for migrations
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_pool_of_connections - 38] :: Creating Pool of connections for Service ==>[usermanagement] :: [STARTED]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_pool_of_connections - 54] :: Created Pool of connections for Service ==>[usermanagement] :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 74] :: Creating session maker for managing database sessions/interactions  :: [STARTED]
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 78] :: Created session using Pool_info :: <sqlalchemy.pool.impl.QueuePool object at 0x1063a4b80>
+2023-10-09 16:56:00 - INFO - [db_pool_manager.py : create_session_maker_to_connection_pool - 81] :: Created a session maker for database interactions sessionmaker(class_='Session', bind=Engine(postgresql://usermanageradmin:***@127.0.0.1:3304/USERS), autoflush=True, expire_on_commit=True) :: [SUCCESS]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 223] :: #---------------------------------[ POOL INFO ]----------------------------------------#
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 226] :: Displaying Pool Info for Service ==>[usermanagement]
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 231] :: Current Pool Info :: <sqlalchemy.pool.impl.QueuePool object at 0x1063a4b80> - ID: 4399451008
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 236] :: Current Pool Size :: 30
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 239] :: Checked Out Connections from Pool: 0
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 244] :: Checked in Connections available in Pool: 0
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 249] :: Current Pool Overflow Info: -30
+2023-10-09 16:56:00 - INFO - [db_conn_manager.py : display_pool_info - 252] :: #---------------------------------[ POOL INFO ]----------------------------------------#
+2023-10-09 16:56:00 - INFO - [app_manager.py : register_blueprint_for_service - 130] :: Registering blueprints to the service :: <Flask 'usermanagement'>
+2023-10-09 16:56:00 - INFO - [app_manager.py : display_registered_blueprints_for_service - 151] :: Added Blueprints :: /static/<path:filename>
+2023-10-09 16:56:00 - INFO - [app_manager.py : display_registered_blueprints_for_service - 151] :: Added Blueprints :: /api/v1/airliner/registerUser
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized grpc_server_ip with value: 127.0.0.1
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized grpc_server_port with value: 50051
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized max_workers_for_service with value: 4
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : __init__ - 16] :: Initialized base_grpc_server with value: <grpc._server._Server object at 0x106622430>
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : bind_ip_port_server - 22] :: Registered GRPC server :: 127.0.0.1:50051
+2023-10-09 16:56:00 - INFO - [grpc_base_server.py : bind_rpc_method_server - 38] :: Registered RPC call to the server of :: <grpc._server._Server object at 0x106622430> :: <class 'src.usermanagement_service.user_management_grpc.user_grpc_server.UserValidationForTokenGenerationService'>
+2023-10-09 16:56:01 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
+2023-10-09 16:56:01 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer_ip_address with value: 127.0.0.1
+2023-10-09 16:56:01 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer_port with value: 29092
+2023-10-09 16:56:01 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized topic_to_set with value: None
+2023-10-09 16:56:01 - INFO - [notfication_producer.py : __init__ - 15] :: Initialized producer with value: <kafka.producer.kafka.KafkaProducer object at 0x106695340>
+2023-10-09 16:56:01 - INFO - [grpc_base_server.py : start_base_server - 45] :: Started GRPC Server
+2023-10-09 16:56:01 - INFO - [usermanagement.py : <module> - 18] :: Bound USER-MANAGEMENT-SERVICE at IP-ADDRESS:PORT :: 0.0.0.0:9091
+2023-10-09 16:56:01 - INFO - [usermanagement.py : <module> - 23] :: Started the USER-MANAGEMENT server ...
+2023-10-09 16:56:01 - INFO - [usermanagement.py : <module> - 24] :: Application is ready to serve traffic.

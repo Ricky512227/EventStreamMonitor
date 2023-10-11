@@ -61,7 +61,7 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
             )
             return None
 
-    def create_session_maker_to_connectio_pool(
+    def create_session_maker_to_connection_pool(
         self, db_engine: SQLAlchemy.engine, connection_pool: QueuePool
     ) -> Union[sessionmaker, None]:
         try:
