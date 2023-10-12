@@ -1,12 +1,15 @@
 # pylint: disable=line-too-long
 import os
 import sys
+import concurrent.futures
 from logging import Logger
 from flask import Flask, Blueprint
 from dotenv import load_dotenv
 from src.pyportal_common.logging_handlers.base_logger import LogMonitor
 from src.pyportal_common.app_handlers.app_manager import AppHandler
+from app_configs import init_app_configs
 from src.usermanagement_service.models.user_model import UserBase
+
 
 try:
     # Set the registration service directory as the current dir
@@ -39,25 +42,6 @@ try:
         print(
             f"Environment variables file loaded from :: {user_management_env_filepath} "
         )
-        # Setting the env variable and binding to the application.
-        FLASK_ENV = os.environ.get("FLASK_ENV")
-        DEBUG = os.environ.get("DEBUG")
-        JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-        FLASK_APP = os.environ.get("FLASK_APP")
-
-        USER_MANAGEMENT_SERVER_IPADDRESS = os.environ.get(
-            "USER_MANAGEMENT_SERVER_IPADDRESS"
-        )
-        USER_MANAGEMENT_SERVER_PORT = os.environ.get("USER_MANAGEMENT_SERVER_PORT")
-        USER_MANAGEMENT_GRPC_SERVER_IP = os.environ.get(
-            "USER_MANAGEMENT_GRPC_SERVER_IP"
-        )
-        USER_MANAGEMENT_GRPC_SERVER_PORT = os.environ.get(
-            "USER_MANAGEMENT_GRPC_SERVER_PORT"
-        )
-        USER_MANAGEMENT_GRPC_MAX_WORKERS = int(
-            os.environ.get("USER_MANAGEMENT_GRPC_MAX_WORKERS")
-        )
 
         # Initialize the logger for the user_management service
         user_management_logger: Logger = LogMonitor("usermanagement").logger
@@ -66,27 +50,8 @@ try:
         if usermanager_app is None:
             user_management_logger.error("App creation failed")
             sys.exit()
-        usermanager_app.config["FLASK_ENV"] = FLASK_ENV
-        usermanager_app.config["DEBUG"] = DEBUG
-        usermanager_app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
-        usermanager_app.config["FLASK_APP"] = FLASK_APP
 
-        usermanager_app.config[
-            "USER_MANAGEMENT_SERVER_IPADDRESS"
-        ] = USER_MANAGEMENT_SERVER_IPADDRESS
-        usermanager_app.config[
-            "USER_MANAGEMENT_SERVER_PORT"
-        ] = USER_MANAGEMENT_SERVER_PORT
-
-        usermanager_app.config[
-            "USER_MANAGEMENT_GRPC_SERVER_IP"
-        ] = USER_MANAGEMENT_GRPC_SERVER_IP
-        usermanager_app.config[
-            "USER_MANAGEMENT_GRPC_SERVER_PORT"
-        ] = USER_MANAGEMENT_GRPC_SERVER_PORT
-        usermanager_app.config[
-            "USER_MANAGEMENT_GRPC_MAX_WORKERS"
-        ] = USER_MANAGEMENT_GRPC_MAX_WORKERS
+        init_app_configs(usermanager_app)
         # Load and Validate Schema Files which are read.
         (
             req_headers_schema_status,
@@ -120,6 +85,29 @@ try:
             user_management_logger, UserBase, usermanager_app
         )
         if app_manager_db_obj:
+            from src.usermanagement_service.user_management_grpc.init_grpc_usermanagement_server import (
+                start_user_management_grpc_server,
+            )
+            from src.usermanagement_service.user_management_kafka.init_kafka_usermangement_producer import (
+                start_user_management_kafka_producer,
+            )
+
+            with concurrent.futures.ThreadPoolExecutor(
+                max_workers=2
+            ) as thread_executor:
+                user_management_grpc_server_init_thread = thread_executor.submit(
+                    start_user_management_grpc_server, user_management_logger
+                )
+                user_management_kafka_producer_init_thread = thread_executor.submit(
+                    start_user_management_kafka_producer, user_management_logger
+                )
+                user_management_grpc_server = (
+                    user_management_grpc_server_init_thread.result()
+                )
+                user_management_kafka_producer = (
+                    user_management_kafka_producer_init_thread.result()
+                )
+
             from src.usermanagement_service.views.create_user import (
                 register_user,
             )
@@ -139,19 +127,7 @@ try:
             usermanager.display_registered_blueprints_for_service(
                 app_instance=usermanager_app
             )
-            from src.usermanagement_service.user_management_grpc.init_grpc_usermanagement_server import (
-                start_user_management_grpc_server,
-            )
 
-            user_management_grpc_server = start_user_management_grpc_server(user_management_logger)
-
-            from src.usermanagement_service.user_management_kafka.init_kafka_usermangement_producer import (
-                start_user_management_kafka_producer,
-            )
-
-            user_management_kafka_producer = start_user_management_kafka_producer(
-                user_management_logger
-            )
         else:
             print("Unable to start db")
     else:
