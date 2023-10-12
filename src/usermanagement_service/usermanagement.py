@@ -9,12 +9,12 @@ import sys
 from src.usermanagement_service import (
     usermanager_app,
     user_management_logger,
-    my_grpc_server,
+    user_management_grpc_server,
 )
 
 if __name__ == "__main__":
     try:
-        my_grpc_server.start_base_server()
+        user_management_grpc_server.start_base_server()
         user_management_logger.info(
             "Bound USER-MANAGEMENT-SERVICE at IP-ADDRESS:PORT :: %s:%s",
             usermanager_app.config["USER_MANAGEMENT_SERVER_IPADDRESS"],

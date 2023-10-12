@@ -4,8 +4,8 @@ import time
 import grpc
 
 from src.proto_def.token_proto_v1 import token_pb2_grpc, token_pb2
-from src.usermanagement_service.utils.util_helpers import is_userid_exists
-from src.usermanagement_service import user_management_logger
+from src.usermanagement_service.utils.util_helpers import is_userid_exists_in_db
+from src.usermanagement_service import user_management_logger, app_manager_db_obj
 
 
 class UserValidationForTokenGenerationService(
@@ -43,51 +43,33 @@ class UserValidationForTokenGenerationService(
             #
             # return token_pb2.TokenResponseMessage(result="Task completed successfully")
 
-            user_management_logger.info(
-                "Received request from client ::\n{0}".format(request)
-            )
+            user_management_logger.info("Received request from client ::\n{0}".format(request))
+            ctx_metadata = context.invocation_metadata()
+            for ctx_metadata_id, ctx_metadata_data in ctx_metadata.itertems():
+                user_management_logger.info(f"Received context {ctx_metadata_id} from client :: {ctx_metadata_data}")
+            deadline_remaining = context.time_remaining()
+            user_management_logger.info("Time remaining to process the request ::\n{0}".format(deadline_remaining))
+            token_res_message = token_pb2.TokenResponseMessage()
+            token_res_message.user_id = request.user_id
+            token_res_message.isvalid_user = False
             if context.deadline:
+                print("time.time()", time.time())
+                print("context.deadline.timestamp()", context.deadline.timestamp())
                 if time.time() > context.deadline.timestamp():
                     context.set_code(grpc.StatusCode.DEADLINE_EXCEEDED)
                     context.set_details("Deadline exceeded")
-                    return token_pb2.TokenResponseMessage(result="")
-
-                request_id = context.get("request_id")
-                token_res_message = token_pb2.TokenResponseMessage()
-                token_res_message.user_id = request.userid
-                token_res_message.isvalid_user = False
-                for key, value in vars(token_res_message).items():
-                    user_management_logger.info(
-                        "Received token_res_message-{0}: {1}".format(key, value)
-                    )
+                    return token_res_message
                 try:
-                    user_data, is_exists = is_userid_exists(
-                        session_instance="xtyyy", userid=request.user_id
-                    )
+                    userid, is_exists = is_userid_exists_in_db(session_instance=app_manager_db_obj.get_session_from_session_maker() , userid=request.user_id)
                     if is_exists:
-                        token_res_message.user_id = user_data
-                        token_res_message.isvalid_user = True
-                        context.set("request_id", request_id)
+                        token_res_message.isvalid_user = is_exists
+                        context.set_code(grpc.StatusCode.OK)
                 except Exception as ex:
-                    user_management_logger.error(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
-                    )
-                    print(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
-                    )
-                user_management_logger.info(
-                    "Packing and sending response back to gRPC Client :: {0}".format(
-                        token_res_message
-                    )
-                )
+                    context.set_code(grpc.StatusCode.INTERNAL)
+                    context.set_details("Internal DB error")
+                    user_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                    print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+                user_management_logger.info("Packing and sending response back to gRPC Client :: {0}".format(token_res_message))
                 return token_res_message
         except Exception as ex:
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
-            )
+            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))

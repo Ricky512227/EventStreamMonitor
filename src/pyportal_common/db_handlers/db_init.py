@@ -52,7 +52,7 @@ def start_database_creation_work(cmn_logger, base, app_specific_flask_instance):
                         app_instance=app_specific_flask_instance
                     )
                     # Bind the application with the migrations
-                    app_db_migrate = app_manager_db_obj.migrate_db_bind_app(
+                    app_manager_db_obj.migrate_db_bind_app(
                         app_instance=app_specific_flask_instance,
                         app_db=app_db_sql_alchemy,
                     )
@@ -62,16 +62,15 @@ def start_database_creation_work(cmn_logger, base, app_specific_flask_instance):
                             db_engine=app_db_engine
                         )
                     )
-                    app_db_session_maker = (
-                        app_manager_db_obj.create_session_maker_to_connection_pool(
-                            db_engine=app_db_engine,
-                            connection_pool=app_db_connection_pool,
-                        )
-                    )
+                    app_manager_db_obj.create_session_maker_bind_to_db_engine(app_db_engine, app_db_connection_pool, )
+                    # app_db_session_maker = (
+                    #     app_manager_db_obj.create_session_maker_to_connection_pool(
+                    #         db_engine=app_db_engine,
+                    #         connection_pool=app_db_connection_pool,
+                    #     )
+                    # )
                     # Display the  pool of connections for the service which was initialized
-                    app_manager_db_obj.display_pool_info(
-                        connection_pool=app_db_connection_pool
-                    )
-                    return app_db_session_maker
-
-
+                    # app_manager_db_obj.display_pool_info(
+                    #     connection_pool=app_db_connection_pool
+                    # )
+                    return app_manager_db_obj

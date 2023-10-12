@@ -1,64 +1,43 @@
 import sys
+from typing import Union
 from sqlalchemy import or_
 import sqlalchemy.orm.exc
 from src.usermanagement_service.models.user_model import UsersModel
 from src.usermanagement_service import user_management_logger
 
 
-def is_userid_exists(session_instance: sqlalchemy.orm.Session, userid) -> tuple[int, bool]:
+def is_userid_exists_in_db(session_instance, userid) -> tuple[int, Union[bool, None]]:
     user_management_logger.info(f"Querying Userid in the Database to check the if user exists :: {userid}")
     is_user_exists = False
     try:
         user_row = session_instance.query(UsersModel).get(userid)
         if user_row is not None:
             is_user_exists = True
+        else:
+            is_user_exists = False
         user_management_logger.info(f"Result for the Query Response :: {userid} - {is_user_exists}")
         return userid, is_user_exists
     except sqlalchemy.orm.exc.NoResultFound as ex:
         user_management_logger.error(f"Result for the Query Response :: {userid} - {is_user_exists}")
         user_management_logger.exception(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
-        return userid, is_user_exists
+        return userid, None
 
 
-def is_username_email_already_exists_in_db(
-    session_instance, uname: str, email: str
-) -> bool:
-    is_username_email_already_exists_status = False
-    user_management_logger.info(
-        "Querying UserName :: {0} , Email :: {1} in the Database to check the if already exists :: ".format(
-            uname, email
-        )
-    )
+def is_username_email_already_exists_in_db(session_instance, uname: str, email: str) -> Union[bool, None]:
+    user_management_logger.info(f"Querying UserName :: %s , Email :: %s in the Database to check the if already exists :: ",uname, email)
     try:
-        user_row = (
-            session_instance.query(UsersModel)
-            .filter(or_(UsersModel.Username == uname, UsersModel.Email == email))
-            .first()
-        )
-        if user_row is not None:
-            is_username_email_already_exists_status = True
-            user_management_logger.info(
-                "Result for the Query Response :: {0}".format(
-                    is_username_email_already_exists_status
-                )
-            )
-            return is_username_email_already_exists_status
+        user_row = (session_instance.query(UsersModel).filter(or_(UsersModel.Username == uname, UsersModel.Email == email)).first())
+        if user_row is None:
+            is_username_email_already_exists = False
         else:
-            user_management_logger.info(
-                "Result for the Query Response :: {0}".format(
-                    is_username_email_already_exists_status
-                )
-            )
+            is_username_email_already_exists = True
+        user_management_logger.info(f"Result for the Query Response %s :: ",is_username_email_already_exists)
+        return is_username_email_already_exists
     except sqlalchemy.orm.exc.NoResultFound as ex:
-        user_management_logger.error(
-            "Result for the Query Response :: {0}".format(False)
-        )
-        print(
-            "Error occurred :: {0}\tLine No:: {1}".format(
-                ex, sys.exc_info()[2].tb_lineno
-            )
-        )
-    return is_username_email_already_exists_status
+        user_management_logger.error("Result for the Query Response :: {0}".format(False))
+        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        return None
+
 
 
 def convert_db_model_to_resp(model_instance: object) -> dict:

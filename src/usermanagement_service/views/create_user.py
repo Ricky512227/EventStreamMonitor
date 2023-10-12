@@ -1,20 +1,16 @@
 import sys
-from typing import Dict, Union, Any, Optional
+from typing import Union, Any, Optional
 
 import sqlalchemy.orm.exc
 from flask import request, make_response
 
-from src.pyportal_common.db_handlers.db_utilities import (
-    get_session_from_connection,
-    close_session,
-)
 from src.usermanagement_service.users.request_handlers.user import User
 from src.usermanagement_service import (
     user_management_logger,
     req_headers_schema,
     reg_user_req_schema,
     usermanager,
-    session_maker_obj,
+    app_manager_db_obj
 )
 from src.pyportal_common.error_handlers.invalid_request_handler import (
     send_invalid_request_error_to_client,
@@ -29,7 +25,6 @@ from src.usermanagement_service.utils.util_helpers import (
 from src.usermanagement_service.users.response_handlers.create_user_success_response import (
     generate_success_response,
 )
-from usermanagement_service.models.user_model import UsersModel
 
 
 def register_user():
@@ -53,7 +48,8 @@ def register_user():
                 3. Custom error response contains the information about headers related to missing/schema issue, with status code as 400,BAD_REQUEST
             """
             reg_header_result = usermanager.generate_req_missing_params(rec_req_headers, req_headers_schema)
-            if not reg_header_result:
+            print(reg_header_result, type(reg_header_result),len(reg_header_result))
+            if len(reg_header_result) > 0:
                 return send_invalid_request_error_to_client(app_logger_name=user_management_logger,message_data="Request Headers Missing",err_details=reg_header_result,)
 
             rec_req_data = request.get_json()
@@ -65,7 +61,7 @@ def register_user():
             body_result = usermanager.generate_req_missing_params(
                 rec_req_data, reg_user_req_schema
             )
-            if not body_result:
+            if len(body_result) > 0:
                 return send_invalid_request_error_to_client(
                     app_logger_name=user_management_logger,
                     message_data="Request Params Missing",
@@ -80,29 +76,20 @@ def register_user():
             password = rec_req_data["password"]
             dateofbirth = rec_req_data["dateOfBirth"]
             user_management_logger.info("Processing the request data... :: [STARTED]")
-            session_to_validate_existing_user = get_session_from_connection(
-                session_maker_to_get_session=session_maker_obj
-            )
+            session_to_validate_existing_user = app_manager_db_obj.get_session_from_session_maker()
             if session_to_validate_existing_user is None:
                 """
                 No need to close the connection/session if the timeout occurs during the session/connection creation.
                 If the queue is full, it will try to wait initiate/fetch connection from the overflows connections.
                 """
-                return send_internal_server_error_to_client(
-                    app_logger_name=user_management_logger,
-                    message_data="Create Session Failed",
-                )
+                return send_internal_server_error_to_client(app_logger_name=user_management_logger, message_data="Create Session Failed",)
             # Doing the pre-validation checks before procession the request.
-            if is_username_email_already_exists_in_db(
-                session_instance=session_to_validate_existing_user,
-                uname=username,
-                email=emailaddress,
-            ):
-                close_session(session_instance=session_to_validate_existing_user)
-                return send_invalid_request_error_to_client(
-                    app_logger_name=user_management_logger,
-                    message_data="Existing User",
-                )
+            if is_username_email_already_exists_in_db(session_instance=session_to_validate_existing_user, uname=username, email=emailaddress,) is None:
+                app_manager_db_obj.close_session(session_instance=session_to_validate_existing_user)
+                return send_internal_server_error_to_client(app_logger_name=user_management_logger, message_data="Db error")
+            if not is_username_email_already_exists_in_db:
+                app_manager_db_obj.close_session(session_instance=session_to_validate_existing_user)
+                return send_invalid_request_error_to_client(app_logger_name=user_management_logger, message_data="Existing User",)
             # Register user-logic begins here
             try:
                 user_obj = User(
@@ -129,24 +116,14 @@ def register_user():
                 """
                     Using the session begin the transaction, and add the user into the database using ORM.
                 """
-                session_to_create_new_user = get_session_from_connection(
-                    session_maker_to_get_session=session_maker_obj
-                )
+                session_to_create_new_user = app_manager_db_obj.get_session_from_session_maker()
                 if session_to_create_new_user is None:
-                    return send_internal_server_error_to_client(
-                        app_logger_name=user_management_logger,
-                        message_data="Create Session Failed",
-                    )
+                    return send_internal_server_error_to_client(app_logger_name=user_management_logger, message_data="Create Session Failed",)
                 with session_to_create_new_user.begin():
-                    user_db_record_to_insert: Union[
-                        Optional[UsersModel], Any
-                    ] = user_obj.map_user_instance_to_db_model()
+                    user_db_record_to_insert = user_obj.map_user_instance_to_db_model()
                     if user_db_record_to_insert is None:
-                        close_session(session_instance=session_to_create_new_user)
-                        return send_internal_server_error_to_client(
-                            app_logger_name=user_management_logger,
-                            message_data="User DB - Instance " "mapping Failed",
-                        )
+                        app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
+                        return send_internal_server_error_to_client(app_logger_name=user_management_logger, message_data="User DB - Instance mapping Failed",)
                     """ 
                         Add the user model to the database and commit the changes
                         Any exception occur, logs the exception and sends back the error response to the client as internal_server_error
@@ -173,7 +150,7 @@ def register_user():
                         )
 
                     except sqlalchemy.exc.IntegrityError as ex:
-                        close_session(session_instance=session_to_create_new_user)
+                        app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
                         print(
                             "Error occurred :: {0}\tLine No:: {1}".format(
                                 ex, sys.exc_info()[2].tb_lineno
@@ -188,7 +165,7 @@ def register_user():
                         """
                         user_instance = convert_db_model_to_resp(model_instance=user_db_record_to_insert)
                         if not user_instance:
-                            close_session(session_instance=session_to_create_new_user)
+                            app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
                             return send_internal_server_error_to_client(
                                 app_logger_name=user_management_logger,
                                 message_data="User Response creation " "Failed",
@@ -196,7 +173,7 @@ def register_user():
 
                         custom_user_response_body = generate_success_response(user_instance)
                         if len(custom_user_response_body) == 0:
-                            close_session(session_instance=session_to_create_new_user)
+                            app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
                             return send_internal_server_error_to_client(
                                 app_logger_name=user_management_logger,
                                 message_data="User success Response creation Failed",
@@ -206,7 +183,7 @@ def register_user():
                         reg_usr_response.headers["Cache-Control"] = "no-cache"
                         reg_usr_response.headers["location"] = locationheader
                         reg_usr_response.status_code = 201
-                        close_session(session_instance=session_to_create_new_user)
+                        app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
                         user_management_logger.info(
                             f"Prepared success response and sending back to client  {reg_usr_response}:: [STARTED]"
                         )

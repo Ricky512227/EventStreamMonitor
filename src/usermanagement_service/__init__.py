@@ -4,9 +4,6 @@ import sys
 from logging import Logger
 from flask import Flask, Blueprint
 from dotenv import load_dotenv
-from src.pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import (
-    PyPortalKafkaProducer,
-)
 from src.pyportal_common.logging_handlers.base_logger import LogMonitor
 from src.pyportal_common.app_handlers.app_manager import AppHandler
 from src.usermanagement_service.models.user_model import UserBase
@@ -119,10 +116,10 @@ try:
         )
         from src.pyportal_common.db_handlers.db_init import start_database_creation_work
 
-        session_maker_obj = start_database_creation_work(
+        app_manager_db_obj = start_database_creation_work(
             user_management_logger, UserBase, usermanager_app
         )
-        if session_maker_obj:
+        if app_manager_db_obj:
             from src.usermanagement_service.views.create_user import (
                 register_user,
             )
@@ -142,40 +139,19 @@ try:
             usermanager.display_registered_blueprints_for_service(
                 app_instance=usermanager_app
             )
-
-            from src.pyportal_common.grpc_service_handlers.grpc_server_handler.grpc_base_server import (
-                PyPortalGrpcBaseServer,
+            from src.usermanagement_service.user_management_grpc.init_grpc_usermanagement_server import (
+                start_user_management_grpc_server,
             )
 
-            from src.proto_def.token_proto_v1.token_pb2_grpc import (
-                add_UserValidationForTokenGenerationServiceServicer_to_server,
+            user_management_grpc_server = start_user_management_grpc_server(user_management_logger)
+
+            from src.usermanagement_service.user_management_kafka.init_kafka_usermangement_producer import (
+                start_user_management_kafka_producer,
             )
 
-            from src.usermanagement_service.user_management_grpc.user_grpc_server import (
-                UserValidationForTokenGenerationService,
-            )
-            from src.pyportal_common.grpc_service_handlers.grpc_server_handler.grpc_base_server_init import (
-                init_pyportal_grpc_base_server,
-            )
-
-            my_grpc_server = init_pyportal_grpc_base_server(user_management_logger)
-            if my_grpc_server:
-                my_grpc_server.bind_ip_port_server()
-                if my_grpc_server is not None:
-                    my_grpc_server.bind_rpc_method_server(
-                        name_service_servicer_to_server=add_UserValidationForTokenGenerationServiceServicer_to_server,
-                        name_service=UserValidationForTokenGenerationService,
-                    )
-            from src.pyportal_common.kafka_service_handlers.producer_handlers.base_producer_init import (
-                init_pyportal_kafka_producer,
-            )
-
-            my_kafka_producer: PyPortalKafkaProducer = init_pyportal_kafka_producer(
+            user_management_kafka_producer = start_user_management_kafka_producer(
                 user_management_logger
             )
-            if my_kafka_producer:
-                pass
-
         else:
             print("Unable to start db")
     else:
