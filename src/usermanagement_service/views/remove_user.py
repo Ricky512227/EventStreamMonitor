@@ -29,7 +29,7 @@ def deregister_user(userid):
             user_management_app_logger.info(
                 f"Received Headers from the request :: {rec_req_headers}"
             )
-            """ 
+            """
                 1. Find the missing headers, any schema related issue related to headers in the request
                 2. If any missing headers or schema related issue , send the error response back to client.
                 3. Custom error response contains the information about headers related to missing/schema issue, with status code as 400,BAD_REQUEST

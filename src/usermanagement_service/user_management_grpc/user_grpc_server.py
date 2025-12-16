@@ -66,6 +66,7 @@ class UserValidationForTokenGenerationService(
                     context.set_code(grpc.StatusCode.INTERNAL)
                     context.set_details("Internal DB error")
                     user_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
-                user_management_logger.info(f"Packing and sending response back to gRPC Client :: {token_res_message}")
-                return token_res_message
+            user_management_logger.info(f"Packing and sending response back to gRPC Client :: {token_res_message}")
+            return token_res_message
         except Exception as ex:
+            pass

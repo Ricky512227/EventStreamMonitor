@@ -1,7 +1,7 @@
 """added indexand uniquecons for the token, userid
 
 Revision ID: b2645dcc2eb1
-Revises: 
+Revises:
 Create Date: 2023-09-08 13:09:33.052383
 
 """

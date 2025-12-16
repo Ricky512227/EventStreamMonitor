@@ -1,7 +1,7 @@
 """Add index to username and email
 
 Revision ID: 40c28f8c1faa
-Revises: 
+Revises:
 Create Date: 2023-09-07 23:01:00.296144
 
 """

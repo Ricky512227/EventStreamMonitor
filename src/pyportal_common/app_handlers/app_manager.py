@@ -46,20 +46,14 @@ class AppHandler:
             self.cmn_logger.error(
                 f"ImportError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-                f"ImportError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
-            )
             return None
         except TypeError as ex:
             self.cmn_logger.error(
                 f"TypeError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-                f"TypeError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
-            )
             return None
         except Exception as ex:
             self.cmn_logger.exception(
-                f"Exception occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
-            )
                 f"Exception occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -79,8 +73,6 @@ class AppHandler:
             jwt_instance = JWTManager(app_instance)
             return jwt_instance
         except Exception as ex:
-                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
-            )
             self.cmn_logger.exception(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
