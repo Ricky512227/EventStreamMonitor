@@ -20,13 +20,12 @@ class Token:
         try:
             self.user_cus_token = create_access_token(identity=self.user_id)
         except Exception as ex:
-            token_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            token_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return self.user_cus_token
 
     def add_token(self):
         try:
-            token_management_logger.info("Received :: userid :: {0}, username :: {1}, created_at :: {2}, updated_at :: {3}".format(self.user_id, self.user_name, self.created_at, self.updated_at))
+            token_management_logger.info(f"Received :: userid :: {self.user_id}, username :: {self.user_name}, created_at :: {self.created_at}, updated_at :: {self.updated_at}")
 
             self.token_obj = {
                             "userid": self.user_id,
@@ -37,12 +36,11 @@ class Token:
                             "token_type" : "bearer",
                             "expiry" : 10000
             }
-            token_management_logger.info("Returning :: {0} , ID :: {1}".format(self.token_obj, id(self.token_obj)))
-            token_management_logger.info("Instance creation for User :: [SUCCESS] :: {0}".format(self.token_obj))
+            token_management_logger.info(f"Returning :: {self.token_obj} , ID :: {id(self.token_obj)}")
+            token_management_logger.info(f"Instance creation for User :: [SUCCESS] :: {self.token_obj}")
         except Exception as ex:
-            token_management_logger.info("Instance creation for Token :: [FAILED] :: {0}".format(self.token_obj))
-            token_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            token_management_logger.info(f"Instance creation for Token :: [FAILED] :: {self.token_obj}")
+            token_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return self.token_obj
 
     @staticmethod
@@ -59,8 +57,7 @@ class Token:
             token_management_logger.info("Converting db model to response obj :: [SUCCESS]")
         except Exception as ex:
             token_management_logger.info("Converting db model to response obj :: [FAILED]")
-            token_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            token_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return model_dict
 
     @staticmethod
@@ -81,7 +78,6 @@ class Token:
             token_management_logger.info("Generating Success response  :: [SUCCESS]")
         except Exception as ex:
             token_management_logger.info("Generating Success response  :: [FAILED]")
-            token_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+            token_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return succ_res_dict
 

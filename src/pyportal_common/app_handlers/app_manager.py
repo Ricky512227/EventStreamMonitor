@@ -46,7 +46,6 @@ class AppHandler:
             self.cmn_logger.error(
                 f"ImportError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
                 f"ImportError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -54,7 +53,6 @@ class AppHandler:
             self.cmn_logger.error(
                 f"TypeError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
                 f"TypeError occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -62,7 +60,6 @@ class AppHandler:
             self.cmn_logger.exception(
                 f"Exception occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
                 f"Exception occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -82,7 +79,6 @@ class AppHandler:
             jwt_instance = JWTManager(app_instance)
             return jwt_instance
         except Exception as ex:
-            print(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             self.cmn_logger.exception(
@@ -108,7 +104,6 @@ class AppHandler:
             self.cmn_logger.exception(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -131,7 +126,6 @@ class AppHandler:
                 f"Registering blueprints to the service :: {app_instance}")
             return app_instance.register_blueprint(blueprint_instance)
         except Exception as ex:
-            print(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
@@ -151,7 +145,6 @@ class AppHandler:
                 self.cmn_logger.info(f"Added Blueprints :: {rule}")
         except Exception as ex:
             self.cmn_logger.exception(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
-            print(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
     def read_json_schema(
         self, schema_file_path: str
     ) -> tuple[bool, Union[dict[Any, Any], dict[str, Any], dict[str, str]]]:
@@ -175,17 +168,14 @@ class AppHandler:
             self.cmn_logger.error(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(f"Schema file not found: {schema_file_path}")
         except json.JSONDecodeError as ex:
             self.cmn_logger.error(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(f"Invalid JSON syntax in the schema file: {ex}")
         except Exception as ex:
             self.cmn_logger.exception(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
                 f"Error occurred :: {ex} \tLine No: {sys.exc_info()[2].tb_lineno}"
             )
         self.cmn_logger.info(f"Schema Validation {loaded_status}")
@@ -236,7 +226,6 @@ class AppHandler:
         except Exception as ex:
             missing_params_err_obj = {}
             self.cmn_logger.exception("Validation for Request is  :: [FAILED]")
-            print(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
         return missing_params_err_obj

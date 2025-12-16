@@ -31,4 +31,3 @@ if __name__ == "__main__":
         user_management_logger.exception(
             "Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno
         )
-        print("Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno)

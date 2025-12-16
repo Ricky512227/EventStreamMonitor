@@ -14,7 +14,6 @@ from src.usermanagement_service.models.user_model import UserBase
 try:
     # Set the registration service directory as the current dir
     currentDir = os.getcwd()
-    print(f"Current Directory :: {currentDir}")
     # Enable/Disable the env file path according to the environment,Read Schema Files of headers/requests for all the diff operations.
     user_management_env_filepath = os.path.join(currentDir, ".env.dev")
     reg_user_req_schema_filepath = os.path.join(
@@ -36,10 +35,8 @@ try:
     # getuser_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/getuser_headers_schema.json")
     # del_user_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/del_user_headers_schema.json")
 
-    print(f"Loading Env File path :: {user_management_env_filepath}")
     # Load the env file.
     if load_dotenv(user_management_env_filepath):
-        print(
             f"Environment variables file loaded from :: {user_management_env_filepath} "
         )
 
@@ -129,8 +126,5 @@ try:
             )
 
         else:
-            print("Unable to start db")
     else:
-        print(f"File not found or not loaded :: {user_management_env_filepath} ")
 except Exception as ex:
-    print(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")

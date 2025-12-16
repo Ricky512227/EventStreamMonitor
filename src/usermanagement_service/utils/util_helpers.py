@@ -34,8 +34,7 @@ def is_username_email_already_exists_in_db(session_instance, uname: str, email: 
         user_management_logger.info(f"Result for the Query Response %s :: ",is_username_email_already_exists)
         return is_username_email_already_exists
     except sqlalchemy.orm.exc.NoResultFound as ex:
-        user_management_logger.error("Result for the Query Response :: {0}".format(False))
-        print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+        user_management_logger.error(f"Result for the Query Response :: {False}")
         return None
 
 
@@ -57,13 +56,9 @@ def convert_db_model_to_resp(model_instance: object) -> dict:
     except Exception as ex:
         user_management_logger.error("Converting db model to response obj :: [FAILED]")
         user_management_logger.error(
-            "Error occurred :: {0}\tLine No:: {1}".format(
-                ex, sys.exc_info()[2].tb_lineno
-            )
+            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
-        print(
-            "Error occurred :: {0}\tLine No:: {1}".format(
-                ex, sys.exc_info()[2].tb_lineno
-            )
+        user_management_logger.error(
+            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
     return model_dict

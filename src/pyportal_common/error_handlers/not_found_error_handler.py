@@ -16,7 +16,7 @@ class PyPortalAdminNotFoundError(PyPortalAdminBaseError):
         for key, value in vars(self).items():
             self.cmn_logger.info(f"Initialized {key} with value: {value}")
         self.cmn_logger.info(
-            "Initialed PyPortalAdminBaseError object ID: {0}".format(id(self)))
+            f"Initialed PyPortalAdminBaseError object ID: {id(self)}")
 
     def get_custom_error(self):
         return self.error

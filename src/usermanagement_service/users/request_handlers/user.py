@@ -58,7 +58,6 @@ class User:
             user_management_logger.exception(
                 "Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno
             )
-            print("Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno)
             return self.user_dict
 
     def map_user_instance_to_db_model(self):
@@ -91,5 +90,4 @@ class User:
             user_management_logger.exception(
                 "Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno
             )
-            print("Error occurred :: %s\tLine No:: %s", ex, sys.exc_info()[2].tb_lineno)
             return self.user_map_db_instance

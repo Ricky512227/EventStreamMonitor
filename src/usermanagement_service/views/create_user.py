@@ -30,17 +30,15 @@ from src.usermanagement_service.users.response_handlers.create_user_success_resp
 def register_user():
     try:
         user_management_logger.info(
-            "REQUEST ==> Received Endpoint for the request:: {0}".format(
-                request.endpoint
-            )
+            f"REQUEST ==> Received Endpoint for the request:: {request.endpoint}"
         )
         user_management_logger.info(
-            "REQUEST ==> Received url for the request :: {0}".format(request.url)
+            f"REQUEST ==> Received url for the request :: {request.url}"
         )
         if request.method == "POST":
             rec_req_headers = dict(request.headers)
             user_management_logger.info(
-                "Received Headers from the request :: {0}".format(rec_req_headers)
+                f"Received Headers from the request :: {rec_req_headers}"
             )
             """ 
                 1. Find the missing headers, any schema related issue related to headers in the request
@@ -48,7 +46,6 @@ def register_user():
                 3. Custom error response contains the information about headers related to missing/schema issue, with status code as 400,BAD_REQUEST
             """
             reg_header_result = usermanager.generate_req_missing_params(rec_req_headers, req_headers_schema)
-            print(reg_header_result, type(reg_header_result),len(reg_header_result))
             if len(reg_header_result) > 0:
                 return send_invalid_request_error_to_client(app_logger_name=user_management_logger,message_data="Request Headers Missing",err_details=reg_header_result,)
 
@@ -130,20 +127,14 @@ def register_user():
                     """
                     try:
                         user_management_logger.info(
-                            "Data adding into  DataBase session {0}:: [STARTED]".format(
-                                user_db_record_to_insert
-                            )
+                            f"Data adding into  DataBase session {user_db_record_to_insert}:: [STARTED]"
                         )
                         session_to_create_new_user.add(user_db_record_to_insert)
                         user_management_logger.info(
-                            "Data added into  DataBase session {0}:: [SUCCESS]".format(
-                                user_db_record_to_insert
-                            )
+                            f"Data added into  DataBase session {user_db_record_to_insert}:: [SUCCESS]"
                         )
                         user_management_logger.info(
-                            "Added Data is committed into DataBase of session {0}:: [SUCCESS]".format(
-                                session_to_create_new_user
-                            )
+                            f"Added Data is committed into DataBase of session {session_to_create_new_user}:: [SUCCESS]"
                         )
                         locationheader = (
                             request.url + "/" + str(user_db_record_to_insert.ID)
@@ -151,10 +142,8 @@ def register_user():
 
                     except sqlalchemy.exc.IntegrityError as ex:
                         app_manager_db_obj.close_session(session_instance=session_to_create_new_user)
-                        print(
-                            "Error occurred :: {0}\tLine No:: {1}".format(
-                                ex, sys.exc_info()[2].tb_lineno
-                            )
+                        user_management_logger.error(
+                            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                         )
                         return send_internal_server_error_to_client(app_logger_name=user_management_logger, message_data="Database Error",)
                     else:
@@ -189,7 +178,7 @@ def register_user():
                         )
                         return reg_usr_response
             except Exception as ex:
-                print(
+                user_management_logger.error(
                     f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                 )
                 return send_internal_server_error_to_client(
@@ -197,7 +186,6 @@ def register_user():
                     message_data="Unknown error caused",
                 )
     except Exception as ex:
-        print(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return send_internal_server_error_to_client(
             app_logger_name=user_management_logger, message_data="Unknown error caused"
         )

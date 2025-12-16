@@ -43,18 +43,16 @@ class UserValidationForTokenGenerationService(
             #
             # return token_pb2.TokenResponseMessage(result="Task completed successfully")
 
-            user_management_logger.info("Received request from client ::\n{0}".format(request))
+            user_management_logger.info(f"Received request from client ::\n{request}")
             ctx_metadata = context.invocation_metadata()
             for ctx_metadata_id, ctx_metadata_data in ctx_metadata.itertems():
                 user_management_logger.info(f"Received context {ctx_metadata_id} from client :: {ctx_metadata_data}")
             deadline_remaining = context.time_remaining()
-            user_management_logger.info("Time remaining to process the request ::\n{0}".format(deadline_remaining))
+            user_management_logger.info(f"Time remaining to process the request ::\n{deadline_remaining}")
             token_res_message = token_pb2.TokenResponseMessage()
             token_res_message.user_id = request.user_id
             token_res_message.isvalid_user = False
             if context.deadline:
-                print("time.time()", time.time())
-                print("context.deadline.timestamp()", context.deadline.timestamp())
                 if time.time() > context.deadline.timestamp():
                     context.set_code(grpc.StatusCode.DEADLINE_EXCEEDED)
                     context.set_details("Deadline exceeded")
@@ -67,9 +65,7 @@ class UserValidationForTokenGenerationService(
                 except Exception as ex:
                     context.set_code(grpc.StatusCode.INTERNAL)
                     context.set_details("Internal DB error")
-                    user_management_logger.error("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                    print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
-                user_management_logger.info("Packing and sending response back to gRPC Client :: {0}".format(token_res_message))
+                    user_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
+                user_management_logger.info(f"Packing and sending response back to gRPC Client :: {token_res_message}")
                 return token_res_message
         except Exception as ex:
-            print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))

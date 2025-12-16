@@ -73,7 +73,6 @@ class DataBaseConnectionHandler:
             self.cmn_logger.error(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
             return self._database_uri
 
     def create_db_engine_for_service(
@@ -84,30 +83,22 @@ class DataBaseConnectionHandler:
             while _retries < self._max_retries:
                 try:
                     self.cmn_logger.info(
-                        "Creating DB-Engine using DatabaseURI for Service :: [{0}]".format(
-                            self.cmn_logger.name
-                        )
+                        f"Creating DB-Engine using DatabaseURI for Service :: [{self.cmn_logger.name}]"
                     )
                     app_instance.config["SQLALCHEMY_DATABASE_URI"] = self._prepare_database_uri()
                     db_engine: Engine = create_engine(
                         app_instance.config["SQLALCHEMY_DATABASE_URI"]
                     )
                     self.cmn_logger.info(
-                        "Created DB-Engine using DatabaseURI for Service :: [{0}]".format(
-                            db_engine
-                        )
+                        f"Created DB-Engine using DatabaseURI for Service :: [{db_engine}]"
                     )
                     return db_engine, True
                 except Exception as ex:
-                    print(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
+                    self.cmn_logger.error(
+                        f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                     )
                     self.cmn_logger.error(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
+                        f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                     )
                     _retries += 1
                     if _retries < self._max_retries:
@@ -119,14 +110,7 @@ class DataBaseConnectionHandler:
                         return None, False
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
-            )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None, False
 
@@ -134,59 +118,41 @@ class DataBaseConnectionHandler:
         try:
             if not database_exists(self._database_uri):
                 self.cmn_logger.info(
-                    "Database doesn't exists :: {0}".format(
-                        self._database_uri.split("/")[-1]
-                    )
+                    f"Database doesn't exists :: {self._database_uri.split('/')[-1]}"
                 )
                 create_database(self._database_uri)
                 self.cmn_logger.info(
-                    "Created the database :: {0}".format(
-                        self._database_uri.split("/")[-1]
-                    )
+                    f"Created the database :: {self._database_uri.split('/')[-1]}"
                 )
             else:
                 self.cmn_logger.info(
-                    "Database already exists :: {0}".format(
-                        self._database_uri.split("/")[-1]
-                    )
+                    f"Database already exists :: {self._database_uri.split('/')[-1]}"
                 )
             return True
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def bind_db_app(self, app_instance: flask.Flask) -> Union[SQLAlchemy, None]:
         try:
             self.cmn_logger.info(
-                "Binding SQLALCHEMY  to Application Instance for Service :: [{0}]".format(
-                    self.cmn_logger.name
-                )
+                f"Binding SQLALCHEMY  to Application Instance for Service :: [{self.cmn_logger.name}]"
             )
             app_db = SQLAlchemy(app=app_instance)
             self.cmn_logger.info(
-                "Bound SQLALCHEMY :: [{0}] to Application Instance for Service :: [{1}]".format(
-                    app_db, self.cmn_logger.name
-                )
+                f"Bound SQLALCHEMY :: [{app_db}] to Application Instance for Service :: [{self.cmn_logger.name}]"
             )
-            return app_db
+            return True
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def migrate_db_bind_app(
@@ -194,27 +160,19 @@ class DataBaseConnectionHandler:
     ) -> Union[Migrate, None]:
         try:
             self.cmn_logger.info(
-                "Binding the db :: [{0}] to app instance :: [{1}] for migrations".format(
-                    app_db, app_instance
-                )
+                f"Binding the db :: [{app_db}] to app instance :: [{app_instance}] for migrations"
             )
             migrate_instance = Migrate(app_instance, app_db)
             self.cmn_logger.info(
-                "Bound the db :: [{0}] to app instance :: [{1}] for migrations".format(
-                    app_db, app_instance
-                )
+                f"Bound the db :: [{app_db}] to app instance :: [{app_instance}] for migrations"
             )
             return migrate_instance
         except Exception as ex:
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def display_pool_info(self, connection_pool: QueuePool) -> None:
@@ -224,44 +182,32 @@ class DataBaseConnectionHandler:
                     "#---------------------------------[ POOL INFO ]----------------------------------------#"
                 )
                 self.cmn_logger.info(
-                    "Displaying Pool Info for Service ==>[{0}]".format(
-                        self.cmn_logger.name
-                    )
+                    f"Displaying Pool Info for Service ==>[{self.cmn_logger.name}]"
                 )
                 self.cmn_logger.info(
-                    "Current Pool Info :: {0} - ID: {1}".format(
-                        connection_pool, id(connection_pool)
-                    )
+                    f"Current Pool Info :: {connection_pool} - ID: {id(connection_pool)}"
                 )
                 self.cmn_logger.info(
-                    "Current Pool Size :: {0}".format(connection_pool.size())
+                    f"Current Pool Size :: {connection_pool.size()}"
                 )
                 self.cmn_logger.info(
-                    "Checked Out Connections from Pool: {0}".format(
-                        connection_pool.checkedin()
-                    )
+                    f"Checked Out Connections from Pool: {connection_pool.checkedin()}"
                 )
                 self.cmn_logger.info(
-                    "Checked in Connections available in Pool: {0}".format(
-                        connection_pool.checkedout()
-                    )
+                    f"Checked in Connections available in Pool: {connection_pool.checkedout()}"
                 )
                 self.cmn_logger.info(
-                    "Current Pool Overflow Info: {0}".format(connection_pool.overflow())
+                    f"Current Pool Overflow Info: {connection_pool.overflow()}"
                 )
                 self.cmn_logger.info(
                     "#---------------------------------[ POOL INFO ]----------------------------------------#"
                 )
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def check_db_connectivity_and_retry(
@@ -275,22 +221,16 @@ class DataBaseConnectionHandler:
                     break
                 else:
                     self.cmn_logger.info(
-                        "Going for retry .. RETRY_INTERVAL :: {0} sec".format(
-                            self._retry_interval
-                        )
+                        f"Going for retry .. RETRY_INTERVAL :: {self._retry_interval} sec"
                     )
                     time.sleep(self._retry_interval)
             return db_connection_status
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def _check_database_connectivity(
@@ -298,9 +238,7 @@ class DataBaseConnectionHandler:
     ) -> Union[bool, None]:
         db_connection_status = False
         self.cmn_logger.info(
-            "Current Connection status set to :: {0} for the service :: {1}".format(
-                db_connection_status, self.cmn_logger.name
-            )
+            f"Current Connection status set to :: {db_connection_status} for the service :: {self.cmn_logger.name}"
         )
         try:
             self.cmn_logger.info(
@@ -312,24 +250,18 @@ class DataBaseConnectionHandler:
             )
             db_connection_status = True
             self.cmn_logger.info(
-                "Current Connection status set to :: {0} for the service :: {1}".format(
-                    db_connection_status, self.cmn_logger.name
-                )
+                f"Current Connection status set to :: {db_connection_status} for the service :: {self.cmn_logger.name}"
             )
             db_connection.close()
             self.cmn_logger.info(
-                "Closing the Current Connection as the connection was established for the service :: {0}".format(
-                    self.cmn_logger.name
-                )
+                f"Closing the Current Connection as the connection was established for the service :: {self.cmn_logger.name}"
             )
         except sqlalchemy.exc.OperationalError as ex:
             self.cmn_logger.error(
-                "Current Connection status set to :: {0}".format(db_connection_status)
+                f"Current Connection status set to :: {db_connection_status}"
             )
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
         return db_connection_status
 
@@ -347,23 +279,14 @@ class DataBaseConnectionHandler:
             connection_status = True
             self.cmn_logger.info("Created the tables ...")
         except sqlalchemy.exc.OperationalError as ex:
-            self.cmn_logger.info(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
         except sqlalchemy.exc.TimeoutError as ex:
-            self.cmn_logger.info(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
         except Exception as ex:
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
-            )
             self.cmn_logger.error(
                 f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )

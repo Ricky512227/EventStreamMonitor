@@ -30,13 +30,11 @@ class PyPortalAdminBaseError(ABC):
             if self.error_details is not None:
                 error_res.update({"error_details": self.error_details})
             self.cmn_logger.info(
-                "Prepared Err_response :: [SUCCESS] : {0}".format(error_res))
+                f"Prepared Err_response :: [SUCCESS] : {error_res}")
             return error_res
         except Exception as ex:
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex,
-                    sys.exc_info()[2].tb_lineno))
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
 
     def serialize_prepared_error_response(
             self, prep_error_res: dict) -> Union[make_response, None]:

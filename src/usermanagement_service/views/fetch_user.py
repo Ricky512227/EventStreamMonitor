@@ -18,17 +18,15 @@ from pyportal_common.error_handlers.base_error_handler import (
 def get_user_info(userid):
     try:
         user_management_app_logger.info(
-            "REQUEST ==> Received Endpoint for the request:: {0}".format(
-                request.endpoint
-            )
+            f"REQUEST ==> Received Endpoint for the request:: {request.endpoint}"
         )
         user_management_app_logger.info(
-            "REQUEST ==> Received url for the request :: {0}".format(request.url)
+            f"REQUEST ==> Received url for the request :: {request.url}"
         )
         if request.method == "GET":
             rec_req_headers = dict(request.headers)
             user_management_app_logger.info(
-                "Received Headers from the request :: {0}".format(rec_req_headers)
+                f"Received Headers from the request :: {rec_req_headers}"
             )
             """ 
                 1. Find the missing headers, any schema related issue related to headers in the request
@@ -71,10 +69,8 @@ def get_user_info(userid):
                         return usr_not_found_err_res.send_response_to_client()
                 except sqlalchemy.exc.NoResultFound as ex:
                     usermanager.close_session(sessionname=get_user_management_session)
-                    print(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
+                    user_management_app_logger.error(
+                        f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                     )
                     db_err_res = PyPortalAdminInternalServerError(
                         message="Database Error", logger=user_management_app_logger
@@ -82,10 +78,8 @@ def get_user_info(userid):
                     return db_err_res.send_response_to_client()
                 except Exception as ex:
                     usermanager.close_session(sessionname=get_user_management_session)
-                    print(
-                        "Error occurred :: {0}\tLine No:: {1}".format(
-                            ex, sys.exc_info()[2].tb_lineno
-                        )
+                    user_management_app_logger.error(
+                        f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
                     )
                     internal_err_res = PyPortalAdminInternalServerError(
                         message="Internal Server Error",
@@ -120,9 +114,7 @@ def get_user_info(userid):
                     get_usr_response.headers["Cache-Control"] = "no-cache"
                     get_usr_response.status_code = 200
                     user_management_app_logger.info(
-                        "Prepared success response and sending back to client  {0}:: [STARTED]".format(
-                            get_usr_response
-                        )
+                        f"Prepared success response and sending back to client  {get_usr_response}:: [STARTED]"
                     )
                     usermanager.close_session(sessionname=get_user_management_session)
                     return get_usr_response
@@ -133,10 +125,8 @@ def get_user_info(userid):
                 return invalid_req_err_res.send_response_to_client()
 
     except Exception as ex:
-        print(
-            "Error occurred :: {0}\tLine No:: {1}".format(
-                ex, sys.exc_info()[2].tb_lineno
-            )
+        user_management_app_logger.error(
+            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
         invalid_req_err_res = PyPortalAdminInternalServerError(
             message="Unknown error caused", logger=user_management_app_logger

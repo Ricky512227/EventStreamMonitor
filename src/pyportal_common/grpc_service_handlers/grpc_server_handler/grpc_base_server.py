@@ -19,26 +19,20 @@ class PyPortalGrpcBaseServer:
         try:
             server_address = f"{self.grpc_server_ip}:{self.grpc_server_port}"
             self.base_grpc_server.add_insecure_port(server_address)
-            self.cmn_logger.info("Registered GRPC server :: {0}".format(server_address))
+            self.cmn_logger.info(f"Registered GRPC server :: {server_address}")
         except Exception as ex:
-            print(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+            self.cmn_logger.error(
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             self.cmn_logger.error(
-                "Error occurred :: {0}\tLine No:: {1}".format(
-                    ex, sys.exc_info()[2].tb_lineno
-                )
+                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
 
     def bind_rpc_method_server(self, name_service_servicer_to_server, name_service):
         if self.base_grpc_server is not None:
             name_service_servicer_to_server(name_service, self.base_grpc_server)
             self.cmn_logger.info(
-                "Registered RPC call to the server of :: {0} :: {1}".format(
-                    self.base_grpc_server, name_service
-                )
+                f"Registered RPC call to the server of :: {self.base_grpc_server} :: {name_service}"
             )
 
     def start_base_server(self):

@@ -146,7 +146,6 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
             TimeoutError,
             DatabaseError,
         ) as ex:
-            print(
                 f"{ex} error occurred while Fetching session from sessions of connections \tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None

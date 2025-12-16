@@ -75,13 +75,13 @@ class LogMonitor:
             self.logger.setLevel(self.log_level)
             self.logger.addHandler(file_handler)
             self.logger.info(
-                "Initialized logger for the service [{0}] :: [SUCCESS]".format(
-                    self.service_name))
+                f"Initialized logger for the service [{self.service_name}] :: [SUCCESS]"
+            )
         except Exception as ex:
-            print(
-                "Initialized logger for the service [{0}] :: [FAILED]".format(
-                    self.service_name))
-            print(
+            self.logger.error(
+                f"Initialized logger for the service [{self.service_name}] :: [FAILED]"
+            )
+            self.logger.error(
                 f"Error occurred :: {ex} \tLine No: {sys.exc_info()[2].tb_lineno}"
             )
             self.logger = logging.getLogger(__name__)

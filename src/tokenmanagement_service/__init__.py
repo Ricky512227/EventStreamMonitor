@@ -11,7 +11,6 @@ from src.tokenmanagement_service.models.token_model import Base
 try:
     # Set the registration service directory as the current dir
     currentDir = os.getcwd()
-    print("Current Directory :: {0}".format(currentDir))
     # Enable/Disable the env file path according to the environment,Read Schema Files of headers/requests for all the diff operations.
     user_management_env_filepath = os.path.join(currentDir, ".env.dev")
     reg_user_req_schema_filepath = os.path.join(currentDir, "schemas/requests/register_user/req_schema.json")
@@ -24,13 +23,11 @@ try:
     # reg_user_req_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/requests/register_user/req_schema.json")
     # req_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/reg_headers_schema.json")
     # getuser_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/getuser_headers_schema.json")
-    # del_user_headers_schema_filepath = os.path.join(currentDir, "src/usermanagement_service/schemas/headers/del_user_headers_schema.json")
+    # del_user_headers_schema_filepath = os.path.join(currentDir, "schemas/headers/del_user_headers_schema.json")
 
-    print("Loading Env File path :: {0}".format(user_management_env_filepath))
     # Load the env file.
     loaded = load_dotenv(user_management_env_filepath)
     if loaded:
-        print("Environment variables file loaded from :: {0} ".format(user_management_env_filepath))
         # Setting the env variable and binding to the application.
         FLASK_ENV = os.environ.get("FLASK_ENV")
         DEBUG = os.environ.get("DEBUG")
@@ -81,7 +78,6 @@ try:
 
 
         if usermanager_app is None:
-            print("App creation failed")
             sys.exit()
         # Create the blueprint for the user_management service
         usermanager_bp = usermanager.create_blueprint_instance()
@@ -130,15 +126,15 @@ try:
 
                         # Create/Initialise the user_management_grpc server for the user_management service
                         server = grpc.server(futures.ThreadPoolExecutor(max_workers=usermanager_app.config["USER_MANAGEMENT_GRPC_MAX_WORKERS"]))
-                        user_management_logger.info("Created GRPC server with the workers of max :: {0}".format(USER_MANAGEMENT_GRPC_MAX_WORKERS))
+                        user_management_logger.info(f"Created GRPC server with the workers of max :: {USER_MANAGEMENT_GRPC_MAX_WORKERS}")
                         token_pb2_grpc.add_UserValidationForTokenGenerationServiceServicer_to_server(UserValidationForTokenGenerationService(), server)
-                        user_management_logger.info("Registered GRPC server to the server :: {0}".format("UserValidationForTokenGenerationService"))
+                        user_management_logger.info(f"Registered GRPC server to the server :: {UserValidationForTokenGenerationService}")
                         server.add_insecure_port(usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] + ":" + usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"])
-                        user_management_logger.info("Starting GRPC server for the Token-User service with the IP & PORT:: {0}:{1}".format(usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"], usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"]))
+                        user_management_logger.info(f"Starting GRPC server for the Token-User service with the IP & PORT:: {usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_IP']}:{usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_PORT']}")
 
     else:
-        print("File not found or not loaded :: {0} ".format(user_management_env_filepath))
+        pass
 
 
 except Exception as ex:
-    print("Error occurred :: {0}\tLine No:: {1}".format(ex, sys.exc_info()[2].tb_lineno))
+    pass

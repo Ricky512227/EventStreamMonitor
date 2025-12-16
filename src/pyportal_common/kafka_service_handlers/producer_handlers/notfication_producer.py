@@ -25,10 +25,10 @@ class PyPortalKafkaProducer:
 
     def publish_data_to_producer(self, range_start, range_end):
         for i in range(range_start, range_end):
-            datastore = {"message": "Hello this is MSG :: {0}".format(i)}
+            datastore = {"message": f"Hello this is MSG :: {i}"}
             try:
                 self._send_data_to_topic(data_to_be_sent=datastore)
-                self.cmn_logger.info("Message sent :: {0}".format(i))
+                self.cmn_logger.info(f"Message sent :: {i}")
             except ValueError as e:
                 self.cmn_logger.error(e)
             time.sleep(1)
