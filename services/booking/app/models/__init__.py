@@ -1,4 +1,4 @@
-from app.models.booking_model import BookingBase
+from app.models.task_model import TaskModel, TaskBase
 
-__all__ = ["BookingBase"]
+__all__ = ['TaskModel', 'TaskBase']
 
