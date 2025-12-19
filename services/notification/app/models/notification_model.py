@@ -12,6 +12,7 @@ from sqlalchemy.schema import Sequence
 NotificationBase = declarative_base()
 
 
+# Handle edge case
 class NotificationLogModel(NotificationBase):
     __tablename__ = "notification_logs"
     ID = Column(
