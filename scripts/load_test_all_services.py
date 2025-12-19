@@ -17,7 +17,7 @@ SERVICES = {
     "usermanagement": {
         "url": "http://localhost:5001",
         "endpoints": {
-            "list": "/api/v1/airliner/getUser/1000",  # GET endpoint
+            "list": "/api/v1/eventstreammonitor/users/1000",  # GET endpoint
             "health": "/health"
         },
         "headers": {

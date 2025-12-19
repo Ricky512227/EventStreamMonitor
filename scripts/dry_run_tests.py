@@ -14,13 +14,13 @@ SERVICES = {
         "url": "http://localhost:5001",
         "port": 5001,
         "health_endpoint": "/health",
-        "test_endpoint": "/api/v1/airliner/registerUser"
+        "test_endpoint": "/api/v1/eventstreammonitor/users/register"
     },
-    "booking": {
+    "taskprocessing": {
         "url": "http://localhost:5002",
         "port": 5002,
         "health_endpoint": "/health",
-        "test_endpoint": "/api/v1/airliner/bookings"
+        "test_endpoint": "/api/v1/eventstreammonitor/tasks"
     },
     "notification": {
         "url": "http://localhost:5003",
