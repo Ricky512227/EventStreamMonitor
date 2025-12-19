@@ -11,7 +11,7 @@ services:
     volumes:
       - registration-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,7 +28,7 @@ services:
     volumes:
       - auth-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,7 +45,7 @@ services:
     volumes:
       - taskprocessing-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -62,7 +62,7 @@ services:
     volumes:
       - notification-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -112,8 +112,27 @@ services:
       - USER_MANAGEMENT_SERVER_PORT=9091
       - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@registration-db:5432/REGISTRATIONS
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      # Database connection configuration
+      - SERVICE_NAME=usermanagement
+      - DB_DRIVER_NAME=postgresql
+      - DB_USER=airlineradmin
+      - DB_PASSWORD=testeventstreammonitor#123
+      - DB_IPADDRESS=registration-db
+      - DB_PORT=5432
+      - DB_NAME=REGISTRATIONS
+      # Connection pool configuration (optimized for 4 workers × 2 threads = 8 concurrent requests)
+      - POOL_SIZE=10
+      - MAX_OVERFLOW=5
+      - POOL_RECYCLE=3600
+      - POOL_TIMEOUT=30
+      - RETRY_INTERVAL=5
+      - MAX_RETRIES=3
+      # Gunicorn configuration
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -135,8 +154,27 @@ services:
       - TASKPROCESSING_SERVER_PORT=9092
       - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@taskprocessing-db:5432/TASK_PROCESSING
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      # Database connection configuration
+      - SERVICE_NAME=taskprocessing
+      - DB_DRIVER_NAME=postgresql
+      - DB_USER=airlineradmin
+      - DB_PASSWORD=testeventstreammonitor#123
+      - DB_IPADDRESS=taskprocessing-db
+      - DB_PORT=5432
+      - DB_NAME=TASK_PROCESSING
+      # Connection pool configuration (optimized for 4 workers × 2 threads = 8 concurrent requests)
+      - POOL_SIZE=10
+      - MAX_OVERFLOW=5
+      - POOL_RECYCLE=3600
+      - POOL_TIMEOUT=30
+      - RETRY_INTERVAL=5
+      - MAX_RETRIES=3
+      # Gunicorn configuration
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9092/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9092/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -158,8 +196,27 @@ services:
       - NOTIFICATION_SERVER_PORT=9093
       - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@notification-db:5432/NOTIFICATIONS
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      # Database connection configuration
+      - SERVICE_NAME=notification
+      - DB_DRIVER_NAME=postgresql
+      - DB_USER=airlineradmin
+      - DB_PASSWORD=testeventstreammonitor#123
+      - DB_IPADDRESS=notification-db
+      - DB_PORT=5432
+      - DB_NAME=NOTIFICATIONS
+      # Connection pool configuration (optimized for 4 workers × 2 threads = 8 concurrent requests)
+      - POOL_SIZE=10
+      - MAX_OVERFLOW=5
+      - POOL_RECYCLE=3600
+      - POOL_TIMEOUT=30
+      - RETRY_INTERVAL=5
+      - MAX_RETRIES=3
+      # Gunicorn configuration
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9093/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9093/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
