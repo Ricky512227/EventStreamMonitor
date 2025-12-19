@@ -11,8 +11,7 @@ This document describes the microservices architecture for the Airliner Administ
 - **Database**: `REGISTRATIONS` (PostgreSQL)
 - **Endpoints**:
   - `POST /api/v1/airliner/registerUser` - Register new user
-  - `GET /api/v1/airliner/getUser/<id>` - Get user info
-  - `DELETE /api/v1/airliner/deleteUser/<id>` - Delete user
+  - (Note: Other endpoints may use different URL patterns - check service code for current routes)
 - **gRPC**: User validation for token generation
 - **Kafka**: Publishes user registration events
 
@@ -21,15 +20,19 @@ This document describes the microservices architecture for the Airliner Administ
 - **Port**: TBD
 - **Database**: Separate PostgreSQL database
 - **Endpoints**:
-  - `POST /api/v1/airliner/login` - User login
-  - `POST /api/v1/airliner/generateToken` - Generate JWT token
+  - `POST /api/v1/airliner/login` - User login (check service code for current routes)
+  - `POST /api/v1/airliner/generateToken` - Generate JWT token (check service code for current routes)
 - **gRPC**: Token validation service
 
 ### 3. Task Processing Service
 - **Purpose**: Handles task management and processing operations
 - **Port**: 5002 (9092 internal)
 - **Database**: `TASK_PROCESSING` (PostgreSQL)
-- **Endpoints**: Task management API endpoints
+- **Endpoints**:
+  - `POST /api/v1/eventstreammonitor/tasks` - Create task
+  - `GET /api/v1/eventstreammonitor/tasks` - List tasks
+  - `GET /api/v1/eventstreammonitor/tasks/<id>` - Get task details
+  - `PUT /api/v1/eventstreammonitor/tasks/<id>/cancel` - Cancel task
 - **Kafka**: Publishes task processing events
 
 ### 4. Notification Service
