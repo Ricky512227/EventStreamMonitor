@@ -41,34 +41,37 @@ def add_helpful_comment(filepath):
         with open(filepath, 'r') as f:
             lines = f.readlines()
         
-        if len(lines) < 5:
+        if len(lines) < 10:
             return False
         
-        # Find a good spot to add comment (not in docstrings)
-        indices = [i for i, line in enumerate(lines) if line.strip().startswith('def ') and i > 0]
+        # Find functions or classes
+        indices = []
+        for i, line in enumerate(lines):
+            if (line.strip().startswith('def ') or line.strip().startswith('class ')) and i > 0:
+                # Check if there's already a comment above
+                if i > 0 and not lines[i-1].strip().startswith('#'):
+                    indices.append(i)
+        
         if not indices:
             return False
         
         idx = random.choice(indices)
         
-        # Check if there's already a comment
-        if idx > 0 and lines[idx-1].strip().startswith('#'):
-            return False
+        comments = [
+            "# Validate input before processing",
+            "# Handle edge case",
+            "# Clean up resources",
+            "# Process result",
+        ]
         
-        comment = "# " + random.choice([
-            "Handle edge case",
-            "Validate input before processing",
-            "Clean up resources",
-            "Better error handling needed here",
-        ])
-        
-        lines.insert(idx, comment + '\n')
+        comment = random.choice(comments) + '\n'
+        lines.insert(idx, comment)
         
         with open(filepath, 'w') as f:
             f.writelines(lines)
         
         return True
-    except Exception:
+    except Exception as e:
         return False
 
 
@@ -76,25 +79,27 @@ def improve_error_message(filepath):
     """Improve an error message to be more descriptive"""
     try:
         with open(filepath, 'r') as f:
-            content = f.read()
-        
-        # Look for generic error messages
-        improvements = {
-            'Error occurred': 'Operation failed',
-            'Failed': 'Request processing failed',
-            'Invalid': 'Invalid request parameters',
-        }
+            lines = f.readlines()
         
         changed = False
-        for old, new in improvements.items():
-            if old in content and random.random() > 0.7:
-                content = content.replace(old, new, 1)
-                changed = True
+        improvements = [
+            ('message_data="Database Error"', 'message_data="Database operation failed"'),
+            ('message_data="Error"', 'message_data="An error occurred"'),
+            ('"Unknown error caused"', '"An unexpected error occurred"'),
+        ]
+        
+        for i, line in enumerate(lines):
+            for old, new in improvements:
+                if old in line:
+                    lines[i] = line.replace(old, new, 1)
+                    changed = True
+                    break
+            if changed:
                 break
         
         if changed:
             with open(filepath, 'w') as f:
-                f.write(content)
+                f.writelines(lines)
             return True
         return False
     except Exception:
@@ -105,24 +110,23 @@ def update_docstring(filepath):
     """Add or update a docstring"""
     try:
         with open(filepath, 'r') as f:
-            content = f.read()
+            lines = f.readlines()
         
-        # Find functions without docstrings
-        if 'def ' in content and '"""' not in content[:500]:
-            # Add a simple docstring to first function
-            lines = content.split('\n')
-            for i, line in enumerate(lines):
-                if line.strip().startswith('def ') and i + 1 < len(lines):
-                    if not lines[i+1].strip().startswith('"""'):
-                        docstring = '    """' + random.choice([
-                            'Process the request',
-                            'Handle user input',
-                            'Validate data',
-                        ]) + '"""'
-                        lines.insert(i+1, docstring)
-                        with open(filepath, 'w') as f:
-                            f.write('\n'.join(lines))
-                        return True
+        # Find first function without docstring
+        for i, line in enumerate(lines):
+            if line.strip().startswith('def '):
+                # Check if next line is docstring
+                if i + 1 < len(lines) and not lines[i+1].strip().startswith('"""'):
+                    indent = len(line) - len(line.lstrip())
+                    docstring = ' ' * indent + '    """' + random.choice([
+                        'Process request',
+                        'Handle input',
+                        'Validate data',
+                    ]) + '"""\n'
+                    lines.insert(i+1, docstring)
+                    with open(filepath, 'w') as f:
+                        f.writelines(lines)
+                    return True
         return False
     except Exception:
         return False
@@ -134,15 +138,23 @@ def improve_logging(filepath):
         with open(filepath, 'r') as f:
             lines = f.readlines()
         
-        # Find error handling blocks
+        # Skip if this is a logger file
+        if 'logger' in filepath.lower() or 'logging' in filepath.lower():
+            return False
+        
+        # Check if logger is imported
+        has_logger = any('logger' in line.lower() for line in lines[:20])
+        if not has_logger:
+            return False
+        
+        # Find exception handling without logging
         for i, line in enumerate(lines):
-            if 'except' in line and i + 2 < len(lines):
-                if 'logger' in filepath.lower() or 'logging' in filepath.lower():
-                    continue
-                # Add logging if not present
-                if 'logger.' not in lines[i+1] and 'logger.' not in lines[i+2]:
+            if 'except' in line and 'Exception' in line and i + 3 < len(lines):
+                # Check if logging exists in next few lines
+                has_log = any('logger.' in lines[j] for j in range(i+1, min(i+5, len(lines))))
+                if not has_log:
                     indent = len(line) - len(line.lstrip())
-                    log_line = ' ' * (indent + 4) + 'logger.error(f"Error: {str(e)}")\n'
+                    log_line = ' ' * (indent + 4) + 'logger.error(f"Error processing request: {str(e)}")\n'
                     lines.insert(i+1, log_line)
                     with open(filepath, 'w') as f:
                         f.writelines(lines)
@@ -156,21 +168,27 @@ def make_change():
     """Make a small, realistic change"""
     filepath = get_random_file()
     if not filepath:
-        return False, None
+        return False, None, None
     
-    activity = random.choice(ACTIVITY_TYPES)
-    success = False
+    # Try different activities until one works
+    activities = random.sample(ACTIVITY_TYPES, len(ACTIVITY_TYPES))
     
-    if activity == "code_comment":
-        success = add_helpful_comment(filepath)
-    elif activity == "error_handling":
-        success = improve_error_message(filepath)
-    elif activity == "doc_update":
-        success = update_docstring(filepath)
-    elif activity == "log_improvement":
-        success = improve_logging(filepath)
+    for activity in activities:
+        if activity == "code_comment":
+            success = add_helpful_comment(filepath)
+        elif activity == "error_handling":
+            success = improve_error_message(filepath)
+        elif activity == "doc_update":
+            success = update_docstring(filepath)
+        elif activity == "log_improvement":
+            success = improve_logging(filepath)
+        else:
+            continue
+        
+        if success:
+            return True, filepath, activity
     
-    return success, filepath
+    return False, None, None
 
 
 def generate_commit_message(filepath, activity_type):
@@ -226,14 +244,13 @@ def main():
     print("Making a small improvement...")
     
     # Make a change
-    success, filepath = make_change()
+    success, filepath, activity = make_change()
     
     if not success or not filepath:
         print("No changes made this time")
         return 0
     
     # Generate commit message
-    activity = random.choice(ACTIVITY_TYPES)
     message = generate_commit_message(filepath, activity)
     
     print(f"Modified: {filepath}")
