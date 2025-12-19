@@ -25,18 +25,12 @@ This document describes the microservices architecture for the Airliner Administ
   - `POST /api/v1/airliner/generateToken` - Generate JWT token
 - **gRPC**: Token validation service
 
-### 3. Flight Booking Service
-- **Purpose**: Manages flight bookings, aeroplanes, and flight schedules
+### 3. Task Processing Service
+- **Purpose**: Handles task management and processing operations
 - **Port**: 5002 (9092 internal)
-- **Database**: `FLIGHT_BOOKINGS` (PostgreSQL)
-- **Endpoints**:
-  - `POST /api/v1/airliner/flights` - Create flight
-  - `GET /api/v1/airliner/flights` - List flights
-  - `GET /api/v1/airliner/flights/<id>` - Get flight details
-  - `POST /api/v1/airliner/bookings` - Create booking
-  - `GET /api/v1/airliner/bookings/<id>` - Get booking details
-  - `PUT /api/v1/airliner/bookings/<id>/cancel` - Cancel booking
-- **Kafka**: Publishes booking events (created, cancelled, confirmed)
+- **Database**: `TASK_PROCESSING` (PostgreSQL)
+- **Endpoints**: Task management API endpoints
+- **Kafka**: Publishes task processing events
 
 ### 4. Notification Service
 - **Purpose**: Handles all notifications via email, SMS, push notifications
@@ -45,8 +39,8 @@ This document describes the microservices architecture for the Airliner Administ
 - **Kafka Consumer**: Consumes events from other services
 - **Topics**:
   - `user-registration-events` - User registration notifications
-  - `booking-events` - Booking confirmation/cancellation notifications
-  - `flight-updates` - Flight schedule change notifications
+  - Task processing events
+  - Various service events
 
 ## Service Communication
 
@@ -57,31 +51,31 @@ This document describes the microservices architecture for the Airliner Administ
 ### Asynchronous Communication
 - **Kafka**: Event-driven communication between services
   - User Management → Notification Service (user registered)
-  - Flight Booking → Notification Service (booking created/cancelled)
+  - Task Processing → Notification Service (task events)
 
 ## Infrastructure
 
 ### Databases
 - `REGISTRATIONS` - User Management Service
 - `AUTH_TOKENS` - Token Management Service
-- `FLIGHT_BOOKINGS` - Flight Booking Service
+- `TASK_PROCESSING` - Task Processing Service
 - `NOTIFICATIONS` - Notification Service (logs)
 
 ### Message Broker
 - **Kafka**: Single Kafka cluster for all event streaming
-  - Topics: `user-registration-events`, `booking-events`, `flight-updates`
+  - Topics: Various event topics for service communication
 
 ## Deployment
 
 ### Docker Compose Services
 - `registration-db` - PostgreSQL for User Management
 - `auth-db` - PostgreSQL for Token Management
-- `booking-db` - PostgreSQL for Flight Booking
+- `taskprocessing-db` - PostgreSQL for Task Processing
 - `notification-db` - PostgreSQL for Notification logs
 - `kafka` - Kafka broker
 - `zookeeper` - Kafka dependency
 - `usermanagement-service` - User Management microservice
 - `auth-service` - Token Management microservice
-- `booking-service` - Flight Booking microservice
+- `taskprocessing-service` - Task Processing microservice
 - `notification-service` - Notification microservice
 

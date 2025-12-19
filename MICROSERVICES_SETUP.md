@@ -12,22 +12,21 @@ This guide explains how to set up and run all microservices in the Airliner Admi
   - `POST /api/v1/airliner/registerUser` - Register new user
 - **Kafka**: Publishes to `user-registration-events` topic
 
-### 2. Flight Booking Service
+### 2. Task Processing Service (formerly Booking Service)
 - **Port**: 5002 (external), 9092 (internal)
-- **Database**: `FLIGHT_BOOKINGS` (PostgreSQL on port 3306)
+- **Database**: `TASK_PROCESSING` (PostgreSQL on port 3306)
 - **Endpoints**:
-  - `POST /api/v1/airliner/bookings` - Create booking
-  - `GET /api/v1/airliner/bookings/<id>` - Get booking
-  - `PUT /api/v1/airliner/bookings/<id>/cancel` - Cancel booking
-- **Kafka**: Publishes to `booking-events` topic
+  - Task management endpoints
+  - API endpoints for task processing operations
+- **Kafka**: Publishes task-related events
 
 ### 3. Notification Service
 - **Port**: 5003 (external), 9093 (internal)
 - **Database**: `NOTIFICATIONS` (PostgreSQL on port 3307)
-- **Kafka Consumer**: Consumes from:
+- **Kafka Consumer**: Consumes from various event topics including:
   - `user-registration-events`
-  - `booking-events`
-  - `flight-updates`
+  - Task processing events
+  - Other service events
 
 ### 4. Token Management Service (Auth)
 - **Port**: TBD
@@ -43,10 +42,7 @@ This guide explains how to set up and run all microservices in the Airliner Admi
 ### Kafka
 - **Broker**: `kafka:29092` (internal), `localhost:9092` (external)
 - **Zookeeper**: Required for Kafka
-- **Topics**:
-  - `user-registration-events`
-  - `booking-events`
-  - `flight-updates`
+- **Topics**: Various event topics for service communication
 
 ## Running the Services
 
@@ -60,8 +56,8 @@ docker-compose up -d --build
 # User Management
 docker-compose up -d usermanagement-service
 
-# Flight Booking
-docker-compose up -d booking-service
+# Task Processing
+docker-compose up -d taskprocessing-service
 
 # Notification
 docker-compose up -d notification-service
@@ -79,7 +75,7 @@ docker-compose logs -f
 
 # Specific service
 docker-compose logs -f usermanagement-service
-docker-compose logs -f booking-service
+docker-compose logs -f taskprocessing-service
 docker-compose logs -f notification-service
 ```
 
@@ -103,30 +99,35 @@ curl -X POST http://localhost:5001/api/v1/airliner/registerUser \
   }'
 ```
 
-### Test Booking Creation
+### Test Task Processing Service
 ```bash
-curl -X POST http://localhost:5002/api/v1/airliner/bookings \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{
-    "userId": 1000,
-    "flightId": 1000,
-    "numberOfSeats": 2
-  }'
+# Check health endpoint
+curl http://localhost:5002/health
+
+# Check service endpoints as defined in the API
 ```
 
 ## Environment Variables
 
-Each service has its own `.env.dev` file:
-- `src/usermanagement_service/.env.dev`
-- `src/flightbooking_service/.env.dev`
-- `src/notification_service/.env.dev`
+Each service has its own environment configuration in `docker-compose.yml`:
+- Database connection pooling parameters (POOL_SIZE, MAX_OVERFLOW, etc.)
+- Gunicorn configuration (GUNICORN_WORKERS, GUNICORN_THREADS)
+- Service-specific settings
+
+## Performance Configuration
+
+All services are configured with:
+- **Gunicorn**: 4 workers × 2 threads per service
+- **Database Connection Pooling**: 10 base connections + 5 overflow per worker
+- **Target Capacity**: 1000-2000 requests/second per service instance
+
+See [PERFORMANCE_CONFIG.md](PERFORMANCE_CONFIG.md) for detailed configuration and scaling options.
 
 ## Next Steps
 
 1. **Complete Token Management Service**: Add to docker-compose
-2. **Add Flight Management**: Create endpoints for managing flights
-3. **Implement gRPC Communication**: For service-to-service calls
-4. **Add API Gateway**: For routing and authentication
-5. **Add Monitoring**: Prometheus, Grafana for observability
+2. **Implement gRPC Communication**: For service-to-service calls
+3. **Add API Gateway**: For routing and authentication
+4. **Add Monitoring**: Prometheus, Grafana for observability
+5. **Load Testing**: Use provided load testing scripts to verify performance
 
