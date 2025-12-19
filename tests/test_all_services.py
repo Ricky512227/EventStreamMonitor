@@ -56,16 +56,16 @@ def test_user_registration():
         )
         print(f"Status Code: {response.status_code}")
         if response.status_code in [200, 201]:
-            print(f"✓ User registered successfully")
+            print(f" User registered successfully")
             data = response.json()
             if "data" in data and "ID" in data["data"]:
                 return data["data"]["ID"]
             return True
         else:
-            print(f"✗ Registration failed: {response.text}")
+            print(f" Registration failed: {response.text}")
             return None
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f" Error: {e}")
         return None
 
 
@@ -90,16 +90,16 @@ def test_booking_creation(user_id, flight_id=1000):
         )
         print(f"Status Code: {response.status_code}")
         if response.status_code in [200, 201]:
-            print(f"✓ Booking created successfully")
+            print(f" Booking created successfully")
             data = response.json()
             if "booking" in data and "bookingId" in data["booking"]:
                 return data["booking"]["bookingId"]
             return True
         else:
-            print(f"✗ Booking creation failed: {response.text}")
+            print(f" Booking creation failed: {response.text}")
             return None
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f" Error: {e}")
         return None
 
 
@@ -117,13 +117,13 @@ def test_booking_retrieval(booking_id):
         )
         print(f"Status Code: {response.status_code}")
         if response.status_code == 200:
-            print(f"✓ Booking retrieved successfully")
+            print(f" Booking retrieved successfully")
             return True
         else:
-            print(f"✗ Booking retrieval failed: {response.text}")
+            print(f" Booking retrieval failed: {response.text}")
             return False
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f" Error: {e}")
         return False
 
 
@@ -132,7 +132,7 @@ def test_kafka_events():
     print("\n" + "="*60)
     print("TEST: Kafka Event Processing")
     print("="*60)
-    print("ℹ️  This test checks if notification service is consuming events")
+    print("ℹ  This test checks if notification service is consuming events")
     print("   Check notification service logs for event processing")
     
     # Wait a bit for events to be processed
@@ -151,24 +151,24 @@ def main():
     services_ok = True
     
     if check_service_health("User Management", "http://localhost:5001"):
-        print("✓ User Management Service: UP")
+        print(" User Management Service: UP")
     else:
-        print("✗ User Management Service: DOWN")
+        print(" User Management Service: DOWN")
         services_ok = False
     
     if check_service_health("Booking", "http://localhost:5002"):
-        print("✓ Booking Service: UP")
+        print(" Booking Service: UP")
     else:
-        print("✗ Booking Service: DOWN")
+        print(" Booking Service: DOWN")
         services_ok = False
     
     if check_service_health("Notification", "http://localhost:5003"):
-        print("✓ Notification Service: UP")
+        print(" Notification Service: UP")
     else:
-        print("⚠ Notification Service: DOWN (may be normal if no health endpoint)")
+        print(" Notification Service: DOWN (may be normal if no health endpoint)")
     
     if not services_ok:
-        print("\n⚠️  Some services are not responding. Please check:")
+        print("\n  Some services are not responding. Please check:")
         print("   docker-compose ps")
         print("   docker-compose logs [service-name]")
         return
@@ -188,10 +188,10 @@ def main():
         if booking_id:
             results["booking_retrieval"] = test_booking_retrieval(booking_id)
         else:
-            print("\n⚠️  Booking test skipped - flight may not exist")
+            print("\n  Booking test skipped - flight may not exist")
             results["booking_retrieval"] = None
     else:
-        print("\n⚠️  User registration failed - skipping booking tests")
+        print("\n  User registration failed - skipping booking tests")
         results["booking_creation"] = None
         results["booking_retrieval"] = None
     
@@ -209,19 +209,19 @@ def main():
     
     for test_name, result in results.items():
         if result is True:
-            print(f"✓ {test_name.replace('_', ' ').title()}: PASSED")
+            print(f" {test_name.replace('_', ' ').title()}: PASSED")
         elif result is False:
-            print(f"✗ {test_name.replace('_', ' ').title()}: FAILED")
+            print(f" {test_name.replace('_', ' ').title()}: FAILED")
         else:
             print(f"⊘ {test_name.replace('_', ' ').title()}: SKIPPED")
     
     print(f"\nResults: {passed}/{total} passed, {skipped} skipped")
     
     if passed == total:
-        print("\n🎉 All tests passed!")
+        print("\n All tests passed!")
         return 0
     else:
-        print("\n⚠️  Some tests failed or were skipped")
+        print("\n  Some tests failed or were skipped")
         return 1
 
 

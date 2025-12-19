@@ -86,12 +86,12 @@ redis_helper.cache_user(user_id, user, ttl=3600)
 
 # Get user (checks cache first)
 def get_user(user_id):
-    cached = redis_helper.get_cached_user(user_id)
-    if cached:
-        return cached
-    user = get_user_from_db(user_id)
-    redis_helper.cache_user(user_id, user)
-    return user
+ cached = redis_helper.get_cached_user(user_id)
+ if cached:
+ return cached
+ user = get_user_from_db(user_id)
+ redis_helper.cache_user(user_id, user)
+ return user
 ```
 
 ### Session Management
@@ -105,16 +105,16 @@ redis_helper = UserManagementRedisHelper()
 # Create session
 session_id = str(uuid.uuid4())
 redis_helper.create_session(
-    session_id=session_id,
-    user_id=123,
-    user_data={'username': 'john'},
-    ttl=3600
+ session_id=session_id,
+ user_id=123,
+ user_data={'username': 'john'},
+ ttl=3600
 )
 
 # Get session
 session = redis_helper.get_session(session_id)
 if session:
-    user_id = session['user_id']
+ user_id = session['user_id']
 ```
 
 ### Rate Limiting
@@ -126,13 +126,13 @@ redis_helper = UserManagementRedisHelper()
 
 # Check rate limit
 is_allowed, remaining = redis_helper.check_rate_limit(
-    key=f"api:user:{user_id}",
-    limit=10,  # 10 requests
-    window=60  # per minute
+ key=f"api:user:{user_id}",
+ limit=10, # 10 requests
+ window=60 # per minute
 )
 
 if not is_allowed:
-    return {"error": "Rate limit exceeded"}, 429
+ return {"error": "Rate limit exceeded"}, 429
 ```
 
 ## Environment Variables
@@ -140,10 +140,10 @@ if not is_allowed:
 Each service needs Redis configuration:
 
 ```bash
-REDIS_HOST=redis          # Redis hostname
-REDIS_PORT=6379          # Redis port
-REDIS_DB=0               # Redis database number (service-specific)
-REDIS_PASSWORD=          # Redis password (optional)
+REDIS_HOST=redis # Redis hostname
+REDIS_PORT=6379 # Redis port
+REDIS_DB=0 # Redis database number (service-specific)
+REDIS_PASSWORD= # Redis password (optional)
 ```
 
 ## Monitoring
@@ -181,7 +181,7 @@ KEYS booking:*
 
 ## Next Steps
 
-1. ✅ Redis is configured and ready
+1. Redis is configured and ready
 2. Integrate caching into your API endpoints
 3. Implement session management
 4. Add rate limiting where needed

@@ -13,10 +13,10 @@ def test_redis_import():
     print("[TEST 1] Testing Redis Client Import...")
     try:
         from common.pyportal_common.cache_handlers import RedisClient, get_redis_client
-        print("✓ Redis client imports successfully")
+        print(" Redis client imports successfully")
         return True
     except Exception as e:
-        print(f"✗ Failed to import Redis client: {e}")
+        print(f" Failed to import Redis client: {e}")
         return False
 
 
@@ -34,13 +34,13 @@ def test_redis_connection():
         )
         
         if redis_client.ping():
-            print("✓ Redis connection successful")
+            print(" Redis connection successful")
             return True, redis_client
         else:
-            print("✗ Redis ping failed")
+            print(" Redis ping failed")
             return False, None
     except Exception as e:
-        print(f"✗ Redis connection error: {e}")
+        print(f" Redis connection error: {e}")
         print("  (This is expected if Redis is not running)")
         return False, None
 
@@ -61,9 +61,9 @@ def test_redis_operations(redis_client):
         retrieved = redis_client.get(test_key)
         
         if retrieved == test_value:
-            print("✓ Set/Get operations working")
+            print(" Set/Get operations working")
         else:
-            print(f"✗ Set/Get failed: expected '{test_value}', got '{retrieved}'")
+            print(f" Set/Get failed: expected '{test_value}', got '{retrieved}'")
             return False
         
         # Test JSON operations
@@ -74,22 +74,22 @@ def test_redis_operations(redis_client):
         retrieved_json = redis_client.get_json(test_json_key)
         
         if retrieved_json == test_json_value:
-            print("✓ JSON operations working")
+            print(" JSON operations working")
         else:
-            print(f"✗ JSON operations failed")
+            print(f" JSON operations failed")
             return False
         
         # Test delete
         redis_client.delete(test_key, test_json_key)
         if not redis_client.exists(test_key) and not redis_client.exists(test_json_key):
-            print("✓ Delete operations working")
+            print(" Delete operations working")
         else:
-            print("✗ Delete operations failed")
+            print(" Delete operations failed")
             return False
         
         return True
     except Exception as e:
-        print(f"✗ Redis operations error: {e}")
+        print(f" Redis operations error: {e}")
         return False
 
 
@@ -100,7 +100,7 @@ def test_user_management_helper():
         from services.usermanagement.app.redis_helper import UserManagementRedisHelper
         
         helper = UserManagementRedisHelper()
-        print("✓ UserManagementRedisHelper imported successfully")
+        print(" UserManagementRedisHelper imported successfully")
         
         # Test caching (will fail if Redis not available, but that's ok)
         try:
@@ -109,7 +109,7 @@ def test_user_management_helper():
             cached = helper.get_cached_user(999)
             if cached:
                 helper.invalidate_user_cache(999)
-                print("✓ User caching operations working")
+                print(" User caching operations working")
             else:
                 print("⊘ User caching tested (Redis may not be running)")
         except Exception as e:
@@ -117,7 +117,7 @@ def test_user_management_helper():
         
         return True
     except Exception as e:
-        print(f"✗ Failed to import UserManagementRedisHelper: {e}")
+        print(f" Failed to import UserManagementRedisHelper: {e}")
         return False
 
 
@@ -128,10 +128,10 @@ def test_booking_helper():
         from services.booking.app.redis_helper import BookingRedisHelper
         
         helper = BookingRedisHelper()
-        print("✓ BookingRedisHelper imported successfully")
+        print(" BookingRedisHelper imported successfully")
         return True
     except Exception as e:
-        print(f"✗ Failed to import BookingRedisHelper: {e}")
+        print(f" Failed to import BookingRedisHelper: {e}")
         return False
 
 
@@ -172,20 +172,20 @@ def main():
     total = len(results)
     
     for test_name, result in results:
-        status = "✓ PASS" if result else "✗ FAIL"
+        status = " PASS" if result else " FAIL"
         print(f"{test_name:30} {status}")
     
     print(f"\nTotal: {passed}/{total} tests passed")
     print()
     
     if passed == total:
-        print("🎉 All Redis integration tests passed!")
+        print(" All Redis integration tests passed!")
         return 0
     elif passed >= total - 1:
-        print("⚠️  Most tests passed (connection test may fail if Redis is not running)")
+        print("  Most tests passed (connection test may fail if Redis is not running)")
         return 0
     else:
-        print("⚠️  Some tests failed")
+        print("  Some tests failed")
         return 1
 
 

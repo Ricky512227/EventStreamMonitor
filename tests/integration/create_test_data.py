@@ -74,17 +74,17 @@ def create_user(user_data):
         )
         
         if response.status_code == 201:
-            print(f"✓ Successfully created user: {user_data['username']}")
+            print(f" Successfully created user: {user_data['username']}")
             return True
         elif response.status_code == 400:
-            print(f"⚠ User might already exist: {user_data['username']} (Status: 400)")
+            print(f" User might already exist: {user_data['username']} (Status: 400)")
             return False
         else:
-            print(f"✗ Failed to create user: {user_data['username']} (Status: {response.status_code})")
+            print(f" Failed to create user: {user_data['username']} (Status: {response.status_code})")
             print(f"  Response: {response.text[:200]}")
             return False
     except Exception as e:
-        print(f"✗ Error creating user {user_data['username']}: {str(e)}")
+        print(f" Error creating user {user_data['username']}: {str(e)}")
         return False
 
 def main():

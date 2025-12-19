@@ -42,15 +42,15 @@ def check_service_health(service_name: str, config: Dict) -> Tuple[bool, str]:
         url = f"{config['url']}{config['health_endpoint']}"
         response = requests.get(url, timeout=5)
         if response.status_code == 200:
-            return True, f"✓ {service_name} is healthy (200 OK)"
+            return True, f" {service_name} is healthy (200 OK)"
         else:
-            return False, f"✗ {service_name} returned {response.status_code}"
+            return False, f" {service_name} returned {response.status_code}"
     except requests.exceptions.ConnectionError:
-        return False, f"✗ {service_name} connection refused (service may not be running)"
+        return False, f" {service_name} connection refused (service may not be running)"
     except requests.exceptions.Timeout:
-        return False, f"✗ {service_name} request timeout"
+        return False, f" {service_name} request timeout"
     except Exception as e:
-        return False, f"✗ {service_name} error: {str(e)}"
+        return False, f" {service_name} error: {str(e)}"
 
 
 def check_service_reachable(service_name: str, config: Dict) -> Tuple[bool, str]:
@@ -65,11 +65,11 @@ def check_service_reachable(service_name: str, config: Dict) -> Tuple[bool, str]
         sock.close()
         
         if result == 0:
-            return True, f"✓ {service_name} port {config['port']} is open"
+            return True, f" {service_name} port {config['port']} is open"
         else:
-            return False, f"✗ {service_name} port {config['port']} is not accessible"
+            return False, f" {service_name} port {config['port']} is not accessible"
     except Exception as e:
-        return False, f"✗ {service_name} socket error: {str(e)}"
+        return False, f" {service_name} socket error: {str(e)}"
 
 
 def test_user_registration() -> Tuple[bool, str]:
@@ -81,14 +81,14 @@ def test_user_registration() -> Tuple[bool, str]:
         # Just do a HEAD request to check if endpoint exists
         response = requests.head(url, timeout=5)
         # Any response means the service is responding
-        return True, f"✓ User registration endpoint is reachable"
+        return True, f" User registration endpoint is reachable"
     except requests.exceptions.ConnectionError:
-        return False, f"✗ User registration endpoint connection refused"
+        return False, f" User registration endpoint connection refused"
     except Exception as e:
         # Method not allowed (405) is fine - means endpoint exists
         if "405" in str(e) or "Method Not Allowed" in str(e):
-            return True, f"✓ User registration endpoint exists (405 Method Not Allowed is expected for HEAD)"
-        return False, f"✗ User registration endpoint error: {str(e)}"
+            return True, f" User registration endpoint exists (405 Method Not Allowed is expected for HEAD)"
+        return False, f" User registration endpoint error: {str(e)}"
 
 
 def main():
@@ -136,19 +136,19 @@ def main():
     try:
         url = f"{SERVICES['booking']['url']}{SERVICES['booking']['test_endpoint']}"
         response = requests.head(url, timeout=5)
-        print("✓ Booking endpoint is reachable")
+        print(" Booking endpoint is reachable")
         results.append(("API Endpoint", "booking", True))
     except:
-        print("✗ Booking endpoint connection refused")
+        print(" Booking endpoint connection refused")
         results.append(("API Endpoint", "booking", False))
     
     # Notification (check root)
     try:
         response = requests.get(SERVICES['notification']['url'], timeout=5)
-        print(f"✓ Notification service is reachable (status: {response.status_code})")
+        print(f" Notification service is reachable (status: {response.status_code})")
         results.append(("API Endpoint", "notification", True))
     except:
-        print("✗ Notification service connection refused")
+        print(" Notification service connection refused")
         results.append(("API Endpoint", "notification", False))
     
     print()
@@ -162,7 +162,7 @@ def main():
     total = len(results)
     
     for test_type, service, result in results:
-        status = "✓ PASS" if result else "✗ FAIL"
+        status = " PASS" if result else " FAIL"
         print(f"{test_type:20} {service:20} {status}")
     
     print()
@@ -170,10 +170,10 @@ def main():
     print()
     
     if passed == total:
-        print("🎉 All services are running and healthy!")
+        print(" All services are running and healthy!")
         return 0
     else:
-        print("⚠️  Some services are not responding. Check logs with:")
+        print("  Some services are not responding. Check logs with:")
         print("   docker-compose logs [service-name]")
         return 1
 

@@ -78,7 +78,7 @@ def create_kafka_producer(kafka_servers: str):
         )
         return producer
     except Exception as e:
-        print(f"❌ Failed to create Kafka producer: {e}")
+        print(f" Failed to create Kafka producer: {e}")
         return None
 
 
@@ -105,7 +105,7 @@ def send_error_to_kafka(producer, service_name: str, error_data: dict):
         future.get(timeout=5)  # Wait for send confirmation
         return True
     except Exception as e:
-        print(f"❌ Failed to send to Kafka: {e}")
+        print(f" Failed to send to Kafka: {e}")
         return False
 
 
@@ -124,7 +124,7 @@ def main():
     if not producer:
         return 1
     
-    print("✅ Kafka producer connected")
+    print(" Kafka producer connected")
     print()
     print("Streaming errors... (Press Ctrl+C to stop)")
     print("-" * 60)
@@ -139,7 +139,7 @@ def main():
                 count += 1
                 print(f"[{count}] {error['level']} - {service} - {error['message'][:50]}")
             else:
-                print(f"❌ Failed to send error event")
+                print(f" Failed to send error event")
             
             # Random interval between 2-5 seconds
             time.sleep(random.uniform(2, 5))
@@ -147,7 +147,7 @@ def main():
     except KeyboardInterrupt:
         print()
         print("-" * 60)
-        print(f"\n✅ Stopped. Sent {count} error events to Kafka")
+        print(f"\n Stopped. Sent {count} error events to Kafka")
         print()
         print("Check dashboard: http://localhost:5004")
     

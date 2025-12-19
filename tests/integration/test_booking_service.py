@@ -119,32 +119,32 @@ if __name__ == "__main__":
         total = 4
         
         if status_1 in [200, 201]:
-            print("Test 1 - Create Booking: ✓ PASSED")
+            print("Test 1 - Create Booking:  PASSED")
             passed += 1
         else:
-            print(f"Test 1 - Create Booking: ✗ FAILED (Status: {status_1})")
+            print(f"Test 1 - Create Booking:  FAILED (Status: {status_1})")
         
         if status_2 == 200:
-            print("Test 2 - Get Booking: ✓ PASSED")
+            print("Test 2 - Get Booking:  PASSED")
             passed += 1
         else:
-            print(f"Test 2 - Get Booking: ✗ FAILED (Status: {status_2})")
+            print(f"Test 2 - Get Booking:  FAILED (Status: {status_2})")
         
         if status_3 == 200:
-            print("Test 3 - Cancel Booking: ✓ PASSED")
+            print("Test 3 - Cancel Booking:  PASSED")
             passed += 1
         else:
-            print(f"Test 3 - Cancel Booking: ✗ FAILED (Status: {status_3})")
+            print(f"Test 3 - Cancel Booking:  FAILED (Status: {status_3})")
         
         if status_4 == 200:
-            print("Test 4 - Get Cancelled Booking: ✓ PASSED")
+            print("Test 4 - Get Cancelled Booking:  PASSED")
             passed += 1
         else:
-            print(f"Test 4 - Get Cancelled Booking: ✗ FAILED (Status: {status_4})")
+            print(f"Test 4 - Get Cancelled Booking:  FAILED (Status: {status_4})")
         
         print(f"\nTotal: {passed}/{total} tests passed")
     else:
-        print("\n⚠️  Booking creation failed. Make sure:")
+        print("\n  Booking creation failed. Make sure:")
         print("  1. Flight with ID 1000 exists in the database")
         print("  2. User with ID 1000 exists in the database")
         print("  3. Flight has available seats")

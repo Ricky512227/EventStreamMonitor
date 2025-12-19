@@ -129,7 +129,7 @@ def main():
     print("="*60)
     for test_name, status, passed in results:
         status_str = f"Status: {status}" if status else "Status: N/A"
-        result_str = "✓ PASSED" if passed else "✗ FAILED"
+        result_str = " PASSED" if passed else " FAILED"
         print(f"{test_name}: {result_str} ({status_str})")
     
     passed_count = sum(1 for _, _, passed in results if passed)

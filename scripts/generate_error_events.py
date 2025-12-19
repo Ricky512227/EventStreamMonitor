@@ -78,9 +78,9 @@ def main():
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         ))
         logger.addHandler(kafka_handler)
-        print("✅ Kafka log handler initialized")
+        print(" Kafka log handler initialized")
     except Exception as e:
-        print(f"❌ Failed to initialize Kafka handler: {e}")
+        print(f" Failed to initialize Kafka handler: {e}")
         print("Make sure Kafka is running and accessible")
         return 1
     
@@ -118,7 +118,7 @@ def main():
     
     print()
     print("-" * 60)
-    print(f"✅ Generated {num_errors} error events")
+    print(f" Generated {num_errors} error events")
     print()
     print("Check the dashboard at: http://localhost:5004")
     print("Or check Kafka topics:")

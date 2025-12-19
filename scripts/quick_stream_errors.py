@@ -67,10 +67,10 @@ def stream_errors():
             acks='all',
             retries=3
         )
-        print("✅ Connected to Kafka")
+        print(" Connected to Kafka")
         print()
     except Exception as e:
-        print(f"❌ Failed to connect to Kafka: {e}")
+        print(f" Failed to connect to Kafka: {e}")
         print("Make sure Kafka is running: docker-compose up -d kafka")
         return 1
     
@@ -97,9 +97,9 @@ def stream_errors():
             topic = 'application-logs-errors'
             future = producer.send(topic, log_data)
             future.get(timeout=5)  # Wait for confirmation
-            print(f"[{i}/{len(ERROR_EVENTS)}] ✅ {error['level']} - {error['service']}: {error['message'][:50]}")
+            print(f"[{i}/{len(ERROR_EVENTS)}]  {error['level']} - {error['service']}: {error['message'][:50]}")
         except Exception as e:
-            print(f"[{i}/{len(ERROR_EVENTS)}] ❌ Failed: {e}")
+            print(f"[{i}/{len(ERROR_EVENTS)}]  Failed: {e}")
         
         time.sleep(0.3)  # Small delay
     
@@ -108,7 +108,7 @@ def stream_errors():
     
     print()
     print("-" * 60)
-    print("✅ All error events sent to Kafka!")
+    print(" All error events sent to Kafka!")
     print()
     print("Next steps:")
     print("1. Check dashboard: http://localhost:5004")
