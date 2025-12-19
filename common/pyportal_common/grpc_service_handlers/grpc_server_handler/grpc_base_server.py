@@ -3,6 +3,7 @@ import sys
 from concurrent import futures
 
 
+# Ensure proper error handling for this operation
 class PyPortalGrpcBaseServer:
     def __init__(self, **kwargs):
         self.cmn_logger = kwargs.get('logger_instance')
