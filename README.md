@@ -8,22 +8,24 @@
 
 > Real-time microservices monitoring platform with Kafka event streaming, error tracking, and live dashboard.
 
-## 🎯 Overview
+## Overview
 
 EventStreamMonitor is a production-ready, real-time microservices monitoring platform that collects, streams, and visualizes application logs and errors across multiple services in real-time. Perfect for monitoring distributed systems and catching issues as they happen.
 
-## ✨ Features
+## Features
 
-- 🔄 **Real-time log collection** from multiple microservices
-- 📡 **Kafka-based event streaming** for scalable log processing
-- 🚨 **Automatic error filtering and tracking** (ERROR, CRITICAL levels)
-- 📊 **Live monitoring dashboard** with real-time updates
-- ⚡ **Redis caching** for performance optimization
-- 🐳 **Microservices architecture** with Docker containerization
-- 🔍 **Service-level error breakdown** and statistics
-- 📈 **Grafana-ready** for advanced visualization
+- **Real-time log collection** from multiple microservices
+- **Kafka-based event streaming** for scalable log processing
+- **Automatic error filtering and tracking** (ERROR, CRITICAL levels)
+- **Live monitoring dashboard** with real-time updates
+- **Redis caching** for performance optimization
+- **Database connection pooling** optimized for high-throughput workloads
+- **Gunicorn-based deployment** with multi-worker, multi-threaded configuration
+- **Microservices architecture** with Docker containerization
+- **Service-level error breakdown** and statistics
+- **Grafana-ready** for advanced visualization
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────┐
@@ -53,7 +55,7 @@ EventStreamMonitor is a production-ready, real-time microservices monitoring pla
 └─────────────────┘
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -91,7 +93,7 @@ python3 scripts/quick_stream_errors.py
 # View errors in dashboard at http://localhost:5004
 ```
 
-## 📦 Services
+## Services
 
 | Service | Port | Description |
 |---------|------|-------------|
@@ -100,25 +102,30 @@ python3 scripts/quick_stream_errors.py
 | **Notification** | 5003 | Event-driven notification system |
 | **Log Monitor** | 5004 | Real-time error monitoring dashboard |
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Python 3.9+, Flask
+- **WSGI Server**: Gunicorn (4 workers × 2 threads per service)
 - **Message Broker**: Apache Kafka
 - **Cache/Sessions**: Redis
-- **Databases**: PostgreSQL (per service)
+- **Databases**: PostgreSQL (per service, with connection pooling)
+- **Connection Pooling**: SQLAlchemy QueuePool (10 base + 5 overflow per worker)
 - **Containerization**: Docker, Docker Compose
 - **Monitoring**: Custom Dashboard, Grafana-ready
 - **API**: RESTful APIs
+- **Performance**: Optimized for 1000-2000 requests/second
 
-## 📚 Documentation
+## Documentation
 
 - [Quick Start Guide](QUICK_START.md) - Get up and running quickly
 - [Architecture Overview](MICROSERVICES_ARCHITECTURE.md) - System design details
 - [Setup Guide](MICROSERVICES_SETUP.md) - Detailed setup instructions
+- [Performance Configuration](PERFORMANCE_CONFIG.md) - Gunicorn and connection pooling setup
+- [Gunicorn Hierarchy](GUNICORN_HIERARCHY.md) - Understanding workers, threads, and connections
 - [Redis Integration](REDIS_SETUP.md) - Redis caching setup
 - [Log Monitoring](LOG_MONITORING_QUICKSTART.md) - Log monitoring system guide
 
-## 🔧 Development
+## Development
 
 ### Running Locally
 
@@ -145,32 +152,28 @@ cd tests
 python3 -m pytest integration/
 ```
 
-## 📊 Use Cases
+## Use Cases
 
 - **DevOps Monitoring**: Monitor multiple microservices from one dashboard
 - **Development & Debugging**: Real-time error visibility during development
 - **Production Monitoring**: Track errors and service health in production
 - **Learning & Portfolio**: Demonstrate microservices, Kafka, and monitoring skills
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Apache Kafka for event streaming
 - Flask for the web framework
 - Docker for containerization
 - Redis for caching
 
-## 📞 Contact
+## Contact
 
 For questions or suggestions, please open an issue on GitHub.
-
----
-
-⭐ If you find this project useful, please consider giving it a star!
