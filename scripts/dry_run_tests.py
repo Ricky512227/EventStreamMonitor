@@ -132,15 +132,15 @@ def main():
     print(message)
     results.append(("API Endpoint", "usermanagement", is_reachable))
     
-    # Booking (just check if endpoint exists)
+    # Task Processing (just check if endpoint exists)
     try:
-        url = f"{SERVICES['booking']['url']}{SERVICES['booking']['test_endpoint']}"
+        url = f"{SERVICES['taskprocessing']['url']}{SERVICES['taskprocessing']['test_endpoint']}"
         response = requests.head(url, timeout=5)
-        print(" Booking endpoint is reachable")
-        results.append(("API Endpoint", "booking", True))
-    except:
-        print(" Booking endpoint connection refused")
-        results.append(("API Endpoint", "booking", False))
+        print(f" Task processing endpoint is reachable (status: {response.status_code})")
+        results.append(("API Endpoint", "taskprocessing", True))
+    except Exception as e:
+        print(f" Task processing endpoint error: {str(e)}")
+        results.append(("API Endpoint", "taskprocessing", False))
     
     # Notification (check root)
     try:

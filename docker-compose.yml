@@ -213,7 +213,7 @@ services:
   logmonitor-service:
     build:
       context: .
-      dockerfile: services/logmonitor/Dockerfile
+      dockerfile: services/logmonitor/deployment/Dockerfile
     ports:
       - 5004:9094
     depends_on:
