@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "description": "User ID who creates the task"
+    },
+    "taskType": {
+      "type": "string",
+      "enum": ["data_processing", "file_upload", "report_generation", "data_export", "image_processing"],
+      "description": "Type of task to process"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Task-specific parameters (varies by task type)",
+      "properties": {
+        "fileUrl": {
+          "type": "string",
+          "description": "URL of file to process (for data_processing, file_upload)"
+        },
+        "operation": {
+          "type": "string",
+          "description": "Operation to perform (e.g., calculate_statistics, resize_image)"
+        },
+        "columns": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Columns to process (for data_processing)"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["csv", "json", "excel", "pdf"],
+          "description": "Output format (for data_export, report_generation)"
+        },
+        "filters": {
+          "type": "object",
+          "description": "Filter criteria for data export"
+        }
+      }
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium",
+      "description": "Task priority"
+    }
+  },
+  "required": ["userId"],
+  "additionalProperties": false
+}
+

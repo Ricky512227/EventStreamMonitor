@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "Content-Type": {
+      "type": "string",
+      "enum": ["application/json"]
+    }
+  },
+  "required": ["Content-Type"],
+  "additionalProperties": true
+}
+
