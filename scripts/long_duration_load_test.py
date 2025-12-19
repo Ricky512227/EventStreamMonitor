@@ -8,6 +8,7 @@ import time
 import json
 import statistics
 import sys
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Tuple
 from datetime import datetime, timedelta
@@ -327,7 +328,9 @@ def main():
     print("=" * 80)
     
     # Save results to file
-    results_file = f"long_load_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'results')
+    os.makedirs(results_dir, exist_ok=True)
+    results_file = os.path.join(results_dir, f"long_load_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
     results_data = {
         "test_duration_seconds": elapsed_time,
         "total_cycles": cycle_count,

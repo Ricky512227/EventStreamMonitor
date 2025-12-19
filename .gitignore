@@ -95,3 +95,7 @@ Thumbs.db
 *.zip
 *.tar.gz
 Archive/
+
+# Test results (keep directory structure but ignore JSON files)
+results/*.json
+!results/README.md
