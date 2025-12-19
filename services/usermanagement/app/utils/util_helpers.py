@@ -7,6 +7,7 @@ from app import user_management_logger
 
 
 def is_userid_exists_in_db(session_instance, userid) -> tuple[int, Union[bool, None]]:
+    """Process request"""
     user_management_logger.info(f"Querying Userid in the Database to check the if user exists :: {userid}")
     is_user_exists = False
     try:

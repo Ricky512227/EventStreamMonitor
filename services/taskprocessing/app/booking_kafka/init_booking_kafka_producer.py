@@ -3,6 +3,7 @@ from common.pyportal_common.kafka_service_handlers.producer_handlers.base_produc
 )
 
 
+# Clean up resources
 def start_booking_kafka_producer(booking_logger):
     """
     Initialize Kafka producer for booking service.
