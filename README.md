@@ -117,13 +117,28 @@ python3 scripts/quick_stream_errors.py
 
 ## Documentation
 
-- [Quick Start Guide](QUICK_START.md) - Get up and running quickly
-- [Architecture Overview](MICROSERVICES_ARCHITECTURE.md) - System design details
-- [Setup Guide](MICROSERVICES_SETUP.md) - Detailed setup instructions
-- [Performance Configuration](PERFORMANCE_CONFIG.md) - Gunicorn and connection pooling setup
-- [Gunicorn Hierarchy](GUNICORN_HIERARCHY.md) - Understanding workers, threads, and connections
-- [Redis Integration](REDIS_SETUP.md) - Redis caching setup
-- [Log Monitoring](LOG_MONITORING_QUICKSTART.md) - Log monitoring system guide
+### Quick Start
+- [Quick Start Guide](docs/setup/QUICK_START.md) - Get up and running quickly
+
+### Architecture
+- [Architecture Overview](docs/architecture/MICROSERVICES_ARCHITECTURE.md) - System design details
+- [Project Description](docs/architecture/PROJECT_DESCRIPTION.md) - Project overview
+- [Microservices Summary](docs/architecture/MICROSERVICES_SUMMARY.md) - Implementation summary
+
+### Setup Guides
+- [Microservices Setup](docs/setup/MICROSERVICES_SETUP.md) - Detailed setup instructions
+- [Redis Integration](docs/setup/REDIS_SETUP.md) - Redis caching setup
+- [Vault Setup](docs/setup/VAULT_SETUP.md) - Secret management setup
+- [Log Monitoring](docs/setup/LOG_MONITORING_QUICKSTART.md) - Log monitoring system guide
+
+### Performance
+- [Performance Configuration](docs/performance/PERFORMANCE_CONFIG.md) - Gunicorn and connection pooling setup
+- [Gunicorn Hierarchy](docs/performance/GUNICORN_HIERARCHY.md) - Understanding workers, threads, and connections
+
+### Build System
+- [Bazel Setup](docs/bazel/BAZEL_SETUP.md) - Bazel build system setup
+- [Bazel Quick Start](docs/bazel/BAZEL_QUICKSTART.md) - Quick start with Bazel
+- [Bazel Benefits](docs/bazel/BAZEL_BENEFITS.md) - Benefits of using Bazel
 
 ## Development
 
