@@ -11,32 +11,28 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..'))
 from common.pyportal_common.logging_handlers.base_logger import LogMonitor
 from common.pyportal_common.app_handlers.app_manager import AppHandler
 from app.app_configs import init_app_configs
-from app.models.booking_model import BookingBase
+from app.models.task_model import TaskBase
 
-# Initialize variables
 booking_logger = None
 booking_app = None
 booking_grpc_server = None
 booking_kafka_producer = None
 
 try:
-    # Set the booking service directory as the current dir
     service_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Schema file paths
     booking_req_schema_filepath = os.path.join(
         service_dir,
-        "schemas/requests/create_booking/"
+        "schemas/requests/create_task/"
         "req_schema.json"
     )
     booking_headers_schema_filepath = os.path.join(
         service_dir,
         "schemas/headers/"
-        "booking_headers_schema.json"
+        "task_headers_schema.json"
     )
 
-    # Initialize the logger for the booking service
-    booking_logger: Logger = LogMonitor("flightbooking").logger
+    booking_logger: Logger = LogMonitor("taskprocessing").logger
     booking_logger.info(
         "Environment variables loaded from docker-compose"
     )
@@ -50,7 +46,6 @@ try:
 
     init_app_configs(booking_app)
     
-    # Load and Validate Schema Files
     (
         booking_headers_schema_status,
         booking_headers_schema,
@@ -60,7 +55,6 @@ try:
         booking_req_schema,
     ) = booking_manager.read_json_schema(booking_req_schema_filepath)
     
-    # Export schemas for use in views
     __all__ = [
         "booking_logger",
         "booking_app",
@@ -71,7 +65,6 @@ try:
         "booking_kafka_producer",
     ]
 
-    # Create the blueprint for the booking service
     booking_bp: Blueprint = (
         booking_manager.create_blueprint_instance()
     )
@@ -81,7 +74,6 @@ try:
         )
         sys.exit()
     
-    # Create the jwt_manager for the booking service
     booking_app_jwt = booking_manager.bind_jwt_manger_to_app_instance(
         app_instance=booking_app
     )
@@ -91,11 +83,10 @@ try:
     )
 
     app_manager_db_obj = start_database_creation_work(
-        booking_logger, BookingBase, booking_app
+        booking_logger, TaskBase, booking_app
     )
     
     if app_manager_db_obj:
-        # Initialize Kafka producer for booking events
         booking_kafka_producer = None
         try:
             from app.booking_kafka import (
@@ -111,26 +102,32 @@ try:
                 f"Failed to initialize Kafka producer: {ex}"
             )
 
-        from app.views.create_booking import (
-            create_booking,
+        from app.views.create_task import (
+            create_task,
         )
-        from app.views.get_booking import (
-            get_booking,
+        from app.views.get_task import (
+            get_task,
         )
-        from app.views.cancel_booking import (
-            cancel_booking,
+        from app.views.list_tasks import (
+            list_tasks,
+        )
+        from app.views.cancel_task import (
+            cancel_task,
         )
 
         booking_bp.route(
-            "/api/v1/airliner/bookings", methods=["POST"]
-        )(create_booking)
+            "/api/v1/eventstreammonitor/tasks", methods=["POST"]
+        )(create_task)
         booking_bp.route(
-            "/api/v1/airliner/bookings/<int:booking_id>", methods=["GET"]
-        )(get_booking)
+            "/api/v1/eventstreammonitor/tasks", methods=["GET"]
+        )(list_tasks)
         booking_bp.route(
-            "/api/v1/airliner/bookings/<int:booking_id>/cancel",
+            "/api/v1/eventstreammonitor/tasks/<int:task_id>", methods=["GET"]
+        )(get_task)
+        booking_bp.route(
+            "/api/v1/eventstreammonitor/tasks/<int:task_id>/cancel",
             methods=["PUT"]
-        )(cancel_booking)
+        )(cancel_task)
 
         booking_manager.register_blueprint_for_service(
             app_instance=booking_app,

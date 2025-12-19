@@ -8,13 +8,13 @@ def init_app_configs(booking_app) -> None:
     booking_app.config["FLASK_APP"] = os.environ.get("FLASK_APP")
 
     booking_app.config[
-        "BOOKING_SERVER_IPADDRESS"
+        "TASK_PROCESSING_SERVER_IPADDRESS"
     ] = os.environ.get(
-        "BOOKING_SERVER_IPADDRESS"
+        "TASK_PROCESSING_SERVER_IPADDRESS"
     )
     booking_app.config[
-        "BOOKING_SERVER_PORT"
+        "TASK_PROCESSING_SERVER_PORT"
     ] = os.environ.get(
-        "BOOKING_SERVER_PORT"
+        "TASK_PROCESSING_SERVER_PORT"
     )
 
