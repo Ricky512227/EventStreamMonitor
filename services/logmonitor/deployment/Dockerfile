@@ -18,7 +18,7 @@ COPY common /app/common
 COPY services/logmonitor/app /app/app
 
 # Copy Gunicorn config and WSGI entry point
-COPY services/logmonitor/gunicorn_config.py /app/gunicorn_config.py
+COPY services/logmonitor/config/gunicorn_config.py /app/gunicorn_config.py
 COPY services/logmonitor/wsgi.py /app/wsgi.py
 
 # Create log directory and set permissions before switching user

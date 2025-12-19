@@ -32,7 +32,7 @@ py_binary(
 # py3_image(
 #     name = "logmonitor_docker",
 #     main = "wsgi.py",
-#     srcs = ["wsgi.py"] + glob(["gunicorn_config.py"]),
+#     srcs = ["wsgi.py"] + glob(["config/gunicorn_config.py"]),
 #     deps = [":logmonitor_lib"],
 # )
 
