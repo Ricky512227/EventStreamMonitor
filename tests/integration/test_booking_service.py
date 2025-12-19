@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-BASE_URL = "http://localhost:5002/api/v1/airliner/bookings"
+BASE_URL = "http://localhost:5002/api/v1/eventstreammonitor/tasks"
 HEADERS = {
     "Host": "localhost:5002",
     "User-Agent": "Mozilla/5.0",

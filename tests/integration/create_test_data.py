@@ -7,7 +7,7 @@ import json
 import time
 
 BASE_URL = "http://localhost:5001"
-REGISTER_ENDPOINT = f"{BASE_URL}/api/v1/airliner/registerUser"
+REGISTER_ENDPOINT = f"{BASE_URL}/api/v1/eventstreammonitor/users/register"
 
 # Required headers based on schema
 headers = {
@@ -25,7 +25,7 @@ test_users = [
         "username": "admin_user",
         "firstName": "Admin",
         "lastName": "User",
-        "email": "admin@airliner.com",
+        "email": "admin@eventstreammonitor.com",
         "password": "AdminPass123!",
         "dateOfBirth": "1985-01-01"
     },
@@ -33,7 +33,7 @@ test_users = [
         "username": "pilot_john",
         "firstName": "John",
         "lastName": "Pilot",
-        "email": "john.pilot@airliner.com",
+        "email": "john.pilot@eventstreammonitor.com",
         "password": "PilotPass456!",
         "dateOfBirth": "1990-05-15"
     },
@@ -41,7 +41,7 @@ test_users = [
         "username": "steward_mary",
         "firstName": "Mary",
         "lastName": "Steward",
-        "email": "mary.steward@airliner.com",
+        "email": "mary.steward@eventstreammonitor.com",
         "password": "StewardPass789!",
         "dateOfBirth": "1992-08-20"
     },

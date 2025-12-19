@@ -8,7 +8,7 @@ import sys
 
 # API endpoint
 BASE_URL = "http://localhost:5001"
-REGISTER_ENDPOINT = f"{BASE_URL}/api/v1/airliner/registerUser"
+REGISTER_ENDPOINT = f"{BASE_URL}/api/v1/eventstreammonitor/users/register"
 
 # Test users data
 test_users = [

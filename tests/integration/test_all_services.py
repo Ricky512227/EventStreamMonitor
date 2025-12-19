@@ -8,8 +8,8 @@ import time
 import sys
 
 # Service URLs
-USER_MGMT_URL = "http://localhost:5001/api/v1/airliner/registerUser"
-BOOKING_URL = "http://localhost:5002/api/v1/airliner/bookings"
+USER_MGMT_URL = "http://localhost:5001/api/v1/eventstreammonitor/users/register"
+TASK_URL = "http://localhost:5002/api/v1/eventstreammonitor/tasks"
 NOTIFICATION_URL = "http://localhost:5003"
 
 # Common headers
@@ -69,58 +69,58 @@ def test_user_registration():
         return None
 
 
-def test_booking_creation(user_id, flight_id=1000):
-    """Test booking creation"""
+def test_task_creation(user_id, task_id=1000):
+    """Test task creation"""
     print("\n" + "="*60)
-    print("TEST: Booking Creation")
+    print("TEST: Task Creation")
     print("="*60)
     
     payload = {
         "userId": user_id,
-        "flightId": flight_id,
-        "numberOfSeats": 1
+        "taskId": task_id,
+        "description": "Test task"
     }
     
     try:
         response = requests.post(
-            BOOKING_URL,
+            TASK_URL,
             headers={**HEADERS, "Host": "localhost:5002"},
             json=payload,
             timeout=10
         )
         print(f"Status Code: {response.status_code}")
         if response.status_code in [200, 201]:
-            print(f" Booking created successfully")
+            print(f" Task created successfully")
             data = response.json()
-            if "booking" in data and "bookingId" in data["booking"]:
-                return data["booking"]["bookingId"]
+            if "task" in data and "taskId" in data.get("task", {}):
+                return data["task"]["taskId"]
             return True
         else:
-            print(f" Booking creation failed: {response.text}")
+            print(f" Task creation failed: {response.text}")
             return None
     except Exception as e:
         print(f" Error: {e}")
         return None
 
 
-def test_booking_retrieval(booking_id):
-    """Test booking retrieval"""
+def test_task_retrieval(task_id):
+    """Test task retrieval"""
     print("\n" + "="*60)
-    print("TEST: Booking Retrieval")
+    print("TEST: Task Retrieval")
     print("="*60)
     
     try:
         response = requests.get(
-            f"{BOOKING_URL}/{booking_id}",
+            f"{TASK_URL}/{task_id}",
             headers={**HEADERS, "Host": "localhost:5002"},
             timeout=10
         )
         print(f"Status Code: {response.status_code}")
         if response.status_code == 200:
-            print(f" Booking retrieved successfully")
+            print(f" Task retrieved successfully")
             return True
         else:
-            print(f" Booking retrieval failed: {response.text}")
+            print(f" Task retrieval failed: {response.text}")
             return False
     except Exception as e:
         print(f" Error: {e}")
@@ -156,10 +156,10 @@ def main():
         print(" User Management Service: DOWN")
         services_ok = False
     
-    if check_service_health("Booking", "http://localhost:5002"):
-        print(" Booking Service: UP")
+    if check_service_health("Task Processing", "http://localhost:5002"):
+        print(" Task Processing Service: UP")
     else:
-        print(" Booking Service: DOWN")
+        print(" Task Processing Service: DOWN")
         services_ok = False
     
     if check_service_health("Notification", "http://localhost:5003"):
@@ -181,15 +181,15 @@ def main():
     results["user_registration"] = user_id is not None
     
     if user_id:
-        # Test booking (may fail if flight doesn't exist)
-        booking_id = test_booking_creation(user_id)
-        results["booking_creation"] = booking_id is not None
+        # Test task creation
+        task_id = test_task_creation(user_id)
+        results["task_creation"] = task_id is not None
         
-        if booking_id:
-            results["booking_retrieval"] = test_booking_retrieval(booking_id)
+        if task_id:
+            results["task_retrieval"] = test_task_retrieval(task_id)
         else:
-            print("\n  Booking test skipped - flight may not exist")
-            results["booking_retrieval"] = None
+            print("\n  Task test skipped")
+            results["task_retrieval"] = None
     else:
         print("\n  User registration failed - skipping booking tests")
         results["booking_creation"] = None
