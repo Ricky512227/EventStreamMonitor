@@ -184,13 +184,13 @@ try:
         #     deregister_user
         # )
         usermanager_bp.route(
-            "/api/v1/airliner/registerUser", methods=["POST"]
+            "/api/v1/eventstreammonitor/users/register", methods=["POST"]
         )(register_user)
         # usermanager_bp.route(
-        #     '/api/v1/airliner/getUser/<int:userid>', methods=['GET']
+        #     '/api/v1/eventstreammonitor/users/<int:userid>', methods=['GET']
         # )(get_user_info)
         # usermanager_bp.route(
-        #     '/api/v1/airliner/deleteUser/<int:userid>', methods=['DELETE']
+        #     '/api/v1/eventstreammonitor/users/<int:userid>', methods=['DELETE']
         # )(deregister_user)
 
         usermanager.register_blueprint_for_service(

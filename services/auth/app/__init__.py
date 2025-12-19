@@ -187,7 +187,7 @@ try:
                         )
 
                         usermanager_bp.route(
-                            '/api/v1/airliner/registerUser', methods=['POST']
+                            '/api/v1/eventstreammonitor/users/register', methods=['POST']
                         )(register_user)
 
 

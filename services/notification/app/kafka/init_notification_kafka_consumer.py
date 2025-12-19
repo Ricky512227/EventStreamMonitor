@@ -52,7 +52,7 @@ class NotificationKafkaConsumer:
 
             # Determine notification details based on event type
             if event_type == "user_registered":
-                subject = "Welcome to Airliner Administration"
+                subject = "Welcome to EventStreamMonitor"
                 message = (
                     f"Welcome {event_data.get('username', 'User')}! "
                     f"Your account has been successfully created."
