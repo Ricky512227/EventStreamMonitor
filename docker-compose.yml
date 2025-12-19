@@ -11,7 +11,7 @@ services:
     volumes:
       - registration-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,7 +28,7 @@ services:
     volumes:
       - auth-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,7 +45,7 @@ services:
     volumes:
       - taskprocessing-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -62,7 +62,7 @@ services:
     volumes:
       - notification-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      test: [CMD-SHELL, pg_isready -U airlineradmin]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -72,12 +72,12 @@ services:
     image: redis:7.2-alpine
     container_name: redis
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
       - redis-data:/data
     command: redis-server --appendonly yes
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -138,7 +138,7 @@ services:
       - GUNICORN_THREADS=2
       - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -171,7 +171,7 @@ services:
       - GUNICORN_THREADS=2
       - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9092/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9092/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -204,7 +204,7 @@ services:
       - GUNICORN_THREADS=2
       - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9093/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9093/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -231,7 +231,7 @@ services:
       - GUNICORN_THREADS=2
       - LOG_LEVEL=info
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9094/health', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:9094/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
