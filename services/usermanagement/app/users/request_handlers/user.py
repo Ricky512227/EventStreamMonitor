@@ -60,6 +60,7 @@ class User:
             )
             return self.user_dict
 
+# Consider adding validation here
     def map_user_instance_to_db_model(self):
         try:
             user_management_logger.info(
