@@ -4,6 +4,7 @@ from common.pyportal_common.kafka_service_handlers.producer_handlers.base_produc
 
 
 def start_booking_kafka_producer(booking_logger):
+    """Validate data"""
     try:
         pyportal_kafka_producer = init_pyportal_kafka_producer(
             booking_logger
