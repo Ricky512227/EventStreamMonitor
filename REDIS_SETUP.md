@@ -68,7 +68,7 @@ user = redis_helper.get_cached_user(123)
 | Service | Redis DB | Purpose |
 |---------|----------|---------|
 | User Management | 0 | User cache, sessions, rate limiting |
-| Booking | 1 | Booking cache, flight availability |
+| Task Processing | 1 | Task cache, task data |
 | Notification | 2 | Notification cache |
 
 ## Common Use Cases
@@ -176,7 +176,7 @@ KEYS user:*
 
 # Booking keys (DB 1)
 docker-compose exec redis redis-cli -n 1
-KEYS booking:*
+KEYS booking:*  # Legacy key pattern (task processing uses this pattern)
 ```
 
 ## Next Steps

@@ -25,7 +25,7 @@ Each service uses a separate Redis database to avoid key conflicts:
 | Service | Redis DB | Usage |
 |---------|----------|-------|
 | User Management | 0 | User cache, sessions, rate limiting |
-| Booking | 1 | Booking cache, flight availability |
+| Task Processing | 1 | Task cache, task data (legacy: BookingRedisHelper) |
 | Notification | 2 | Notification cache, delivery status |
 
 ## Usage Examples
@@ -77,28 +77,27 @@ is_allowed, remaining = redis_helper.check_rate_limit(
 )
 ```
 
-### Booking Service
+### Task Processing Service
 
 ```python
-from app.redis_helper import BookingRedisHelper
+from app.redis_helper import BookingRedisHelper  # Legacy class name, used for task processing
 
 # Initialize helper
 redis_helper = BookingRedisHelper()
 
-# Cache booking
-booking_data = {
-    'bookingId': 456,
+# Cache task data
+task_data = {
+    'taskId': 456,
     'userId': 123,
-    'flightId': 789,
-    'numberOfSeats': 2,
-    'status': 'confirmed'
+    'status': 'processing',
+    'details': {...}
 }
-redis_helper.cache_booking(456, booking_data, ttl=3600)
+redis_helper.cache_booking(456, task_data, ttl=3600)  # Legacy method name
 
-# Get cached booking
-cached_booking = redis_helper.get_cached_booking(456)
+# Get cached task
+cached_task = redis_helper.get_cached_booking(456)  # Legacy method name
 
-# Cache flight availability
+# Cache task-related data
 redis_helper.cache_flight_availability(
     flight_id=789,
     available_seats=10,
@@ -152,7 +151,7 @@ REDIS_PASSWORD=           # Redis password (optional)
 Each service uses its own Redis database:
 
 - **User Management**: `REDIS_DB=0`
-- **Booking**: `REDIS_DB=1`
+- **Task Processing**: `REDIS_DB=1`
 - **Notification**: `REDIS_DB=2`
 
 ## Caching Strategies
@@ -290,8 +289,8 @@ Use consistent key naming for easier management:
 - **Users**: `user:{user_id}`
 - **User Lookup**: `user:lookup:username:{username}`, `user:lookup:email:{email}`
 - **Sessions**: `session:{session_id}`
-- **Bookings**: `booking:{booking_id}`
-- **User Bookings**: `user:bookings:{user_id}`
+- **Tasks**: `booking:{task_id}` (legacy key pattern, used for task processing)
+- **User Tasks**: `user:bookings:{user_id}` (legacy key pattern)
 - **Flight Availability**: `flight:availability:{flight_id}`
 - **Rate Limits**: `rate_limit:{service}:{identifier}`
 

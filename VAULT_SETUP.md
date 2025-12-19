@@ -112,7 +112,7 @@ secret/
  db # Database credentials
  jwt # JWT secret key
  kafka # Kafka credentials
- booking/
+ taskprocessing/
  db
  external-api
  notification/
