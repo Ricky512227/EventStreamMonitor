@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Error Log Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .stat-card.error {
+            border-left-color: #f44336;
+        }
+        
+        .stat-card.warning {
+            border-left-color: #ff9800;
+        }
+        
+        .stat-card.info {
+            border-left-color: #2196F3;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .errors-container {
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .error-item {
+            background: #1e1e1e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #f44336;
+            transition: transform 0.2s;
+        }
+        
+        .error-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .error-level {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .error-level.ERROR {
+            background: #f44336;
+            color: white;
+        }
+        
+        .error-level.CRITICAL {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .error-service {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: #e0e0e0;
+            margin: 10px 0;
+        }
+        
+        .error-details {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .refresh-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #45a049;
+        }
+        
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .auto-refresh input {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🖥️ Real-Time Error Log Monitoring Dashboard</h1>
+        <p>Apache Kafka + Python + Real-Time Monitoring</p>
+    </div>
+    
+    <div class="auto-refresh">
+        <input type="checkbox" id="autoRefresh" checked>
+        <label for="autoRefresh">Auto-refresh (5 seconds)</label>
+        <button class="refresh-btn" onclick="loadData()">Refresh Now</button>
+    </div>
+    
+    <div class="stats" id="stats">
+        <!-- Stats will be loaded here -->
+    </div>
+    
+    <div class="errors-container">
+        <h2>Recent Errors</h2>
+        <div id="errors">
+            <!-- Errors will be loaded here -->
+        </div>
+    </div>
+    
+    <script>
+        let autoRefreshInterval;
+        
+        function loadData() {
+            // Load stats
+            fetch('/api/v1/logs/stats')
+                .then(res => res.json())
+                .then(data => {
+                    updateStats(data);
+                })
+                .catch(err => console.error('Error loading stats:', err));
+            
+            // Load errors
+            fetch('/api/v1/logs/errors?limit=50')
+                .then(res => res.json())
+                .then(data => {
+                    updateErrors(data.errors);
+                })
+                .catch(err => console.error('Error loading errors:', err));
+        }
+        
+        function updateStats(stats) {
+            const statsContainer = document.getElementById('stats');
+            statsContainer.innerHTML = `
+                <div class="stat-card error">
+                    <div class="stat-value">${stats.total_errors || 0}</div>
+                    <div class="stat-label">Total Errors</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value">${stats.recent_errors || 0}</div>
+                    <div class="stat-label">Errors (Last Hour)</div>
+                </div>
+                <div class="stat-card info">
+                    <div class="stat-value">${Object.keys(stats.by_service || {}).length}</div>
+                    <div class="stat-label">Affected Services</div>
+                </div>
+            `;
+        }
+        
+        function updateErrors(errors) {
+            const errorsContainer = document.getElementById('errors');
+            
+            if (errors.length === 0) {
+                errorsContainer.innerHTML = '<p style="color: #4CAF50; text-align: center; padding: 20px;">✅ No errors found!</p>';
+                return;
+            }
+            
+            errorsContainer.innerHTML = errors.map(error => `
+                <div class="error-item">
+                    <div class="error-header">
+                        <div>
+                            <span class="error-level ${error.level}">${error.level}</span>
+                            <span class="error-service">${error.service || 'unknown'}</span>
+                        </div>
+                        <div style="color: #aaa; font-size: 0.9em;">
+                            ${new Date(error.timestamp).toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="error-message">${error.message || 'No message'}</div>
+                    <div class="error-details">
+                        Module: ${error.module || 'N/A'} | 
+                        Function: ${error.function || 'N/A'} | 
+                        Line: ${error.line || 'N/A'}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Auto-refresh
+        document.getElementById('autoRefresh').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                autoRefreshInterval = setInterval(loadData, 5000);
+            } else {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+        
+        // Initial load
+        loadData();
+        
+        // Start auto-refresh if enabled
+        if (document.getElementById('autoRefresh').checked) {
+            autoRefreshInterval = setInterval(loadData, 5000);
+        }
+    </script>
+</body>
+</html>
+

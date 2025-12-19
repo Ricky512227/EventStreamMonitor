@@ -1,0 +1,171 @@
+services:
+  # User Management Service Database
+  registration-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=airlineradmin
+      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_DB=REGISTRATIONS
+    ports:
+      - 3304:5432
+    volumes:
+      - registration-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Auth/Token Service Database
+  auth-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=airlineradmin
+      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_DB=AUTH_TOKENS
+    ports:
+      - 3305:5432
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Flight Booking Service Database
+  booking-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=airlineradmin
+      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_DB=FLIGHT_BOOKINGS
+    ports:
+      - 3306:5432
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Notification Service Database
+  notification-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=airlineradmin
+      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_DB=NOTIFICATIONS
+    ports:
+      - 3307:5432
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+
+  # Kafka Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  # User Management Service
+  usermanagement-service:
+    build:
+      context: .
+      dockerfile: services/usermanagement/Dockerfile
+    ports:
+      - 5001:9091
+    depends_on:
+      - registration-db
+      - kafka
+    environment:
+      - FLASK_ENV=production
+      - DEBUG=false
+      - USER_MANAGEMENT_SERVER_IPADDRESS=0.0.0.0
+      - USER_MANAGEMENT_SERVER_PORT=9091
+      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@registration-db:5432/REGISTRATIONS
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Flight Booking Service
+  booking-service:
+    build:
+      context: .
+      dockerfile: services/booking/Dockerfile
+    ports:
+      - 5002:9092
+    depends_on:
+      - booking-db
+      - kafka
+    environment:
+      - FLASK_ENV=production
+      - DEBUG=false
+      - BOOKING_SERVER_IPADDRESS=0.0.0.0
+      - BOOKING_SERVER_PORT=9092
+      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@booking-db:5432/FLIGHT_BOOKINGS
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9092/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification/Dockerfile
+    ports:
+      - 5003:9093
+    depends_on:
+      - notification-db
+      - kafka
+    environment:
+      - FLASK_ENV=production
+      - DEBUG=false
+      - NOTIFICATION_SERVER_IPADDRESS=0.0.0.0
+      - NOTIFICATION_SERVER_PORT=9093
+      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@notification-db:5432/NOTIFICATIONS
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9093/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  registration-db-data:
+  auth-db-data:
+  booking-db-data:
+  notification-db-data:

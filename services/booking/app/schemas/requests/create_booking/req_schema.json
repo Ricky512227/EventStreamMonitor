@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Booking Creation Schema",
+  "description": "Schema for creating a flight booking",
+  "type": "object",
+  "required": [
+    "userId",
+    "flightId",
+    "numberOfSeats"
+  ],
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "description": "ID of the user making the booking"
+    },
+    "flightId": {
+      "type": "integer",
+      "description": "ID of the flight to book"
+    },
+    "numberOfSeats": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Number of seats to book"
+    }
+  }
+}
+

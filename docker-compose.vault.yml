@@ -1,0 +1,81 @@
+# Docker Compose with HashiCorp Vault for Secret Management
+# This is an example configuration for integrating Vault
+
+services:
+  # HashiCorp Vault (Development Mode)
+  vault:
+    image: hashicorp/vault:1.15.0
+    container_name: vault
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "dev-root-token-change-me"
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-data:/vault/data
+    command: vault server -dev
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+
+  # Vault UI (Optional - for easier management)
+  vault-ui:
+    image: djenriquez/vault-ui:latest
+    container_name: vault-ui
+    ports:
+      - "8000:8000"
+    environment:
+      VAULT_URL_DEFAULT: "http://vault:8200"
+      VAULT_AUTH_DEFAULT: "TOKEN"
+    depends_on:
+      - vault
+    networks:
+      - default
+
+  # Example: User Management Service with Vault integration
+  usermanagement-service:
+    build:
+      context: .
+      dockerfile: services/usermanagement/Dockerfile
+    ports:
+      - 5001:9091
+    depends_on:
+      - registration-db
+      - kafka
+      - vault
+    environment:
+      - FLASK_ENV=production
+      - DEBUG=false
+      - USER_MANAGEMENT_SERVER_IPADDRESS=0.0.0.0
+      - USER_MANAGEMENT_SERVER_PORT=9091
+      # Vault configuration
+      - VAULT_ADDR=http://vault:8200
+      - VAULT_TOKEN=${VAULT_TOKEN:-dev-root-token-change-me}
+      # Database URL can be retrieved from Vault
+      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@registration-db:5432/REGISTRATIONS
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:9091/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ... (other services follow similar pattern)
+
+volumes:
+  vault-data:
+
+# Note: For production, use proper Vault configuration with:
+# - TLS enabled
+# - File or Consul storage backend
+# - Proper access policies
+# - Audit logging enabled
+# - Token rotation
+# - High availability setup
+

@@ -1,6 +1,0 @@
-2023-10-08 03:33:27 - INFO - [base_logger.py : initialize_logger - 77] :: Initialized logger for the service [usermanagement] :: [SUCCESS]
-2023-10-08 03:33:27 - INFO - [app_manager.py : __init__ - 28] :: Initialized cmn_logger with value: <Logger usermanagement (DEBUG)>
-2023-10-08 03:33:27 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
-2023-10-08 03:33:27 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]
-2023-10-08 03:33:27 - INFO - [app_manager.py : create_app_instance - 39] :: Received Service [usermanagement]
-2023-10-08 03:33:27 - INFO - [app_manager.py : create_app_instance - 41] :: Created Flask Application Instance for service [usermanagement]

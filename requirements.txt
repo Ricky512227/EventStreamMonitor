@@ -10,7 +10,6 @@ charset-normalizer
 cleo
 click
 crashtest
-cx-Oracle
 distlib
 dulwich
 exceptiongroup
@@ -86,3 +85,6 @@ xattr
 zipp
 bcrypt
 gunicorn
+kafka-python
+redis
+Flask-Session
