@@ -1,0 +1,33 @@
+name: Daily Activity
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # Run daily at 10 AM UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  activity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Run activity agent
+        run: python3 scripts/github_activity_agent.py
+      
+      - name: Push changes
+        if: success()
+        run: |
+          git config user.name "GitHub Activity Bot"
+          git config user.email "actions@github.com"
+          git push origin main || echo "No changes to push"
+
