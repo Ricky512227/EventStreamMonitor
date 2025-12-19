@@ -116,8 +116,10 @@ Worker Process #1
 
 **Configuration:**
 ```python
-POOL_SIZE = 5          # 5 connections in pool
+POOL_SIZE = 10         # 10 connections in pool (per worker)
 MAX_OVERFLOW = 5       # 5 additional when pool exhausted
+POOL_RECYCLE = 3600    # Recycle connections after 1 hour
+POOL_TIMEOUT = 30      # Timeout for getting connection (seconds)
 ```
 
 **Why connection pools:**
@@ -205,17 +207,21 @@ Total Concurrent Requests: 4 workers × 2 threads = 8 requests simultaneously
 ```
 Worker Process #1
     └── SQLAlchemy Connection Pool
-        ├── Pool Size: 5 connections
+        ├── Pool Size: 10 connections
         ├── Max Overflow: 5 connections
-        └── Total Max: 10 connections
+        ├── Pool Recycle: 3600 seconds (1 hour)
+        ├── Pool Timeout: 30 seconds
+        └── Total Max: 15 connections
 
 Worker Process #2
     └── SQLAlchemy Connection Pool (separate)
-        ├── Pool Size: 5 connections
+        ├── Pool Size: 10 connections
         ├── Max Overflow: 5 connections
-        └── Total Max: 10 connections
+        ├── Pool Recycle: 3600 seconds (1 hour)
+        ├── Pool Timeout: 30 seconds
+        └── Total Max: 15 connections
 
-Total across all workers: 4 workers × 10 connections = 40 max DB connections
+Total across all workers: 4 workers × 15 connections = 60 max DB connections
 ```
 
 **Important:**
@@ -264,16 +270,16 @@ Actual throughput can be higher (1000-2000 req/sec)
 ### Connection Pool Sizing
 
 ```
-Recommended Pool Size per Worker = (Workers × Threads) / Workers
+Recommended Pool Size per Worker = Threads × 3-5
 
 For 4 workers, 2 threads:
-Pool Size = (4 × 2) / 4 = 2 connections per worker minimum
+Pool Size = 2 × 5 = 10 connections per worker (current configuration)
 
-Better: Pool Size = Threads × 2-3
-Pool Size = 2 × 3 = 6 connections per worker
+Total DB Connections (base) = Workers × Pool Size
+Total DB Connections (base) = 4 × 10 = 40 connections
 
-Total DB Connections = Workers × Pool Size
-Total DB Connections = 4 × 6 = 24 connections (reasonable)
+Total DB Connections (with overflow) = Workers × (Pool Size + Max Overflow)
+Total DB Connections (max) = 4 × (10 + 5) = 60 connections
 ```
 
 ## Key Differences
@@ -302,10 +308,13 @@ Total DB Connections = 4 × 6 = 24 connections (reasonable)
 - **Your setup**: 2 threads (good for database/network I/O)
 
 ### 3. Connection Pool Size
-- **Per worker**: Threads × 2-3
-- **Example**: 2 threads × 3 = 6 connections per worker
-- **Total**: Workers × Pool Size
-- **Database limit**: Don't exceed database max_connections
+- **Per worker**: Threads × 3-5 (current: 10 connections)
+- **Example**: 2 threads × 5 = 10 connections per worker
+- **Max overflow**: 50% of pool size (current: 5 additional connections)
+- **Total (base)**: Workers × Pool Size = 4 × 10 = 40 connections
+- **Total (maximum)**: Workers × (Pool Size + Max Overflow) = 4 × 15 = 60 connections
+- **Database limit**: Don't exceed database max_connections (PostgreSQL default: 100)
+- **Current usage**: 40-60 connections is well within PostgreSQL limits
 
 ## Real-World Example
 

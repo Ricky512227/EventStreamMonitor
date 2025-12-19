@@ -52,16 +52,24 @@ docker-compose up --scale taskprocessing-service=3
 
 ### Database Connection Pooling
 
-**Current Settings (via environment variables):**
-- `POOL_SIZE`: Number of connections to maintain
-- `MAX_OVERFLOW`: Additional connections when pool is exhausted
-- `POOL_RECYCLE`: Connection lifetime (prevents stale connections)
-- `POOL_TIMEOUT`: Time to wait for connection
+**Current Configuration (optimized for 4 workers × 2 threads):**
+- `POOL_SIZE=10`: Base number of connections to maintain per worker
+- `MAX_OVERFLOW=5`: Additional connections when pool is exhausted (up to 15 total per worker)
+- `POOL_RECYCLE=3600`: Connection lifetime in seconds (1 hour) - prevents stale connections
+- `POOL_TIMEOUT=30`: Time in seconds to wait for connection from pool
+- `RETRY_INTERVAL=5`: Seconds between retry attempts
+- `MAX_RETRIES=3`: Maximum retry attempts for database connections
 
-**Recommended Pool Size:**
-- For 4 workers: `POOL_SIZE = 5-10`
-- For 8 workers: `POOL_SIZE = 10-20`
-- `MAX_OVERFLOW = POOL_SIZE` (doubles capacity during spikes)
+**Total Database Connections:**
+- Per worker: 10 (base) + 5 (overflow) = 15 maximum connections
+- Total across 4 workers: 4 × 15 = 60 maximum database connections
+- Actual usage: Typically 10-20 connections active under normal load
+
+**Pool Size Calculation:**
+- For 4 workers × 2 threads = 8 concurrent requests per instance
+- Pool size of 10 provides headroom (more connections than concurrent threads)
+- Allows for database query queuing and connection reuse
+- MAX_OVERFLOW handles traffic spikes without blocking requests
 
 ### Caching Strategy
 
