@@ -17,6 +17,10 @@ COPY common /app/common
 # Copy service code
 COPY services/taskprocessing/app /app/app
 
+# Copy Gunicorn config and WSGI entry point
+COPY services/taskprocessing/gunicorn_config.py /app/gunicorn_config.py
+COPY services/taskprocessing/wsgi.py /app/wsgi.py
+
 # Create log directory and set permissions before switching user
 RUN mkdir -p /app/logs/taskprocessing && \
     chown -R appuser:appuser /app
@@ -32,4 +36,5 @@ EXPOSE 9092
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:9092/health', timeout=5)" || exit 1
 
-CMD ["python", "app/main.py"]
+# Use Gunicorn for production (multi-worker, handles 1000-2000 req/sec)
+CMD ["python", "-m", "gunicorn", "--config", "gunicorn_config.py", "wsgi:application"]
