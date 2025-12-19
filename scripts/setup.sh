@@ -10,8 +10,8 @@ echo "Creating symlinks for common library..."
 if [ ! -L "services/usermanagement/common" ]; then
     ln -s ../../common services/usermanagement/common
 fi
-if [ ! -L "services/booking/common" ]; then
-    ln -s ../../common services/booking/common
+if [ ! -L "services/taskprocessing/common" ]; then
+    ln -s ../../common services/taskprocessing/common
 fi
 if [ ! -L "services/notification/common" ]; then
     ln -s ../../common services/notification/common

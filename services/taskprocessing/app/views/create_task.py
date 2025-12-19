@@ -3,12 +3,12 @@ import uuid
 from datetime import datetime
 from flask import request, make_response
 from app import (
-    booking_logger,
-    booking_manager,
+    taskprocessing_logger,
+    taskprocessing_manager,
     app_manager_db_obj,
-    booking_kafka_producer,
-    booking_headers_schema,
-    booking_req_schema,
+    taskprocessing_kafka_producer,
+    taskprocessing_headers_schema,
+    taskprocessing_req_schema,
 )
 from common.pyportal_common.error_handlers.invalid_request_handler import (
     send_invalid_request_error_to_client,

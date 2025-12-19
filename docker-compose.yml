@@ -34,7 +34,7 @@ services:
       retries: 5
 
   # Task Processing Service Database
-  booking-db:
+  taskprocessing-db:
     image: postgres:latest
     environment:
       - POSTGRES_USER=airlineradmin
@@ -43,7 +43,7 @@ services:
     ports:
       - 3306:5432
     volumes:
-      - booking-db-data:/var/lib/postgresql/data
+      - taskprocessing-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airlineradmin"]
       interval: 10s
@@ -140,22 +140,22 @@ services:
       retries: 3
 
   # Task Processing Service
-  booking-service:
+  taskprocessing-service:
     build:
       context: .
-      dockerfile: services/booking/Dockerfile
+      dockerfile: services/taskprocessing/Dockerfile
     ports:
       - 5002:9092
     depends_on:
-      - booking-db
+      - taskprocessing-db
       - kafka
       - redis
     environment:
       - FLASK_ENV=production
       - DEBUG=false
-      - BOOKING_SERVER_IPADDRESS=0.0.0.0
-      - BOOKING_SERVER_PORT=9092
-      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@booking-db:5432/TASK_PROCESSING
+      - TASKPROCESSING_SERVER_IPADDRESS=0.0.0.0
+      - TASKPROCESSING_SERVER_PORT=9092
+      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@taskprocessing-db:5432/TASK_PROCESSING
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -223,6 +223,6 @@ services:
 volumes:
   registration-db-data:
   auth-db-data:
-  booking-db-data:
+  taskprocessing-db-data:
   notification-db-data:
   redis-data:

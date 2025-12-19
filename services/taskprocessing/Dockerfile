@@ -8,17 +8,17 @@ RUN useradd -m -u 1000 appuser && \
 WORKDIR /app
 
 # Copy requirements and install dependencies
-COPY services/booking/requirements.txt ./requirements.txt
+COPY services/taskprocessing/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy common library
 COPY common /app/common
 
 # Copy service code
-COPY services/booking/app /app/app
+COPY services/taskprocessing/app /app/app
 
 # Create log directory and set permissions before switching user
-RUN mkdir -p /app/logs/booking && \
+RUN mkdir -p /app/logs/taskprocessing && \
     chown -R appuser:appuser /app
 
 ENV PYTHONPATH=/app

@@ -121,17 +121,20 @@ def test_user_management_helper():
         return False
 
 
-def test_booking_helper():
-    """Test Booking Redis helper"""
-    print("\n[TEST 5] Testing Booking Redis Helper...")
+def test_taskprocessing_helper():
+    """Test Task Processing Redis helper (BookingRedisHelper - legacy class name)"""
+    print("\n[TEST 5] Testing Task Processing Redis Helper...")
     try:
-        from services.booking.app.redis_helper import BookingRedisHelper
+        from services.taskprocessing.app.redis_helper import BookingRedisHelper
         
+        # Test import and instantiation
         helper = BookingRedisHelper()
-        print(" BookingRedisHelper imported successfully")
+        # Verify helper has the expected interface
+        assert hasattr(helper, 'redis_client'), "Helper missing redis_client"
+        print(" Task Processing Redis helper (BookingRedisHelper) imported successfully")
         return True
     except Exception as e:
-        print(f" Failed to import BookingRedisHelper: {e}")
+        print(f" Failed to import Task Processing Redis helper: {e}")
         return False
 
 
@@ -160,8 +163,8 @@ def main():
     # Test 4: User Management Helper
     results.append(("User Management Helper", test_user_management_helper()))
     
-    # Test 5: Booking Helper
-    results.append(("Booking Helper", test_booking_helper()))
+    # Test 5: Task Processing Helper (uses legacy BookingRedisHelper class)
+    results.append(("Task Processing Helper", test_taskprocessing_helper()))
     
     # Summary
     print("\n" + "=" * 60)

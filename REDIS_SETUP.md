@@ -57,7 +57,7 @@ user = redis_helper.get_cached_user(123)
 
 ### 3. Service-Specific Helpers
 - `services/usermanagement/app/redis_helper.py` - User Management Redis helper
-- `services/booking/app/redis_helper.py` - Booking Redis helper
+- `services/taskprocessing/app/redis_helper.py` - Task Processing Redis helper
 
 ### 4. Dependencies
 - Added `redis` to `requirements.txt`
