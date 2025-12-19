@@ -1,7 +1,7 @@
 # Microservices Architecture
 
 ## Overview
-This document describes the microservices architecture for the Airliner Administration system.
+This document describes the microservices architecture for the EventStreamMonitor system.
 
 ## Services
 
@@ -10,8 +10,7 @@ This document describes the microservices architecture for the Airliner Administ
 - **Port**: 5001 (9091 internal)
 - **Database**: `REGISTRATIONS` (PostgreSQL)
 - **Endpoints**:
-  - `POST /api/v1/airliner/registerUser` - Register new user
-  - (Note: Other endpoints may use different URL patterns - check service code for current routes)
+  - `POST /api/v1/eventstreammonitor/users/register` - Register new user
 - **gRPC**: User validation for token generation
 - **Kafka**: Publishes user registration events
 
@@ -20,8 +19,8 @@ This document describes the microservices architecture for the Airliner Administ
 - **Port**: TBD
 - **Database**: Separate PostgreSQL database
 - **Endpoints**:
-  - `POST /api/v1/airliner/login` - User login (check service code for current routes)
-  - `POST /api/v1/airliner/generateToken` - Generate JWT token (check service code for current routes)
+  - `POST /api/v1/eventstreammonitor/auth/login` - User login (check service code for current routes)
+  - `POST /api/v1/eventstreammonitor/auth/generateToken` - Generate JWT token (check service code for current routes)
 - **gRPC**: Token validation service
 
 ### 3. Task Processing Service

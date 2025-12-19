@@ -1,7 +1,7 @@
 # Microservices Setup Guide
 
 ## Overview
-This guide explains how to set up and run all microservices in the Airliner Administration system.
+This guide explains how to set up and run all microservices in the EventStreamMonitor system.
 
 ## Services Architecture
 
@@ -9,7 +9,7 @@ This guide explains how to set up and run all microservices in the Airliner Admi
 - **Port**: 5001 (external), 9091 (internal)
 - **Database**: `REGISTRATIONS` (PostgreSQL on port 3304)
 - **Endpoints**:
-  - `POST /api/v1/airliner/registerUser` - Register new user
+  - `POST /api/v1/eventstreammonitor/users/register` - Register new user
 - **Kafka**: Publishes to `user-registration-events` topic
 
 ### 2. Task Processing Service (formerly Booking Service)
@@ -83,7 +83,7 @@ docker-compose logs -f notification-service
 
 ### Test User Registration
 ```bash
-curl -X POST http://localhost:5001/api/v1/airliner/registerUser \
+curl -X POST http://localhost:5001/api/v1/eventstreammonitor/users/register \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -H "Host: localhost:5001" \

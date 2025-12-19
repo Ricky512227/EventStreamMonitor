@@ -18,7 +18,7 @@
 ## Performance Results
 
 ### User Management Service
-**Endpoint:** `/api/v1/airliner/getUser/1000`
+**Endpoint:** `/api/v1/eventstreammonitor/users/1000`
 
 | Metric | Value |
 |--------|-------|

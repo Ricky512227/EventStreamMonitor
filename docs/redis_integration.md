@@ -258,7 +258,7 @@ from app.redis_helper import UserManagementRedisHelper
 
 redis_helper = UserManagementRedisHelper()
 
-@app.route('/api/v1/airliner/registerUser', methods=['POST'])
+@app.route('/api/v1/eventstreammonitor/users/register', methods=['POST'])
 def register_user():
     # Get client IP or user ID for rate limiting
     client_id = request.remote_addr  # or user_id if authenticated

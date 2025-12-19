@@ -11,9 +11,9 @@ Microservice responsible for user registration, user data management, and user v
 - Kafka producer for user events
 
 ## API Endpoints
-- `POST /api/v1/airliner/registerUser` - Register new user
-- `GET /api/v1/airliner/getUser/<id>` - Get user information
-- `DELETE /api/v1/airliner/deleteUser/<id>` - Delete user
+- `POST /api/v1/eventstreammonitor/users/register` - Register new user
+- `GET /api/v1/eventstreammonitor/users/<id>` - Get user information
+- `DELETE /api/v1/eventstreammonitor/users/<id>` - Delete user
 
 ## Configuration
 Copy `.env.example` to `.env` and update with your configuration.
