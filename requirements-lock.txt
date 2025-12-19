@@ -1,0 +1,25 @@
+# This file is used by Bazel's pip_parse rule
+# It should contain pinned versions of all Python dependencies
+# For now, using the same as requirements.txt - you should pin versions for production
+
+alembic>=1.12.0
+Flask>=2.3.0
+Flask-API>=0.1.0
+Flask-JWT-Extended>=4.5.0
+Flask-Migrate>=4.0.0
+Flask-SQLAlchemy>=3.0.0
+Flask-Session>=0.5.0
+SQLAlchemy>=2.0.0
+SQLAlchemy-Utils>=0.41.0
+psycopg2-binary>=2.9.0
+PyJWT>=2.8.0
+bcrypt>=4.0.0
+python-dotenv>=1.0.0
+gunicorn>=21.2.0
+kafka-python>=2.0.2
+redis>=5.0.0
+grpcio>=1.59.0
+grpcio-tools>=1.59.0
+protobuf>=4.24.0
+requests>=2.31.0
+

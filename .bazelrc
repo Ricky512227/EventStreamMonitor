@@ -1,0 +1,30 @@
+# Common Bazel configuration for EventStreamMonitor
+
+# Enable WORKSPACE mode (Bazel 8+ disables it by default)
+common --enable_workspace
+
+# Python configuration
+build --python_version=PY3
+
+# Build output
+build --symlink_prefix=/
+build --color=yes
+build --curses=yes
+
+# Remote caching (uncomment and configure if using remote cache)
+# build --remote_cache=https://your-cache-server.com
+
+# Build performance
+build --jobs=auto
+
+# Test configuration
+test --test_output=errors
+test --test_summary=detailed
+
+# Python-specific settings
+build --incompatible_strict_action_env
+build --action_env=PYTHONPATH
+
+# Docker configuration
+build --host_force_python=PY3
+

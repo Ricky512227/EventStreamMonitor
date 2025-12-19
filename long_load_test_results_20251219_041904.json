@@ -1,0 +1,54 @@
+{
+  "test_duration_seconds": 4140.618395090103,
+  "total_cycles": 4532,
+  "services": {
+    "usermanagement": {
+      "total": 181280,
+      "success": 181044,
+      "failed": 236,
+      "success_rate": 99.86981465136805,
+      "avg_response_time": 81.33158873427998,
+      "min_response_time": 2.568960189819336,
+      "max_response_time": 1045135.9350681305,
+      "p50": 14.85598087310791,
+      "p95": 112.70618438720703,
+      "p99": 150.10595321655273
+    },
+    "taskprocessing": {
+      "total": 181280,
+      "success": 180952,
+      "failed": 328,
+      "success_rate": 99.81906443071492,
+      "avg_response_time": 120.38683361535776,
+      "min_response_time": 4.190921783447266,
+      "max_response_time": 1045130.5270195007,
+      "p50": 23.405790328979492,
+      "p95": 100.92711448669434,
+      "p99": 141.0222053527832
+    },
+    "notification": {
+      "total": 90640,
+      "success": 90559,
+      "failed": 81,
+      "success_rate": 99.91063548102383,
+      "avg_response_time": 71.5861560150468,
+      "min_response_time": 4.00996208190918,
+      "max_response_time": 901457.1368694305,
+      "p50": 27.503132820129395,
+      "p95": 96.54879570007324,
+      "p99": 119.20905113220215
+    },
+    "logmonitor": {
+      "total": 181280,
+      "success": 0,
+      "failed": 181280,
+      "success_rate": 0.0,
+      "avg_response_time": 196.11201178338396,
+      "min_response_time": 0.8702278137207031,
+      "max_response_time": 901466.2370681763,
+      "p50": 22.72510528564453,
+      "p95": 76.54118537902832,
+      "p99": 92.76485443115234
+    }
+  }
+}
