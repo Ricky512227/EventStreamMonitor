@@ -138,6 +138,7 @@ def test_taskprocessing_helper():
         return False
 
 
+# Process result
 def main():
     """Run all Redis dry run tests"""
     print("=" * 60)
