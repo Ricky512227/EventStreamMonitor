@@ -99,3 +99,59 @@ Archive/
 # Test results (keep directory structure but ignore JSON files)
 results/*.json
 !results/README.md
+
+# Bazel
+.bazel/
+bazel-*
+
+# Coverage reports
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Profiling
+*.prof
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env.venv
+.env.*.local
+
+# mkdocs documentation
+/site
+
+# IDEs
+*.sublime-project
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

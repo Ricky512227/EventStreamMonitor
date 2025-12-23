@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
 """
-Quick script to stream error events directly to Kafka
-No dependencies on local imports - pure Kafka producer
+Quick script to stream error events directly to Kafka.
+
+This script sends predefined error and critical log events to Kafka for testing
+and demonstration purposes. It connects directly to Kafka without requiring
+local service dependencies.
+
+Usage:
+    python3 scripts/quick_stream_errors.py
+
+Requirements:
+    - Kafka must be running (docker-compose up -d kafka)
+    - kafka-python package installed
 """
 from kafka import KafkaProducer
 import json
@@ -54,7 +64,15 @@ ERROR_EVENTS = [
 
 
 def stream_errors():
-    """Stream error events to Kafka"""
+    """
+    Stream predefined error events to Kafka.
+    
+    Connects to Kafka broker, sends error events to the 'application-logs-errors'
+    topic, and provides feedback on the streaming process.
+    
+    Returns:
+        int: Exit code (0 for success, 1 for failure)
+    """
     print("=" * 60)
     print("Streaming Error Events to Kafka")
     print("=" * 60)

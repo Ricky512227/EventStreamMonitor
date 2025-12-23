@@ -162,6 +162,9 @@ docker-compose up
 # Run dry run tests
 python3 scripts/dry_run_tests.py
 
+# Run health check
+python3 scripts/health_check.py
+
 # Run integration tests
 cd tests
 python3 -m pytest integration/
@@ -182,6 +185,13 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Recent Updates
+
+- **Enhanced Health Monitoring**: New comprehensive health check utility script
+- **Improved Documentation**: Added CHANGELOG.md for better project tracking
+- **Better Development Experience**: Enhanced .gitignore and development tools
+- **Code Quality**: Improved documentation and type hints across the codebase
+
 ## Acknowledgments
 
 - Apache Kafka for event streaming
@@ -192,3 +202,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 For questions or suggestions, please open an issue on GitHub.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and updates.
