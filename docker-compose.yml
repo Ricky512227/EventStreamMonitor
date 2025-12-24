@@ -3,8 +3,8 @@ services:
   registration-db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=airlineradmin
-      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_USER=${POSTGRES_USER:-airlineradmin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-testeventstreammonitor#123}
       - POSTGRES_DB=REGISTRATIONS
     ports:
       - 3304:5432
@@ -20,8 +20,8 @@ services:
   auth-db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=airlineradmin
-      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_USER=${POSTGRES_USER:-airlineradmin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-testeventstreammonitor#123}
       - POSTGRES_DB=AUTH_TOKENS
     ports:
       - 3305:5432
@@ -37,8 +37,8 @@ services:
   taskprocessing-db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=airlineradmin
-      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_USER=${POSTGRES_USER:-airlineradmin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-testeventstreammonitor#123}
       - POSTGRES_DB=TASK_PROCESSING
     ports:
       - 3306:5432
@@ -54,8 +54,8 @@ services:
   notification-db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=airlineradmin
-      - POSTGRES_PASSWORD=testeventstreammonitor#123
+      - POSTGRES_USER=${POSTGRES_USER:-airlineradmin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-testeventstreammonitor#123}
       - POSTGRES_DB=NOTIFICATIONS
     ports:
       - 3307:5432
@@ -126,7 +126,7 @@ services:
       - DEBUG=false
       - USER_MANAGEMENT_SERVER_IPADDRESS=0.0.0.0
       - USER_MANAGEMENT_SERVER_PORT=9091
-      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@registration-db:5432/REGISTRATIONS
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-airlineradmin}:${POSTGRES_PASSWORD:-testeventstreammonitor#123}@registration-db:5432/REGISTRATIONS
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -159,7 +159,7 @@ services:
       - DEBUG=false
       - TASKPROCESSING_SERVER_IPADDRESS=0.0.0.0
       - TASKPROCESSING_SERVER_PORT=9092
-      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@taskprocessing-db:5432/TASK_PROCESSING
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-airlineradmin}:${POSTGRES_PASSWORD:-testeventstreammonitor#123}@taskprocessing-db:5432/TASK_PROCESSING
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -192,7 +192,7 @@ services:
       - DEBUG=false
       - NOTIFICATION_SERVER_IPADDRESS=0.0.0.0
       - NOTIFICATION_SERVER_PORT=9093
-      - DATABASE_URL=postgresql://airlineradmin:testeventstreammonitor#123@notification-db:5432/NOTIFICATIONS
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-airlineradmin}:${POSTGRES_PASSWORD:-testeventstreammonitor#123}@notification-db:5432/NOTIFICATIONS
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
