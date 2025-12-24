@@ -1,6 +1,22 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
-#
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+module(
+    name = "eventstreammonitor",
+    version = "1.0.0",
+)
+
+# Python rules
+bazel_dep(name = "rules_python", version = "0.26.0")
+
+# Python toolchain
+python = use_extension("@rules_python//python:extensions.bzl", "python")
+python.toolchain(
+    python_version = "3.9",
+)
+use_repo(python, "python3_9_toolchains")
+
+# Python dependencies (if using pip_parse)
+# pip = use_extension("@rules_python//python:extensions.bzl", "pip")
+# pip.parse(
+#     name = "pip_deps",
+#     requirements_lock = "//:requirements-lock.txt",
+# )
+# use_repo(pip, "pip_deps")
