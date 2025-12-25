@@ -9,9 +9,9 @@ import grpc
 #   channel2: [stub1, stub2, stub3]
 #   channel3: [stub1, stub2, stub3]
 # }
-from src.proto_def.token_proto_v1.token_pb2_grpc import (
+from common.proto_def.token_proto_v1.token_pb2_grpc import (
     UserValidationForTokenGenerationServiceStub, )
-from src.pyportal_common.grpc_service_handlers.grpc_client_handler.grpc_base_client import (
+from common.pyportal_common.grpc_service_handlers.grpc_client_handler.grpc_base_client import (
     PyportalGrpcBaseClient, )
 from queue import Queue
 from grpc.experimental import aio

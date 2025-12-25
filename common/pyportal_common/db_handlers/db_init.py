@@ -1,19 +1,19 @@
 import os
-from src.pyportal_common.db_handlers.db_pool_manager import DataBasePoolHandler
+from common.pyportal_common.db_handlers.db_pool_manager import DataBasePoolHandler
 
 SERVICE_NAME = os.environ.get("SERVICE_NAME")
-DB_DRIVER_NAME = os.environ.get("DB_DRIVER_NAME")
+DB_DRIVER_NAME = os.environ.get("DB_DRIVER_NAME", "postgresql")
 DB_USER = os.environ.get("DB_USER")
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_IPADDRESS = os.environ.get("DB_IPADDRESS")
-DB_PORT = int(os.environ.get("DB_PORT"))
+DB_PORT = int(os.environ.get("DB_PORT", "5432"))
 DB_NAME = os.environ.get("DB_NAME")
-POOL_SIZE = int(os.environ.get("POOL_SIZE"))
-MAX_OVERFLOW = int(os.environ.get("MAX_OVERFLOW"))
-POOL_RECYCLE = int(os.environ.get("POOL_RECYCLE"))
-POOL_TIMEOUT = int(os.environ.get("POOL_TIMEOUT"))
-RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL"))
-MAX_RETRIES = int(os.environ.get("MAX_RETRIES"))
+POOL_SIZE = int(os.environ.get("POOL_SIZE", "5"))
+MAX_OVERFLOW = int(os.environ.get("MAX_OVERFLOW", "10"))
+POOL_RECYCLE = int(os.environ.get("POOL_RECYCLE", "3600"))
+POOL_TIMEOUT = int(os.environ.get("POOL_TIMEOUT", "30"))
+RETRY_INTERVAL = int(os.environ.get("RETRY_INTERVAL", "5"))
+MAX_RETRIES = int(os.environ.get("MAX_RETRIES", "3"))
 
 
 def start_database_creation_work(cmn_logger, base, app_specific_flask_instance):

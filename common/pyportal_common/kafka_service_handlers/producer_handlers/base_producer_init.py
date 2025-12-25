@@ -1,5 +1,5 @@
 import os
-from src.pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import PyPortalKafkaProducer
+from common.pyportal_common.kafka_service_handlers.producer_handlers.notfication_producer import PyPortalKafkaProducer
 
 
 def init_pyportal_kafka_producer(cmn_logger):

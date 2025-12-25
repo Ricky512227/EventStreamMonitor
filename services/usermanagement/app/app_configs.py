@@ -20,5 +20,5 @@ def init_app_configs(usermanager_app) -> None:
     usermanager_app.config[
         "USER_MANAGEMENT_GRPC_MAX_WORKERS"
     ] = int(
-        os.environ.get("USER_MANAGEMENT_GRPC_MAX_WORKERS")
+        os.environ.get("USER_MANAGEMENT_GRPC_MAX_WORKERS", "10")
     )

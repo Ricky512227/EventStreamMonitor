@@ -1,6 +1,6 @@
 from typing import Union, Optional, Any
 from flask import make_response
-from src.pyportal_common.error_handlers.base_error_handler import PyPortalAdminBaseError
+from common.pyportal_common.error_handlers.base_error_handler import PyPortalAdminBaseError
 
 
 class PyPortalAdminInvalidRequestError(PyPortalAdminBaseError):

@@ -15,7 +15,7 @@ from sqlalchemy.exc import (
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.pool import QueuePool
 
-from src.pyportal_common.db_handlers.db_conn_manager import (
+from common.pyportal_common.db_handlers.db_conn_manager import (
     DataBaseConnectionHandler,
 )
 

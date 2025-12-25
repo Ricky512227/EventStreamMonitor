@@ -36,6 +36,16 @@ try:
 
     init_app_configs(notification_app)
 
+    # Add health check endpoint (before database initialization)
+    @notification_app.route('/health', methods=['GET'])
+    def health():
+        """Health check endpoint"""
+        from flask import jsonify
+        return jsonify({
+            'status': 'healthy',
+            'service': 'notification'
+        }), 200
+
     # Create the blueprint for the notification service
     notification_bp: Blueprint = (
         notification_manager.create_blueprint_instance()

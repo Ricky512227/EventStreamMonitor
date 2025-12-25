@@ -46,6 +46,16 @@ try:
 
     init_app_configs(taskprocessing_app)
     
+    # Add health check endpoint (before database initialization)
+    @taskprocessing_app.route('/health', methods=['GET'])
+    def health():
+        """Health check endpoint"""
+        from flask import jsonify
+        return jsonify({
+            'status': 'healthy',
+            'service': 'taskprocessing'
+        }), 200
+    
     (
         taskprocessing_headers_schema_status,
         taskprocessing_headers_schema,

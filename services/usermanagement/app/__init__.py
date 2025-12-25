@@ -90,6 +90,17 @@ try:
         sys.exit()
 
     init_app_configs(usermanager_app)
+    
+    # Add health check endpoint (before database initialization)
+    @usermanager_app.route('/health', methods=['GET'])
+    def health():
+        """Health check endpoint"""
+        from flask import jsonify
+        return jsonify({
+            'status': 'healthy',
+            'service': 'usermanagement'
+        }), 200
+    
     # Load and Validate Schema Files which are read.
     (
         req_headers_schema_status,
