@@ -1,7 +1,7 @@
 # Common Bazel configuration for EventStreamMonitor
 
-# Enable WORKSPACE mode (Bazel 8+ disables it by default)
-common --enable_workspace
+# Using Bzlmod (MODULE.bazel) - no need for WORKSPACE mode
+# common --enable_workspace  # Removed - using Bzlmod instead
 
 # Python configuration
 build --python_version=PY3

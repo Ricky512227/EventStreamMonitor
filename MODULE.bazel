@@ -3,8 +3,8 @@ module(
     version = "1.0.0",
 )
 
-# Python rules
-bazel_dep(name = "rules_python", version = "0.26.0")
+# Python rules - using latest stable version compatible with Bazel 8+
+bazel_dep(name = "rules_python", version = "0.40.0")
 
 # Python toolchain
 python = use_extension("@rules_python//python:extensions.bzl", "python")
@@ -13,7 +13,9 @@ python.toolchain(
 )
 use_repo(python, "python3_9_toolchains")
 
-# Python dependencies (if using pip_parse)
+# Python dependencies using pip_parse
+# Note: pip_parse requires pinned versions. For now, using system Python packages.
+# Uncomment when requirements-lock.txt has pinned versions (e.g., flask==2.3.0 instead of flask>=2.3.0)
 # pip = use_extension("@rules_python//python:extensions.bzl", "pip")
 # pip.parse(
 #     name = "pip_deps",
