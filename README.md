@@ -181,6 +181,9 @@ docker-compose up -d
 
 # Verify services are running
 docker-compose ps
+
+# Check service health
+python3 scripts/health_check.py
 ```
 
 ### Access Services
@@ -189,6 +192,29 @@ docker-compose ps
 - **User Management API**: http://localhost:5001
 - **Task Processing API**: http://localhost:5002
 - **Notification API**: http://localhost:5003
+
+### Health Check Endpoints
+
+All services expose a `/health` endpoint for monitoring:
+
+```bash
+# Check service health
+curl http://localhost:5001/health  # User Management
+curl http://localhost:5002/health  # Task Processing
+curl http://localhost:5003/health  # Notification
+curl http://localhost:5004/health  # Log Monitor
+
+# Or use the health check script
+python3 scripts/health_check.py
+```
+
+Expected response:
+```json
+{
+  "status": "healthy",
+  "service": "usermanagement"
+}
+```
 
 ### Test Error Streaming
 
@@ -336,6 +362,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Recent Updates
 
 I've been working on improving the project:
+- Added `/health` endpoints to all services for monitoring and health checks
+- Fixed import path issues and build errors across the codebase
+- Added default values for environment variables to improve service startup reliability
 - Added a comprehensive health check utility script
 - Improved documentation and added CHANGELOG.md for better tracking
 - Enhanced .gitignore and development tools
