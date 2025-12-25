@@ -20,9 +20,9 @@ EventStreamMonitor is a real-time microservices monitoring platform I built to c
 - Thread pool with 200 workers
 
 **Current Implementation (Refactored):**
-- Event-driven architecture with async/await
+- Gunicorn-based architecture with multi-process, multi-thread workers
 - Connection pooling (20 connections)
-- Single-threaded event loop handling 1000+ concurrent streams
+- 4 workers × 2 threads = 8 concurrent requests per service
 
 **Performance Improvements:**
 - 10x throughput increase
@@ -123,11 +123,11 @@ Building this project taught me a lot about backend architecture. Here are the m
 
 **Context Switching Cost**: I learned the hard way that more threads doesn't mean better performance. Context switching has real overhead (1-10 microseconds per switch), and cache invalidation can cause 60-100x slowdowns. Sometimes 50 threads actually outperform 200 threads.
 
-**Python's GIL**: The Global Interpreter Lock blocks CPU parallelism (multiple threads can't run Python code simultaneously), but it doesn't block I/O parallelism since threads release the GIL during I/O operations. For I/O-bound workloads like this, an event loop with async/await works really well.
+**Python's GIL**: The Global Interpreter Lock blocks CPU parallelism (multiple threads can't run Python code simultaneously), but it doesn't block I/O parallelism since threads release the GIL during I/O operations. For I/O-bound workloads, Gunicorn's multi-process, multi-thread architecture works well, and async/await would be even better for very high concurrency scenarios.
 
 **Connection Pooling**: This was a game changer. Creating a new database connection takes 50-100ms (TCP handshake, SSL, authentication), but reusing one from a pool takes less than 1ms. That's a 100x performance improvement right there.
 
-**Event Loop Architecture**: A single thread can handle 1000+ concurrent streams when you use non-blocking I/O. This prevents blocking on network or database operations, which is perfect for I/O-heavy workloads like event stream monitoring.
+**Gunicorn Architecture**: Multiple worker processes with threads provide good concurrency while maintaining process isolation. Each worker can handle multiple requests concurrently, and connection pooling ensures efficient database access. This architecture works well for microservices with moderate to high request volumes.
 
 **Note**: While async/await and event loops are powerful for I/O-bound workloads, EventStreamMonitor currently uses **Gunicorn with sync workers and threads** for simplicity and compatibility with existing Flask code. For a detailed comparison of concurrency models (Gunicorn vs Async/Await vs ThreadPoolExecutor), see [Concurrency Models Explained](docs/concurrency/CONCURRENCY_MODELS_EXPLAINED.md).
 
@@ -142,26 +142,27 @@ Avg Latency: 50-100ms
 Throughput: ~2,000 events/sec
 ```
 
-### After Refactoring (Event-Driven)
+### After Refactoring (Gunicorn Multi-Process)
 ```
-Concurrent Streams: 1000+
-Memory Usage: ~100MB
+Concurrent Requests: 8 per service (4 workers × 2 threads)
+Memory Usage: ~100MB per worker
 CPU Usage: 60% (actual work)
 Avg Latency: <10ms
-Throughput: ~20,000 events/sec
+Throughput: ~2,000 requests/sec per service
 ```
 
 ## Architecture Comparison
 
-| Aspect | Old (Thread-Per-Stream) | New (Event-Driven) |
-|--------|------------------------|-------------------|
-| Threading Model | 200 OS threads | 1 event loop thread |
-| Memory per Stream | ~2MB | ~100KB |
-| Context Switching | High (expensive) | Minimal |
+| Aspect | Old (Thread-Per-Stream) | New (Gunicorn Multi-Process) |
+|--------|------------------------|----------------------------|
+| Threading Model | 200 OS threads | 4 processes × 2 threads = 8 concurrent |
+| Memory per Request | ~2MB | ~100KB |
+| Context Switching | High (expensive) | Moderate (between threads) |
 | Database Connections | New per query | Pooled (20 total) |
 | Connection Overhead | 50-100ms | <1ms |
-| Max Concurrent Streams | ~200 | 1000+ |
+| Max Concurrent Requests | ~200 | 8 per service (scales with instances) |
 | CPU Efficiency | 30% (rest in switching) | 60% (actual work) |
+| Process Isolation | No | Yes (one crash doesn't kill others) |
 
 ## Quick Start
 
@@ -348,7 +349,7 @@ My research notes on Redis's threading architecture. This goes into:
 
 **Python's GIL isn't always a problem.** For I/O-bound workloads like event stream monitoring, the GIL has minimal impact because it's released during I/O operations. The whole "GIL is bad" narrative doesn't apply here.
 
-**Async/await beats threading for I/O.** Event loops with async/await provide much better scalability for I/O-heavy workloads than traditional threading. The numbers don't lie.
+**Gunicorn's multi-process architecture provides good balance.** Multiple worker processes with threads give us process isolation, good concurrency, and efficient resource usage without the complexity of async/await migration.
 
 ## Development
 
@@ -457,7 +458,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and updates.
 
 **Kamal Sai Devarapalli** - [GitHub](https://github.com/Ricky512227)
 
-This project represents my journey from naive threading implementations to production-grade event-driven architecture. The 3-year gap between versions taught me more about backend engineering than any tutorial ever could.
+This project represents my journey from naive threading implementations to production-grade microservices architecture. The 4-year gap between versions taught me more about backend engineering than any tutorial ever could.
 
 ---
 
