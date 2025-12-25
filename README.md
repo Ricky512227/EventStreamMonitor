@@ -10,7 +10,7 @@
 
 ## Overview
 
-EventStreamMonitor is a production-ready, real-time microservices monitoring platform that collects, streams, and visualizes application logs and errors across multiple services in real-time. Perfect for monitoring distributed systems and catching issues as they happen.
+EventStreamMonitor is a real-time microservices monitoring platform I built to collect, stream, and visualize application logs and errors across multiple services. It's designed for monitoring distributed systems and catching issues as they happen.
 
 ## Project Evolution
 
@@ -119,27 +119,15 @@ Benefits:
 
 ## Key Learnings
 
-This project demonstrates critical backend concepts:
+Building this project taught me a lot about backend architecture. Here are the main takeaways:
 
-1. **Context Switching Cost**: More threads ≠ better performance
-   - Context switch overhead: 1-10μs
-   - Cache invalidation: 60-100x slowdown
-   - Result: 50 threads can outperform 200 threads
+**Context Switching Cost**: I learned the hard way that more threads doesn't mean better performance. Context switching has real overhead (1-10 microseconds per switch), and cache invalidation can cause 60-100x slowdowns. Sometimes 50 threads actually outperform 200 threads.
 
-2. **Python's GIL**:
-   - Blocks CPU parallelism (multiple threads can't run Python code simultaneously)
-   - Does NOT block I/O parallelism (threads release GIL during I/O operations)
-   - Event loop + async/await = optimal for I/O-bound workloads
+**Python's GIL**: The Global Interpreter Lock blocks CPU parallelism (multiple threads can't run Python code simultaneously), but it doesn't block I/O parallelism since threads release the GIL during I/O operations. For I/O-bound workloads like this, an event loop with async/await works really well.
 
-3. **Connection Pooling**:
-   - Creating connection: 50-100ms (TCP + SSL + auth)
-   - Reusing from pool: <1ms
-   - 100x performance multiplier
+**Connection Pooling**: This was a game changer. Creating a new database connection takes 50-100ms (TCP handshake, SSL, authentication), but reusing one from a pool takes less than 1ms. That's a 100x performance improvement right there.
 
-4. **Event Loop Architecture**:
-   - Single thread handling 1000+ concurrent streams
-   - Non-blocking I/O prevents blocking on network/database operations
-   - Perfect for I/O-heavy workloads
+**Event Loop Architecture**: A single thread can handle 1000+ concurrent streams when you use non-blocking I/O. This prevents blocking on network or database operations, which is perfect for I/O-heavy workloads like event stream monitoring.
 
 ## Performance Metrics
 
@@ -235,19 +223,50 @@ python3 scripts/quick_stream_errors.py
 
 ## Documentation
 
-### Technical Deep Dive
+### Published Technical Articles
 
-For a complete breakdown of the architectural decisions and performance analysis, read the technical article:
+I've written a couple of articles about the technical challenges and learnings from building this project:
 
-📄 **[Understanding Connections and Threads in Backend Services](https://dev.to/ricky512227/understanding-connections-and-threads-in-backend-services-a-complete-guide-302)**
+**[Understanding Connections and Threads in Backend Services](https://dev.to/ricky512227/understanding-connections-and-threads-in-backend-services-a-complete-guide-302)**
 
-Topics covered:
+This is a complete guide I wrote covering threading models and event loops. It goes through:
 - Process vs Thread fundamentals
 - Concurrency vs Parallelism
 - Threading models comparison (thread-per-request, thread pools, event loops)
 - Database connection pooling strategies
 - Language-specific implementations (Python, Go, Java, Node.js)
 - Real-world benchmarks and decision frameworks
+
+**[6 Common Redis and Kafka Challenges I Faced and How I Solved Them](https://dev.to/ricky512227/6-common-redis-and-kafka-challenges-i-faced-and-how-i-solved-them-60j)**
+
+This one covers the real challenges I ran into while building EventStreamMonitor and how I solved them:
+- Redis connection pooling issues
+- Kafka bootstrap server configuration
+- Error handling in event streams
+- Database connection management
+- And a few more gotchas
+
+### Additional Resources
+
+I've also put together some resources that might be helpful:
+
+**[Redis Interview Preparation Guide](docs/paper/Redis_Interview_Preparation_Guide.md)**
+
+A comprehensive Redis interview prep guide I created. It covers:
+- Fundamentals (data types, persistence, eviction)
+- Intermediate topics (transactions, pub/sub, replication)
+- Advanced concepts (performance optimization, rate limiting, failover)
+- Real coding challenges (distributed locks, leaderboards, sessions)
+- Interview questions and answers
+
+**[Redis Threading Research](docs/paper/Redis_Threading_Research.md)**
+
+My research notes on Redis's threading architecture. This goes into:
+- Single-threaded vs multi-threaded components
+- Common misconceptions about Redis threading
+- Performance evidence and benchmarks
+- I/O multiplexing and event loops
+- Design decisions and trade-offs
 
 ### Other Documentation
 
@@ -259,20 +278,15 @@ Topics covered:
 
 ## Lessons Learned
 
-### 1. Don't Cargo Cult Architecture Patterns
-Just because "microservices use thread pools" doesn't mean your project needs one. Understand the trade-offs.
+**Don't just copy architecture patterns.** Just because "microservices use thread pools" doesn't mean your project needs one. I had to learn the hard way that understanding the trade-offs matters more than following trends.
 
-### 2. Profile Before Optimizing
-The profiler revealed 70% CPU time spent on context switching, not actual work. Metrics > assumptions.
+**Profile before optimizing.** When I finally ran a profiler, I found that 70% of CPU time was spent on context switching, not actual work. Metrics beat assumptions every time.
 
-### 3. Connection Pooling is Non-Negotiable
-For database-heavy applications, connection pooling is the difference between 100 requests/sec and 10,000 requests/sec.
+**Connection pooling is non-negotiable.** For database-heavy applications, connection pooling is literally the difference between 100 requests per second and 10,000 requests per second. It's that important.
 
-### 4. Python's GIL Isn't Always a Problem
-For I/O-bound workloads (like event stream monitoring), the GIL has minimal impact because it's released during I/O operations.
+**Python's GIL isn't always a problem.** For I/O-bound workloads like event stream monitoring, the GIL has minimal impact because it's released during I/O operations. The whole "GIL is bad" narrative doesn't apply here.
 
-### 5. Async/Await > Threading for I/O
-Event loops with async/await provide better scalability for I/O-heavy workloads than traditional threading.
+**Async/await beats threading for I/O.** Event loops with async/await provide much better scalability for I/O-heavy workloads than traditional threading. The numbers don't lie.
 
 ## Development
 
@@ -321,11 +335,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Recent Updates
 
-- **Enhanced Health Monitoring**: New comprehensive health check utility script
-- **Improved Documentation**: Added CHANGELOG.md for better project tracking
-- **Better Development Experience**: Enhanced .gitignore and development tools
-- **Code Quality**: Improved documentation and type hints across the codebase
-- **Architecture Evolution**: Documented journey from thread-per-stream to event-driven architecture
+I've been working on improving the project:
+- Added a comprehensive health check utility script
+- Improved documentation and added CHANGELOG.md for better tracking
+- Enhanced .gitignore and development tools
+- Added type hints across the codebase
+- Documented the journey from thread-per-stream to event-driven architecture
 
 ## Acknowledgments
 
@@ -346,10 +361,13 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and updates.
 
 **Kamal Sai Devarapalli** - [GitHub](https://github.com/Ricky512227)
 
-*This project represents my journey from naive threading implementations to production-grade event-driven architecture. The 3-year gap between versions taught me more about backend engineering than any tutorial ever could.*
+This project represents my journey from naive threading implementations to production-grade event-driven architecture. The 3-year gap between versions taught me more about backend engineering than any tutorial ever could.
 
 ---
 
-**⭐ If you found this helpful, consider starring the repo!**
+If you found this helpful, consider starring the repo. It really helps!
 
-**📝 Read the full technical breakdown:** [Understanding Connections and Threads in Backend Services](https://dev.to/ricky512227/understanding-connections-and-threads-in-backend-services-a-complete-guide-302)
+I've also written some technical articles about the concepts used in this project:
+
+- [Understanding Connections and Threads in Backend Services](https://dev.to/ricky512227/understanding-connections-and-threads-in-backend-services-a-complete-guide-302)
+- [6 Common Redis and Kafka Challenges I Faced and How I Solved Them](https://dev.to/ricky512227/6-common-redis-and-kafka-challenges-i-faced-and-how-i-solved-them-60j)
