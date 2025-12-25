@@ -129,6 +129,8 @@ Building this project taught me a lot about backend architecture. Here are the m
 
 **Event Loop Architecture**: A single thread can handle 1000+ concurrent streams when you use non-blocking I/O. This prevents blocking on network or database operations, which is perfect for I/O-heavy workloads like event stream monitoring.
 
+**Note**: While async/await and event loops are powerful for I/O-bound workloads, EventStreamMonitor currently uses **Gunicorn with sync workers and threads** for simplicity and compatibility with existing Flask code. For a detailed comparison of concurrency models (Gunicorn vs Async/Await vs ThreadPoolExecutor), see [Concurrency Models Explained](docs/concurrency/CONCURRENCY_MODELS_EXPLAINED.md).
+
 ## Performance Metrics
 
 ### Before Refactoring (Thread-Per-Stream)
@@ -332,6 +334,8 @@ My research notes on Redis's threading architecture. This goes into:
 - [Architecture Overview](docs/architecture/MICROSERVICES_ARCHITECTURE.md) - System design details
 - [Redis Integration](docs/setup/REDIS_SETUP.md) - Redis caching setup
 - [Performance Configuration](docs/performance/PERFORMANCE_CONFIG.md) - Gunicorn and connection pooling setup
+- [Concurrency Models Explained](docs/concurrency/CONCURRENCY_MODELS_EXPLAINED.md) - Detailed comparison of Gunicorn vs Async/Await vs ThreadPoolExecutor
+- [Concurrency Quick Reference](docs/concurrency/QUICK_REFERENCE.md) - Quick comparison table and examples
 - [Common Challenges with Redis and Kafka](docs/paper/Common_Challenges_Redis_Kafka_Microservices.md) - Practical challenges and solutions
 
 ## Lessons Learned
