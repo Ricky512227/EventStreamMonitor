@@ -14,7 +14,7 @@ EventStreamMonitor is a real-time microservices monitoring platform I built to c
 
 ## Project Evolution
 
-**Initial Implementation (3 years ago):**
+**Initial Implementation (4 years ago):**
 - Thread-per-stream architecture
 - New database connections per query
 - Thread pool with 200 workers
