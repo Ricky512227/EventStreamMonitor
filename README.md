@@ -165,11 +165,14 @@ Throughput: ~20,000 events/sec
 
 ### Prerequisites
 
-- Docker and Docker Compose
+- Docker and Docker Compose (for containerized deployment)
+- Bazel 8.5+ (for building with Bazel) - [Installation Guide](https://bazel.build/install)
 - Python 3.9+ (for local development)
 - Git
 
 ### Installation
+
+#### Option 1: Using Docker Compose (Recommended for Quick Start)
 
 ```bash
 # Clone the repository
@@ -185,6 +188,34 @@ docker-compose ps
 # Check service health
 python3 scripts/health_check.py
 ```
+
+#### Option 2: Using Bazel (For Development)
+
+```bash
+# Clone the repository
+git clone https://github.com/Ricky512227/EventStreamMonitor.git
+cd EventStreamMonitor
+
+# Initialize Bazel (first time only)
+bazel sync
+
+# Build all services
+bazel build //services/...
+
+# Build specific service
+bazel build //services/usermanagement:usermanagement
+
+# Build common library
+bazel build //common:pyportal_common
+
+# Run a service locally
+bazel run //services/usermanagement:usermanagement
+
+# Run tests
+bazel test //tests/...
+```
+
+For more Bazel details, see [Bazel Quick Start Guide](docs/bazel/BAZEL_QUICKSTART.md).
 
 ### Access Services
 
@@ -237,6 +268,7 @@ python3 scripts/quick_stream_errors.py
 ## Tech Stack
 
 - **Backend**: Python 3.9+, Flask
+- **Build System**: Bazel 8.5+ (Bzlmod)
 - **WSGI Server**: Gunicorn (4 workers × 2 threads per service)
 - **Message Broker**: Apache Kafka
 - **Cache/Sessions**: Redis
@@ -318,6 +350,8 @@ My research notes on Redis's threading architecture. This goes into:
 
 ### Running Locally
 
+#### Using Docker Compose
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -329,6 +363,35 @@ cp services/usermanagement/env.example services/usermanagement/.env
 # Run services individually or use docker-compose
 docker-compose up
 ```
+
+#### Using Bazel
+
+```bash
+# Build all services
+bazel build //services/...
+
+# Run a specific service
+bazel run //services/usermanagement:usermanagement
+
+# Build and run with custom environment
+bazel run //services/usermanagement:usermanagement -- --env=development
+
+# Build common library for development
+bazel build //common:pyportal_common
+```
+
+**Bazel Targets:**
+- `//common:pyportal_common` - Common library
+- `//services/usermanagement:usermanagement` - User Management Service
+- `//services/taskprocessing:taskprocessing` - Task Processing Service
+- `//services/notification:notification` - Notification Service
+- `//services/logmonitor:logmonitor` - Log Monitor Service
+- `//services/auth:auth` - Auth Service
+
+For detailed Bazel documentation, see:
+- [Bazel Quick Start](docs/bazel/BAZEL_QUICKSTART.md)
+- [Bazel Setup Guide](docs/bazel/BAZEL_SETUP.md)
+- [Bazel Status](docs/bazel/BAZEL_STATUS.md)
 
 ### Running Tests
 
