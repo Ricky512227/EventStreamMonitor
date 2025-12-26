@@ -13,6 +13,7 @@ from common.pyportal_common.error_handlers.base_error_handler import (
     PyPortalAdminInternalServerError,
     PyPortalAdminNotFoundError,
 )
+from app.redis_helper import UserManagementRedisHelper
 
 
 def get_user_info(userid):
@@ -43,6 +44,45 @@ def get_user_info(userid):
                     logger=user_management_app_logger,
                 )
                 return invalid_header_err_res.send_response_to_client()
+            # Initialize Redis helper for caching
+            redis_helper = UserManagementRedisHelper()
+            
+            # Try to get user from cache first (Cache-Aside pattern)
+            cached_user = redis_helper.get_cached_user(userid)
+            if cached_user:
+                user_management_app_logger.info(
+                    f"User {userid} retrieved from Redis cache [CACHE HIT]"
+                )
+                # Reconstruct the format expected by generate_custom_response_body
+                # Cached data is the "data" dict, need to wrap it in the same format
+                get_user_instance = {
+                    "data": cached_user,
+                    "message": ""
+                }
+                # Generate response from cached data
+                custom_user_response_body = User.generate_custom_response_body(
+                    user_instance=get_user_instance, messagedata="Retrieved User"
+                )
+                if len(custom_user_response_body.keys()) <= 0:
+                    invalid_req_err_res = PyPortalAdminInternalServerError(
+                        message="Get User Response creation Failed",
+                        logger=user_management_app_logger,
+                    )
+                    return invalid_req_err_res.send_response_to_client()
+                get_usr_response = make_response(custom_user_response_body)
+                get_usr_response.headers["Content-Type"] = "application/json"
+                get_usr_response.headers["Cache-Control"] = "no-cache"
+                get_usr_response.status_code = 200
+                user_management_app_logger.info(
+                    f"Prepared success response from cache and sending back to client [SUCCESS]"
+                )
+                return get_usr_response
+            
+            # Cache miss - retrieve from database
+            user_management_app_logger.info(
+                f"User {userid} not found in cache, querying database [CACHE MISS]"
+            )
+            
             # Retrieve the user logic.
             get_user_management_session = usermanager.get_session_from_pool()()
             if get_user_management_session is None:
@@ -57,6 +97,7 @@ def get_user_info(userid):
                     1. Fetching the user record from the database using the primary key userid
                      2. Converting the database model of user to defined user and serialize to json
                      3. Using the serialize , Generating the success custom response , headers
+                     4. Caching the user data in Redis for future requests
                     """
                     get_user_instance = get_user_management_session.query(
                         UsersModel
@@ -97,6 +138,26 @@ def get_user_info(userid):
                             sessionname=get_user_management_session
                         )
                         return invalid_req_err_res.send_response_to_client()
+                    
+                    # Cache the user data in Redis for future requests (TTL: 1 hour)
+                    try:
+                        # Extract user data for caching (convert to dict format)
+                        user_data_for_cache = get_user_instance.get("data", {})
+                        if user_data_for_cache:
+                            redis_helper.cache_user(
+                                user_id=userid,
+                                user_data=user_data_for_cache,
+                                ttl=3600  # 1 hour TTL
+                            )
+                            user_management_app_logger.info(
+                                f"User {userid} cached in Redis [SUCCESS]"
+                            )
+                    except Exception as cache_ex:
+                        # Log cache error but don't fail the request
+                        user_management_app_logger.warning(
+                            f"Failed to cache user {userid} in Redis: {cache_ex}"
+                        )
+                    
                     custom_user_response_body = User.generate_custom_response_body(
                         user_instance=get_user_instance, messagedata="Retrieved User"
                     )
@@ -114,7 +175,7 @@ def get_user_info(userid):
                     get_usr_response.headers["Cache-Control"] = "no-cache"
                     get_usr_response.status_code = 200
                     user_management_app_logger.info(
-                        f"Prepared success response and sending back to client  {get_usr_response}:: [STARTED]"
+                        f"Prepared success response and sending back to client  {get_usr_response}:: [SUCCESS]"
                     )
                     usermanager.close_session(sessionname=get_user_management_session)
                     return get_usr_response

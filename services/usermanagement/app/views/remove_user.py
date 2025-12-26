@@ -14,6 +14,7 @@ from common.pyportal_common.error_handlers.base_error_handler import (
     PyPortalAdminInternalServerError,
     PyPortalAdminNotFoundError,
 )
+from app.redis_helper import UserManagementRedisHelper
 
 
 def deregister_user(userid):
@@ -44,6 +45,9 @@ def deregister_user(userid):
                     logger=user_management_app_logger,
                 )
                 return invalid_header_err_res.send_response_to_client()
+            # Initialize Redis helper for cache invalidation
+            redis_helper = UserManagementRedisHelper()
+            
             # Retrieve the user logic.
             del_user_management_session = usermanager.get_session_from_pool()()
             if del_user_management_session is None:
@@ -55,8 +59,9 @@ def deregister_user(userid):
             if del_user_management_session.is_active:
                 try:
                     """1. Delete the user record from the database using the primary key userid
-                    2. Converting the database model of user to defined user and serialize to json
-                    3. Using the serialize , Generating the success custom response , headers
+                    2. Get user info before deletion to invalidate lookup caches
+                    3. Invalidate Redis cache after successful deletion
+                    4. Using the serialize , Generating the success custom response , headers
                     """
                     del_user_instance = del_user_management_session.query(
                         UsersModel
@@ -119,11 +124,38 @@ def deregister_user(userid):
                         )
                         return internal_err_res.send_response_to_client()
                     else:
+                        # Invalidate Redis cache after successful deletion
+                        try:
+                            # Get username and email before deletion for lookup cache invalidation
+                            username = del_user_instance.Username if del_user_instance else None
+                            email = del_user_instance.Email if del_user_instance else None
+                            
+                            # Invalidate user cache
+                            redis_helper.invalidate_user_cache(userid)
+                            
+                            # Invalidate lookup caches if we have username/email
+                            if username:
+                                lookup_key_username = f"user:lookup:username:{username}"
+                                redis_helper.redis_client.delete(lookup_key_username)
+                            
+                            if email:
+                                lookup_key_email = f"user:lookup:email:{email}"
+                                redis_helper.redis_client.delete(lookup_key_email)
+                            
+                            user_management_app_logger.info(
+                                f"Invalidated Redis cache for user {userid} [SUCCESS]"
+                            )
+                        except Exception as cache_ex:
+                            # Log cache error but don't fail the request
+                            user_management_app_logger.warning(
+                                f"Failed to invalidate cache for user {userid}: {cache_ex}"
+                            )
+                        
                         del_usr_response = make_response("")
                         del_usr_response.headers["Cache-Control"] = "no-cache"
                         del_usr_response.status_code = 204
                         user_management_app_logger.info(
-                            f"Prepared success response and sending back to client  {del_usr_response}:: [STARTED]"
+                            f"Prepared success response and sending back to client  {del_usr_response}:: [SUCCESS]"
                         )
                         usermanager.close_session(
                             sessionname=del_user_management_session
