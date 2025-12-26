@@ -98,24 +98,27 @@ Issues:
 - High memory footprint (200 × 2MB = 400MB)
 ```
 
-#### New Approach: Event-Driven
+#### New Approach: Gunicorn Multi-Process + Connection Pooling
 ```
 ┌─────────────────────────────────────┐
-│   Event Loop (Single Thread)        │
+│   Gunicorn (4 Workers × 2 Threads)  │
 │                                     │
-│   Stream 1 ──┐                     │
-│   Stream 2 ──┤→ Event Queue        │
-│   Stream 3 ──┤   ↓                 │
-│   Stream N ──┘   Non-blocking I/O  │
+│   Worker 1 ──┐                     │
+│   Worker 2 ──┤→ Request Queue      │
+│   Worker 3 ──┤   ↓                 │
+│   Worker 4 ──┘   Thread Pool       │
 │                   ↓                 │
 │            Connection Pool (20)     │
 └─────────────────────────────────────┘
 
 Benefits:
-- Minimal context switching
+- Process isolation (one crash doesn't kill others)
 - <1ms per pooled connection
-- Low memory footprint (~100MB)
+- Better memory management (~100MB per worker)
+- Utilizes multiple CPU cores
 ```
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+run_terminal_cmd
 
 ## Key Learnings
 
@@ -438,6 +441,13 @@ I've been working on improving the project:
 - Enhanced .gitignore and development tools
 - Added type hints across the codebase
 - Documented the journey from thread-per-stream to event-driven architecture
+- **Code Quality Improvements (Latest)**:
+  - Fixed import ordering across all services (app.* imports before common.* imports)
+  - Moved all imports to top-level (removed imports inside functions)
+  - Fixed pylint issues: unused imports, long lines, trailing whitespace
+  - Integrated Redis caching with cache-aside pattern in user management service
+  - Added rate limiting for user registration endpoint
+  - Improved code consistency across usermanagement and taskprocessing services
 
 ## Acknowledgments
 

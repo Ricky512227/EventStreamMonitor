@@ -1,3 +1,4 @@
+import json
 import sys
 from typing import Union, Any, Optional
 
@@ -9,15 +10,9 @@ from app import (
     user_management_logger,
     req_headers_schema,
     usermanager,
-    app_manager_db_obj
+    app_manager_db_obj,
+    user_management_kafka_producer,
 )
-from common.pyportal_common.error_handlers.invalid_request_handler import (
-    send_invalid_request_error_to_client,
-)
-from common.pyportal_common.error_handlers.\
-    internal_server_error_handler import (
-        send_internal_server_error_to_client,
-    )
 from app.utils.util_helpers import (
     is_username_email_already_exists_in_db,
 )
@@ -26,6 +21,13 @@ from app.users.response_handlers.\
         generate_success_response,
     )
 from app.redis_helper import UserManagementRedisHelper
+from common.pyportal_common.error_handlers.invalid_request_handler import (
+    send_invalid_request_error_to_client,
+)
+from common.pyportal_common.error_handlers.\
+    internal_server_error_handler import (
+        send_internal_server_error_to_client,
+    )
 from flask import jsonify
 
 
@@ -267,9 +269,6 @@ def register_user():
                         )
 
                     # Publish user registration event to Kafka
-                    from app import (
-                        user_management_kafka_producer,
-                    )
                     if user_management_kafka_producer:
                         try:
                             registration_event = {
@@ -337,7 +336,6 @@ def register_user():
                             )
 
                         # Parse JSON string to dict for make_response
-                        import json
                         try:
                             response_dict = json.loads(
                                 custom_user_response_body

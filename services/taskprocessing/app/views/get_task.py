@@ -4,13 +4,13 @@ from app import (
     booking_logger,
     app_manager_db_obj,
 )
+from app.models.task_model import TaskModel
 from common.pyportal_common.error_handlers.not_found_error_handler import (
     send_notfound_request_error_to_client,
 )
 from common.pyportal_common.error_handlers.internal_server_error_handler import (
     send_internal_server_error_to_client,
 )
-from app.models.task_model import TaskModel
 
 
 def get_task(task_id):

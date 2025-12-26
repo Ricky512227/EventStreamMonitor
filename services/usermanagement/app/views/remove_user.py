@@ -9,12 +9,12 @@ from app import (
     del_user_headers_schema,
     usermanager,
 )
+from app.redis_helper import UserManagementRedisHelper
 from common.pyportal_common.error_handlers.base_error_handler import (
     PyPortalAdminInvalidRequestError,
     PyPortalAdminInternalServerError,
     PyPortalAdminNotFoundError,
 )
-from app.redis_helper import UserManagementRedisHelper
 
 
 def deregister_user(userid):

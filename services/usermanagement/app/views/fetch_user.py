@@ -8,12 +8,12 @@ from app import (
     getuser_headers_schema,
     usermanager,
 )
+from app.redis_helper import UserManagementRedisHelper
 from common.pyportal_common.error_handlers.base_error_handler import (
     PyPortalAdminInvalidRequestError,
     PyPortalAdminInternalServerError,
     PyPortalAdminNotFoundError,
 )
-from app.redis_helper import UserManagementRedisHelper
 
 
 def get_user_info(userid):
@@ -46,7 +46,6 @@ def get_user_info(userid):
                 return invalid_header_err_res.send_response_to_client()
             # Initialize Redis helper for caching
             redis_helper = UserManagementRedisHelper()
-            
             # Try to get user from cache first (Cache-Aside pattern)
             cached_user = redis_helper.get_cached_user(userid)
             if cached_user:
@@ -74,15 +73,14 @@ def get_user_info(userid):
                 get_usr_response.headers["Cache-Control"] = "no-cache"
                 get_usr_response.status_code = 200
                 user_management_app_logger.info(
-                    f"Prepared success response from cache and sending back to client [SUCCESS]"
+                    "Prepared success response from cache and sending "
+                    "back to client [SUCCESS]"
                 )
                 return get_usr_response
-            
             # Cache miss - retrieve from database
             user_management_app_logger.info(
                 f"User {userid} not found in cache, querying database [CACHE MISS]"
             )
-            
             # Retrieve the user logic.
             get_user_management_session = usermanager.get_session_from_pool()()
             if get_user_management_session is None:
@@ -138,8 +136,8 @@ def get_user_info(userid):
                             sessionname=get_user_management_session
                         )
                         return invalid_req_err_res.send_response_to_client()
-                    
-                    # Cache the user data in Redis for future requests (TTL: 1 hour)
+                    # Cache the user data in Redis for future requests
+                    # (TTL: 1 hour)
                     try:
                         # Extract user data for caching (convert to dict format)
                         user_data_for_cache = get_user_instance.get("data", {})
@@ -157,7 +155,6 @@ def get_user_info(userid):
                         user_management_app_logger.warning(
                             f"Failed to cache user {userid} in Redis: {cache_ex}"
                         )
-                    
                     custom_user_response_body = User.generate_custom_response_body(
                         user_instance=get_user_instance, messagedata="Retrieved User"
                     )
