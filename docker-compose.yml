@@ -111,13 +111,13 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
   # User Management Service
-  usermanagement-service:
-    build:
-      context: .
-      dockerfile: services/usermanagement/Dockerfile
+  usermanagement-service: # service name
+    build:  # Build instruction, tells docker how to build the image
+        context: .
+        dockerfile: services/usermanagement/Dockerfile # Dockerfile path
     ports:
-      - 5001:9091
-    depends_on:
+      - 5001:9091 # map host port 5001 to container port 9091
+    depends_on: # list of dependencies that should be started before this service
       - registration-db
       - kafka
       - redis
@@ -146,8 +146,8 @@ services:
   # Task Processing Service
   taskprocessing-service:
     build:
-      context: .
-      dockerfile: services/taskprocessing/Dockerfile
+        context: .
+        dockerfile: services/taskprocessing/Dockerfile
     ports:
       - 5002:9092
     depends_on:
@@ -179,8 +179,8 @@ services:
   # Notification Service
   notification-service:
     build:
-      context: .
-      dockerfile: services/notification/Dockerfile
+        context: .
+        dockerfile: services/notification/Dockerfile
     ports:
       - 5003:9093
     depends_on:
@@ -212,8 +212,8 @@ services:
   # Log Monitoring Service
   logmonitor-service:
     build:
-      context: .
-      dockerfile: services/logmonitor/deployment/Dockerfile
+        context: .
+        dockerfile: services/logmonitor/deployment/Dockerfile
     ports:
       - 5004:9094
     depends_on:
