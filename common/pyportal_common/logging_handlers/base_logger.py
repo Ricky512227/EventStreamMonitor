@@ -74,7 +74,7 @@ class LogMonitor:
             file_handler.setFormatter(formatter)
             self.logger.setLevel(self.log_level)
             self.logger.addHandler(file_handler)
-            
+
             # Add Kafka log handler if KAFKA_BOOTSTRAP_SERVERS is set
             kafka_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS')
             if kafka_servers:
@@ -89,7 +89,7 @@ class LogMonitor:
                     self.logger.info("Kafka log handler initialized")
                 except Exception as ex:
                     self.logger.warning(f"Failed to initialize Kafka log handler: {ex}")
-            
+
             self.logger.info(
                 f"Initialized logger for the service [{self.service_name}] :: [SUCCESS]"
             )

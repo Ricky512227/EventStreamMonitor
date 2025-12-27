@@ -9,14 +9,14 @@ from typing import Optional, Any, Dict
 class RedisClient:
     """
     Redis client wrapper for caching and session management
-    
+
     Provides methods for:
     - Key-value caching
     - Session storage
     - TTL (Time To Live) management
     - JSON serialization/deserialization
     """
-    
+
     def __init__(self, 
                  host: Optional[str] = None,
                  port: Optional[int] = None,
@@ -27,7 +27,7 @@ class RedisClient:
                  socket_connect_timeout: int = 5):
         """
         Initialize Redis client
-        
+
         Args:
             host: Redis host (default: from REDIS_HOST env var or 'redis')
             port: Redis port (default: from REDIS_PORT env var or 6379)
@@ -56,7 +56,7 @@ class RedisClient:
         self.db = db
         self.password = password or os.getenv('REDIS_PASSWORD')
         self.decode_responses = decode_responses
-        
+
         # Connection pool for better performance - reuses TCP socket
         # connections to avoid the overhead of establishing new connections.
         # All operations (GET/SET/etc) are blocking I/O operations that run
@@ -72,25 +72,25 @@ class RedisClient:
             socket_connect_timeout=socket_connect_timeout,
             max_connections=50
         )
-        
+
         self.client = redis.Redis(connection_pool=self.pool)
-    
+
     def ping(self) -> bool:
         """Test Redis connection"""
         try:
             return self.client.ping()
         except Exception:
             return False
-    
+
     # ==================== Basic Operations ====================
-    
+
     def get(self, key: str) -> Optional[str]:
         """
         Get value from Redis
-        
+
         Args:
             key: Redis key
-        
+
         Returns:
             Value as string, or None if key doesn't exist
         """
@@ -98,16 +98,16 @@ class RedisClient:
             return self.client.get(key)
         except Exception:
             return None
-    
+
     def set(self, key: str, value: str, ttl: Optional[int] = None) -> bool:
         """
         Set value in Redis
-        
+
         Args:
             key: Redis key
             value: Value to store
             ttl: Time to live in seconds (None for no expiration)
-        
+
         Returns:
             True if successful, False otherwise
         """
@@ -118,14 +118,14 @@ class RedisClient:
                 return self.client.set(key, value)
         except Exception:
             return False
-    
+
     def delete(self, *keys: str) -> int:
         """
         Delete keys from Redis
-        
+
         Args:
             *keys: One or more keys to delete
-        
+
         Returns:
             Number of keys deleted
         """
@@ -133,30 +133,30 @@ class RedisClient:
             return self.client.delete(*keys)
         except Exception:
             return 0
-    
+
     def exists(self, key: str) -> bool:
         """Check if key exists in Redis"""
         try:
             return bool(self.client.exists(key))
         except Exception:
             return False
-    
+
     def expire(self, key: str, ttl: int) -> bool:
         """Set TTL for a key"""
         try:
             return self.client.expire(key, ttl)
         except Exception:
             return False
-    
+
     # ==================== JSON Operations ====================
-    
+
     def get_json(self, key: str) -> Optional[Dict[str, Any]]:
         """
         Get JSON value from Redis
-        
+
         Args:
             key: Redis key
-        
+
         Returns:
             Deserialized JSON object, or None if key doesn't exist
         """
@@ -167,16 +167,16 @@ class RedisClient:
             return None
         except (json.JSONDecodeError, TypeError, Exception):
             return None
-    
+
     def set_json(self, key: str, value: Dict[str, Any], ttl: Optional[int] = None) -> bool:
         """
         Set JSON value in Redis
-        
+
         Args:
             key: Redis key
             value: Dictionary to serialize and store
             ttl: Time to live in seconds
-        
+
         Returns:
             True if successful, False otherwise
         """
@@ -185,87 +185,87 @@ class RedisClient:
             return self.set(key, json_value, ttl)
         except (TypeError, ValueError, Exception):
             return False
-    
+
     # ==================== Session Management ====================
-    
+
     def set_session(self, session_id: str, session_data: Dict[str, Any], ttl: int = 3600) -> bool:
         """
         Store session data
-        
+
         Args:
             session_id: Unique session identifier
             session_data: Session data dictionary
             ttl: Session TTL in seconds (default: 1 hour)
-        
+
         Returns:
             True if successful, False otherwise
         """
         key = f"session:{session_id}"
         return self.set_json(key, session_data, ttl)
-    
+
     def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve session data
-        
+
         Args:
             session_id: Unique session identifier
-        
+
         Returns:
             Session data dictionary, or None if session doesn't exist
         """
         key = f"session:{session_id}"
         return self.get_json(key)
-    
+
     def delete_session(self, session_id: str) -> bool:
         """
         Delete session
-        
+
         Args:
             session_id: Unique session identifier
-        
+
         Returns:
             True if successful, False otherwise
         """
         key = f"session:{session_id}"
         return bool(self.delete(key))
-    
+
     def refresh_session(self, session_id: str, ttl: int = 3600) -> bool:
         """
         Refresh session TTL
-        
+
         Args:
             session_id: Unique session identifier
             ttl: New TTL in seconds
-        
+
         Returns:
             True if successful, False otherwise
         """
         key = f"session:{session_id}"
         return self.expire(key, ttl)
-    
+
     # ==================== Cache Operations ====================
-    
+
     def cache_get(self, cache_key: str) -> Optional[Any]:
         """
         Get cached value
-        
+
         Args:
             cache_key: Cache key
-        
+
         Returns:
             Cached value (deserialized if JSON), or None
         """
         return self.get_json(cache_key) or self.get(cache_key)
-    
+
     def cache_set(self, cache_key: str, value: Any, ttl: int = 3600) -> bool:
         """
         Set cached value
-        
+
         Args:
             cache_key: Cache key
             value: Value to cache (dict/str/other)
             ttl: Cache TTL in seconds (default: 1 hour)
-        
+
         Returns:
             True if successful, False otherwise
         """
@@ -273,18 +273,18 @@ class RedisClient:
             return self.set_json(cache_key, value, ttl)
         else:
             return self.set(cache_key, str(value), ttl)
-    
+
     def cache_delete(self, cache_key: str) -> bool:
         """Delete cached value"""
         return bool(self.delete(cache_key))
-    
+
     def cache_pattern_delete(self, pattern: str) -> int:
         """
         Delete all keys matching a pattern
-        
+
         Args:
             pattern: Redis key pattern (e.g., "cache:user:*")
-        
+
         Returns:
             Number of keys deleted
         """
@@ -295,37 +295,37 @@ class RedisClient:
             return 0
         except Exception:
             return 0
-    
+
     # ==================== Hash Operations ====================
-    
+
     def hset(self, name: str, key: str, value: str) -> bool:
         """Set field in hash"""
         try:
             return bool(self.client.hset(name, key, value))
         except Exception:
             return False
-    
+
     def hget(self, name: str, key: str) -> Optional[str]:
         """Get field from hash"""
         try:
             return self.client.hget(name, key)
         except Exception:
             return None
-    
+
     def hgetall(self, name: str) -> Dict[str, str]:
         """Get all fields from hash"""
         try:
             return self.client.hgetall(name) or {}
         except Exception:
             return {}
-    
+
     def hdel(self, name: str, *keys: str) -> int:
         """Delete fields from hash"""
         try:
             return self.client.hdel(name, *keys)
         except Exception:
             return 0
-    
+
     def close(self):
         """Close Redis connection"""
         try:
@@ -333,7 +333,6 @@ class RedisClient:
             self.pool.disconnect()
         except Exception:
             pass
-
 
 # Global Redis client instance
 _redis_client: Optional[RedisClient] = None
@@ -345,18 +344,18 @@ def get_redis_client(host: Optional[str] = None,
                      password: Optional[str] = None) -> RedisClient:
     """
     Get or create global Redis client instance (singleton pattern)
-    
+
     Args:
         host: Redis host
         port: Redis port
         db: Redis database number
         password: Redis password
-    
+
     Returns:
         RedisClient instance
     """
     global _redis_client
-    
+
     if _redis_client is None:
         _redis_client = RedisClient(
             host=host,
@@ -364,7 +363,7 @@ def get_redis_client(host: Optional[str] = None,
             db=db,
             password=password
         )
-    
+
     return _redis_client
 
 
@@ -374,15 +373,14 @@ def init_redis_client(host: Optional[str] = None,
                      password: Optional[str] = None) -> RedisClient:
     """
     Initialize Redis client (explicit initialization)
-    
+
     Args:
         host: Redis host
         port: Redis port
         db: Redis database number
         password: Redis password
-    
+
     Returns:
         RedisClient instance
     """
     return get_redis_client(host=host, port=port, db=db, password=password)
-

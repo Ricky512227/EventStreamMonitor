@@ -34,7 +34,6 @@ def send_invalid_request_error_to_client(
         error_details=err_details)
     return invalid_request_error_obj.send_response_to_client
 
-
 #
 # user_management_logger = LogMonitor("usermanagement").logger
 # message = "Invalid JSON request"

@@ -14,14 +14,14 @@ class KafkaLogHandler(logging.Handler):
     """
     Custom logging handler that sends log records to Kafka
     """
-    
+
     def __init__(self, 
                  kafka_bootstrap_servers: str,
                  topic: str = "application-logs",
                  level: int = logging.NOTSET):
         """
         Initialize Kafka log handler
-        
+
         Args:
             kafka_bootstrap_servers: Kafka broker addresses (comma-separated)
             topic: Kafka topic to send logs to
@@ -32,7 +32,7 @@ class KafkaLogHandler(logging.Handler):
         self.kafka_bootstrap_servers = kafka_bootstrap_servers
         self.producer: Optional[KafkaProducer] = None
         self._init_producer()
-    
+
     def _init_producer(self):
         """Initialize Kafka producer"""
         try:
@@ -46,17 +46,17 @@ class KafkaLogHandler(logging.Handler):
         except Exception as e:
             print(f"Failed to initialize Kafka producer: {e}")
             self.producer = None
-    
+
     def emit(self, record: logging.LogRecord):
         """
         Emit a log record to Kafka
-        
+
         Args:
             record: LogRecord instance
         """
         if not self.producer:
             return
-        
+
         try:
             # Format log message
             log_data = {
@@ -72,29 +72,29 @@ class KafkaLogHandler(logging.Handler):
                 'thread': record.thread,
                 'process': record.process
             }
-            
+
             # Add exception info if present
             if record.exc_info:
                 log_data['exception'] = self.format(record)
-            
+
             # Determine topic based on log level
             topic = self.topic
             if record.levelno >= logging.ERROR:
                 topic = f"{self.topic}-errors"
-            
+
             # Send to Kafka
             future = self.producer.send(topic, log_data)
             # Fire and forget - don't wait for response
             future.add_errback(self._on_send_error)
-            
+
         except Exception as e:
             self.handleError(record)
             print(f"Error sending log to Kafka: {e}")
-    
+
     def _on_send_error(self, exception):
         """Handle Kafka send errors"""
         print(f"Kafka send error: {exception}")
-    
+
     def close(self):
         """Close the handler and flush producer"""
         if self.producer:
@@ -109,13 +109,13 @@ def setup_kafka_logging(logger: logging.Logger,
                         level: int = logging.INFO) -> KafkaLogHandler:
     """
     Setup Kafka logging for a logger
-    
+
     Args:
         logger: Logger instance
         kafka_bootstrap_servers: Kafka broker addresses
         topic: Kafka topic name
         level: Logging level
-    
+
     Returns:
         KafkaLogHandler instance
     """
@@ -129,4 +129,3 @@ def setup_kafka_logging(logger: logging.Logger,
     ))
     logger.addHandler(handler)
     return handler
-

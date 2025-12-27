@@ -80,7 +80,6 @@ class PyPortalGrpcClientConnPool(PyportalGrpcBaseClient):
     def release_stub_to_pool(self, released_stub):
         self.grpc_conn_queue_pool.put(released_stub)
 
-
 # custom_pool = PyPortalGrpcClientConnPool("127.0.0.1", 50051)
 # custom_pool.set_queue_max_pool_size(10)
 # custom_pool.set_total_number_of_channels(1)

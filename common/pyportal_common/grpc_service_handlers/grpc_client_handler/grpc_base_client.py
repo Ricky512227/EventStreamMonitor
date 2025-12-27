@@ -47,7 +47,6 @@ class PyportalGrpcBaseClient:
         elif state == grpc.ChannelConnectivity.TRANSIENT_FAILURE:
                                                       self.base_grpc_channel))
 
-
 #     def trigger_rpc_request(self, data_to_send):
 #         try:
 #             if self.base_grpc_channel:

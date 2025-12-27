@@ -2,7 +2,6 @@ import grpc
 import sys
 from concurrent import futures
 
-
 # Ensure proper error handling for this operation
 class PyPortalGrpcBaseServer:
     def __init__(self, **kwargs):
@@ -43,7 +42,6 @@ class PyPortalGrpcBaseServer:
     def block_base_server(self):
         self.base_grpc_server.wait_for_termination()
         self.cmn_logger.info("Terminated GRPC Server")
-
 
 # if __name__ == "__main__":
 #     # Example for UserValidationForTokenGenerationService

@@ -29,7 +29,7 @@ class PyPortalKafkaProducer:
     def publish_data_to_producer(self, data_to_send):
         """
         Publish a single message or a list of messages to the topic.
-        
+
         Args:
             data_to_send: dict or list of dicts to send
         """
@@ -60,9 +60,6 @@ class PyPortalKafkaProducer:
     def close_the_producer(self):
         if self.producer is not None:
             self.producer.close()
-
-
-
 
     # notif_producer2 = PyPortalKafkaConsumer(producer_ip_address=producer_ip_address, producer_port=producer_port)
     # notif_producer2.topic_to_set = "emailtobenotfiedtouser"

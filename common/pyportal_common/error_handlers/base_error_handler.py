@@ -71,7 +71,6 @@ class EventStreamMonitorBaseError(ABC):
             prepared_error)
         return final_error_response
 
-
 #
 # # sqlalchemy.exc.IntegrityError: This exception is raised when there is a violation of the database's integrity constraints. For example, if you try to insert a record with a duplicate primary key or violate a unique constraint, an IntegrityError will be raised.
 # #

@@ -14,4 +14,3 @@ __all__ = [
     'sanitize_sensitive_data',
     'sanitize_log_message'
 ]
-
