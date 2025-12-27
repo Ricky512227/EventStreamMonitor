@@ -13,7 +13,6 @@ from typing import Dict, List
 from datetime import datetime
 from dataclasses import dataclass
 
-
 @dataclass
 class ServiceHealth:
     """Service health status container"""
@@ -25,7 +24,6 @@ class ServiceHealth:
     response_time: float
     status_code: int = 0
     error_message: str = ""
-
 
 SERVICES = {
     "usermanagement": {
@@ -91,16 +89,16 @@ def check_service_health(service_config: Dict) -> ServiceHealth:
     url = service_config["url"]
     port = service_config["port"]
     health_endpoint = service_config.get("health_endpoint", "/health")
-    
+
     # Check port connectivity
     is_reachable = check_port_connectivity("localhost", port)
-    
+
     # Check health endpoint
     is_healthy = False
     response_time = 0.0
     status_code = 0
     error_message = ""
-    
+
     if is_reachable:
         try:
             start_time = time.time()
@@ -119,7 +117,7 @@ def check_service_health(service_config: Dict) -> ServiceHealth:
             error_message = str(e)
     else:
         error_message = "Port not accessible"
-    
+
     return ServiceHealth(
         name=name,
         url=url,
@@ -141,12 +139,12 @@ def print_health_status(health: ServiceHealth):
     """
     status_icon = "✓" if health.is_healthy else "✗"
     status_text = "HEALTHY" if health.is_healthy else "UNHEALTHY"
-    
+
     print(f"\n{status_icon} {health.name}")
     print(f"  URL: {health.url}")
     print(f"  Port: {health.port}")
     print(f"  Status: {status_text}")
-    
+
     if health.is_reachable:
         print(f"  Response Time: {health.response_time:.2f}ms")
         print(f"  Status Code: {health.status_code}")
@@ -161,25 +159,25 @@ def main():
     print("=" * 70)
     print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 70)
-    
+
     health_results: List[ServiceHealth] = []
-    
+
     # Check all services
     for service_config in SERVICES.values():
         health = check_service_health(service_config)
         health_results.append(health)
         print_health_status(health)
-    
+
     # Summary
     print("\n" + "=" * 70)
     print("SUMMARY")
     print("=" * 70)
-    
+
     healthy_count = sum(1 for h in health_results if h.is_healthy)
     total_count = len(health_results)
-    
+
     print(f"Services Healthy: {healthy_count}/{total_count}")
-    
+
     if healthy_count == total_count:
         print("\n✓ All services are healthy and operational!")
         return 0
@@ -188,7 +186,5 @@ def main():
         print("  docker-compose logs [service-name]")
         return 1
 
-
 if __name__ == "__main__":
     sys.exit(main())
-

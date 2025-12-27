@@ -25,14 +25,14 @@ def test_redis_connection():
     print("\n[TEST 2] Testing Redis Connection...")
     try:
         from common.pyportal_common.cache_handlers import get_redis_client
-        
+
         # Use environment variables or defaults
         redis_client = get_redis_client(
             host=os.getenv('REDIS_HOST', 'localhost'),
             port=int(os.getenv('REDIS_PORT', 6379)),
             db=int(os.getenv('REDIS_DB', 0))
         )
-        
+
         if redis_client.ping():
             print(" Redis connection successful")
             return True, redis_client
@@ -51,34 +51,34 @@ def test_redis_operations(redis_client):
     if not redis_client:
         print("⊘ Skipped (Redis not available)")
         return False
-    
+
     try:
         # Test set/get
         test_key = "dry_run_test_key"
         test_value = "dry_run_test_value"
-        
+
         redis_client.set(test_key, test_value, ttl=60)
         retrieved = redis_client.get(test_key)
-        
+
         if retrieved == test_value:
             print(" Set/Get operations working")
         else:
             print(f" Set/Get failed: expected '{test_value}', got '{retrieved}'")
             return False
-        
+
         # Test JSON operations
         test_json_key = "dry_run_test_json"
         test_json_value = {"name": "test", "value": 123}
-        
+
         redis_client.set_json(test_json_key, test_json_value, ttl=60)
         retrieved_json = redis_client.get_json(test_json_key)
-        
+
         if retrieved_json == test_json_value:
             print(" JSON operations working")
         else:
             print(f" JSON operations failed")
             return False
-        
+
         # Test delete
         redis_client.delete(test_key, test_json_key)
         if not redis_client.exists(test_key) and not redis_client.exists(test_json_key):
@@ -86,7 +86,7 @@ def test_redis_operations(redis_client):
         else:
             print(" Delete operations failed")
             return False
-        
+
         return True
     except Exception as e:
         print(f" Redis operations error: {e}")
@@ -98,10 +98,10 @@ def test_user_management_helper():
     print("\n[TEST 4] Testing User Management Redis Helper...")
     try:
         from services.usermanagement.app.redis_helper import UserManagementRedisHelper
-        
+
         helper = UserManagementRedisHelper()
         print(" UserManagementRedisHelper imported successfully")
-        
+
         # Test caching (will fail if Redis not available, but that's ok)
         try:
             test_user_data = {"id": 999, "username": "test_user", "email": "test@example.com"}
@@ -114,7 +114,7 @@ def test_user_management_helper():
                 print("⊘ User caching tested (Redis may not be running)")
         except Exception as e:
             print(f"⊘ User caching test skipped (Redis not available: {e})")
-        
+
         return True
     except Exception as e:
         print(f" Failed to import UserManagementRedisHelper: {e}")
@@ -126,7 +126,7 @@ def test_taskprocessing_helper():
     print("\n[TEST 5] Testing Task Processing Redis Helper...")
     try:
         from services.taskprocessing.app.redis_helper import TaskRedisHelper
-        
+
         # Test import and instantiation
         helper = TaskRedisHelper()
         # Verify helper has the expected interface
@@ -137,7 +137,6 @@ def test_taskprocessing_helper():
         print(f" Failed to import Task Processing Redis helper: {e}")
         return False
 
-
 # Process result
 def main():
     """Run all Redis dry run tests"""
@@ -145,43 +144,43 @@ def main():
     print("REDIS INTEGRATION DRY RUN TESTS")
     print("=" * 60)
     print()
-    
+
     results = []
-    
+
     # Test 1: Import
     results.append(("Import Test", test_redis_import()))
-    
+
     # Test 2: Connection
     connected, redis_client = test_redis_connection()
     results.append(("Connection Test", connected))
-    
+
     # Test 3: Operations (only if connected)
     if connected:
         results.append(("Operations Test", test_redis_operations(redis_client)))
     else:
         results.append(("Operations Test", False))
-    
+
     # Test 4: User Management Helper
     results.append(("User Management Helper", test_user_management_helper()))
-    
+
     # Test 5: Task Processing Helper
     results.append(("Task Processing Helper", test_taskprocessing_helper()))
-    
+
     # Summary
     print("\n" + "=" * 60)
     print("TEST SUMMARY")
     print("=" * 60)
-    
+
     passed = sum(1 for _, result in results if result)
     total = len(results)
-    
+
     for test_name, result in results:
         status = " PASS" if result else " FAIL"
         print(f"{test_name:30} {status}")
-    
+
     print(f"\nTotal: {passed}/{total} tests passed")
     print()
-    
+
     if passed == total:
         print(" All Redis integration tests passed!")
         return 0
@@ -192,7 +191,5 @@ def main():
         print("  Some tests failed")
         return 1
 
-
 if __name__ == "__main__":
     sys.exit(main())
-

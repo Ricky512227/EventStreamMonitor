@@ -97,7 +97,7 @@ def send_error_to_kafka(producer, service_name: str, error_data: dict):
         'thread': random.randint(1, 100),
         'process': os.getpid()
     }
-    
+
     try:
         # Send to error topic
         topic = 'application-logs-errors' if error_data['level'] in ['ERROR', 'CRITICAL'] else 'application-logs'
@@ -115,49 +115,47 @@ def main():
     print("ERROR EVENT STREAMER - Streaming to Kafka")
     print("=" * 60)
     print()
-    
+
     kafka_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
     print(f"Kafka Bootstrap Servers: {kafka_servers}")
-    
+
     # Create producer
     producer = create_kafka_producer(kafka_servers)
     if not producer:
         return 1
-    
+
     print(" Kafka producer connected")
     print()
     print("Streaming errors... (Press Ctrl+C to stop)")
     print("-" * 60)
-    
+
     try:
         count = 0
         while True:
             service = random.choice(SERVICES)
             error = random.choice(ERROR_MESSAGES)
-            
+
             if send_error_to_kafka(producer, service, error):
                 count += 1
                 print(f"[{count}] {error['level']} - {service} - {error['message'][:50]}")
             else:
                 print(f" Failed to send error event")
-            
+
             # Random interval between 2-5 seconds
             time.sleep(random.uniform(2, 5))
-    
+
     except KeyboardInterrupt:
         print()
         print("-" * 60)
         print(f"\n Stopped. Sent {count} error events to Kafka")
         print()
         print("Check dashboard: http://localhost:5004")
-    
+
     finally:
         producer.flush()
         producer.close()
-    
-    return 0
 
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
-

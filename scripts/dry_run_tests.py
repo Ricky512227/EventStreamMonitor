@@ -8,7 +8,6 @@ import time
 import sys
 from typing import Dict, Tuple
 
-
 SERVICES = {
     "usermanagement": {
         "url": "http://localhost:5001",
@@ -34,7 +33,7 @@ SERVICES = {
 def check_service_health(service_name: str, config: Dict) -> Tuple[bool, str]:
     """
     Check if a service is responding
-    
+
     Returns:
         (is_healthy, message)
     """
@@ -63,7 +62,7 @@ def check_service_reachable(service_name: str, config: Dict) -> Tuple[bool, str]
         sock.settimeout(3)
         result = sock.connect_ex(('localhost', config['port']))
         sock.close()
-        
+
         if result == 0:
             return True, f" {service_name} port {config['port']} is open"
         else:
@@ -97,14 +96,14 @@ def main():
     print("MICROSERVICES DRY RUN TESTS")
     print("=" * 60)
     print()
-    
+
     # Wait a bit for services to be ready
     print("Waiting for services to start...")
     time.sleep(5)
     print()
-    
+
     results = []
-    
+
     # Test 1: Port connectivity
     print("[TEST 1] Checking Service Port Connectivity")
     print("-" * 60)
@@ -113,7 +112,7 @@ def main():
         print(message)
         results.append(("Port Check", service_name, is_reachable))
     print()
-    
+
     # Test 2: Health endpoints
     print("[TEST 2] Checking Service Health Endpoints")
     print("-" * 60)
@@ -122,16 +121,16 @@ def main():
         print(message)
         results.append(("Health Check", service_name, is_healthy))
     print()
-    
+
     # Test 3: API endpoints
     print("[TEST 3] Checking API Endpoints")
     print("-" * 60)
-    
+
     # User Management
     is_reachable, message = test_user_registration()
     print(message)
     results.append(("API Endpoint", "usermanagement", is_reachable))
-    
+
     # Task Processing (just check if endpoint exists)
     try:
         url = f"{SERVICES['taskprocessing']['url']}{SERVICES['taskprocessing']['test_endpoint']}"
@@ -141,7 +140,7 @@ def main():
     except Exception as e:
         print(f" Task processing endpoint error: {str(e)}")
         results.append(("API Endpoint", "taskprocessing", False))
-    
+
     # Notification (check root)
     try:
         response = requests.get(SERVICES['notification']['url'], timeout=5)
@@ -150,25 +149,25 @@ def main():
     except:
         print(" Notification service connection refused")
         results.append(("API Endpoint", "notification", False))
-    
+
     print()
-    
+
     # Summary
     print("=" * 60)
     print("TEST SUMMARY")
     print("=" * 60)
-    
+
     passed = sum(1 for _, _, result in results if result)
     total = len(results)
-    
+
     for test_type, service, result in results:
         status = " PASS" if result else " FAIL"
         print(f"{test_type:20} {service:20} {status}")
-    
+
     print()
     print(f"Total: {passed}/{total} tests passed")
     print()
-    
+
     if passed == total:
         print(" All services are running and healthy!")
         return 0
@@ -177,7 +176,5 @@ def main():
         print("   docker-compose logs [service-name]")
         return 1
 
-
 if __name__ == "__main__":
     sys.exit(main())
-

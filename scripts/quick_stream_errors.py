@@ -66,10 +66,10 @@ ERROR_EVENTS = [
 def stream_errors():
     """
     Stream predefined error events to Kafka.
-    
+
     Connects to Kafka broker, sends error events to the 'application-logs-errors'
     topic, and provides feedback on the streaming process.
-    
+
     Returns:
         int: Exit code (0 for success, 1 for failure)
     """
@@ -77,7 +77,7 @@ def stream_errors():
     print("Streaming Error Events to Kafka")
     print("=" * 60)
     print()
-    
+
     try:
         producer = KafkaProducer(
             bootstrap_servers=['localhost:9092'],
@@ -91,10 +91,10 @@ def stream_errors():
         print(f" Failed to connect to Kafka: {e}")
         print("Make sure Kafka is running: docker-compose up -d kafka")
         return 1
-    
+
     print(f"Streaming {len(ERROR_EVENTS)} error events...")
     print("-" * 60)
-    
+
     for i, error in enumerate(ERROR_EVENTS, 1):
         log_data = {
             'timestamp': datetime.utcnow().isoformat(),
@@ -109,7 +109,7 @@ def stream_errors():
             'thread': 100 + i,
             'process': 1234
         }
-        
+
         try:
             # Send to error topic
             topic = 'application-logs-errors'
@@ -118,12 +118,12 @@ def stream_errors():
             print(f"[{i}/{len(ERROR_EVENTS)}]  {error['level']} - {error['service']}: {error['message'][:50]}")
         except Exception as e:
             print(f"[{i}/{len(ERROR_EVENTS)}]  Failed: {e}")
-        
+
         time.sleep(0.3)  # Small delay
-    
+
     producer.flush()
     producer.close()
-    
+
     print()
     print("-" * 60)
     print(" All error events sent to Kafka!")
@@ -134,11 +134,9 @@ def stream_errors():
     print("3. Check Kafka: docker-compose exec kafka kafka-console-consumer \\")
     print("                  --bootstrap-server localhost:9092 \\")
     print("                  --topic application-logs-errors --from-beginning")
-    
-    return 0
 
+    return 0
 
 if __name__ == "__main__":
     import sys
     sys.exit(stream_errors())
-

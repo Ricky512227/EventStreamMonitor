@@ -35,7 +35,7 @@ def generate_error_event(service_name: str, logger: logging.Logger):
     """Generate a random error event"""
     error_type = random.choice(ERROR_TYPES)
     error_level = random.choice(['ERROR', 'CRITICAL'])
-    
+
     if error_level == 'ERROR':
         logger.error(f"[{service_name}] {error_type} - Test error event at {datetime.now()}")
     else:
@@ -57,16 +57,16 @@ def main():
     print("ERROR EVENT GENERATOR - Streaming to Kafka")
     print("=" * 60)
     print()
-    
+
     # Get Kafka bootstrap servers from environment or use default
     kafka_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
     print(f"Kafka Bootstrap Servers: {kafka_servers}")
     print()
-    
+
     # Create logger with Kafka handler
     logger = logging.getLogger('error_generator')
     logger.setLevel(logging.INFO)
-    
+
     # Add Kafka handler
     try:
         kafka_handler = KafkaLogHandler(
@@ -83,39 +83,39 @@ def main():
         print(f" Failed to initialize Kafka handler: {e}")
         print("Make sure Kafka is running and accessible")
         return 1
-    
+
     # Also add console handler for visibility
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(logging.Formatter(
         '%(levelname)s - %(message)s'
     ))
     logger.addHandler(console_handler)
-    
+
     print()
     print("Generating error events...")
     print("-" * 60)
-    
+
     # Generate errors
     num_errors = 10
     for i in range(num_errors):
         service = random.choice(SERVICES)
-        
+
         # Set service name in environment for log metadata
         os.environ['SERVICE_NAME'] = service
         os.environ['HOSTNAME'] = f"{service}-service"
-        
+
         # Generate different types of errors
         if i % 3 == 0:
             generate_exception_error(service, logger)
         else:
             generate_error_event(service, logger)
-        
+
         # Add some info/warning logs too
         if i % 4 == 0:
             logger.warning(f"[{service}] Warning: This is a test warning message")
-        
+
         time.sleep(0.5)  # Small delay between events
-    
+
     print()
     print("-" * 60)
     print(f" Generated {num_errors} error events")
@@ -127,13 +127,11 @@ def main():
     print(f"    --topic application-logs-errors \\")
     print(f"    --from-beginning")
     print()
-    
+
     # Flush Kafka handler
     kafka_handler.close()
-    
-    return 0
 
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
-
