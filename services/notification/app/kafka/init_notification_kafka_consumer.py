@@ -17,7 +17,7 @@ class NotificationKafkaConsumer:
         self.consumer = None
         self.topics = [
             "user-registration-events",
-            "booking-events",
+            "task-events",
             "flight-updates"
         ]
         self.running = False
@@ -60,22 +60,21 @@ class NotificationKafkaConsumer:
                 recipient_email = event_data.get("email")
                 user_id = event_data.get("userId")
 
-            elif event_type == "booking_created":
-                subject = "Booking Confirmation"
+            elif event_type == "task_created":
+                subject = "Task Created"
                 message = (
-                    f"Your booking {event_data.get('bookingReference')} "
-                    f"has been confirmed. "
-                    f"Flight: {event_data.get('flightId')}, "
-                    f"Seats: {event_data.get('numberOfSeats')}, "
-                    f"Total: ${event_data.get('totalPrice')}"
+                    f"Your task {event_data.get('taskReference')} "
+                    f"has been created. "
+                    f"Task Type: {event_data.get('taskType')}, "
+                    f"Priority: {event_data.get('priority')}"
                 )
                 recipient_email = event_data.get("userEmail", "user@example.com")
                 user_id = event_data.get("userId")
 
-            elif event_type == "booking_cancelled":
-                subject = "Booking Cancellation"
+            elif event_type == "task_cancelled":
+                subject = "Task Cancelled"
                 message = (
-                    f"Your booking {event_data.get('bookingReference')} "
+                    f"Your task {event_data.get('taskReference')} "
                     f"has been cancelled."
                 )
                 recipient_email = event_data.get("userEmail", "user@example.com")
