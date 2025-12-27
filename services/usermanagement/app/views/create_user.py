@@ -266,6 +266,7 @@ def register_user():
                             "User %s cached in Redis with lookups [SUCCESS]",
                             user_id
                         )
+                    # pylint: disable=broad-except
                     except Exception as cache_ex:
                         # Log cache error but don't fail the request
                         user_management_logger.warning(
@@ -294,6 +295,7 @@ def register_user():
                                 "Kafka: %s",
                                 user_instance['username']
                             )
+                        # pylint: disable=broad-except
                         except Exception as kafka_ex:
                             user_management_logger.warning(
                                 "Failed to publish to Kafka: %s", kafka_ex
@@ -355,6 +357,7 @@ def register_user():
                         reg_usr_response.headers["Cache-Control"] = "no-cache"
                         reg_usr_response.headers["location"] = locationheader
                         reg_usr_response.status_code = 201
+                    # pylint: disable=broad-except
                     except Exception as resp_ex:
                         app_manager_db_obj.close_session(
                             session_instance=session_to_create_new_user
@@ -381,10 +384,11 @@ def register_user():
                     return reg_usr_response
 
                 except sqlalchemy.exc.IntegrityError as ex:
+                    # Specific: Handle duplicate user/constraint violations
                     app_manager_db_obj.close_session(
                         session_instance=session_to_create_new_user
                     )
-                    user_management_logger.error(
+                    user_management_logger.warning(
                         "IntegrityError occurred :: %s\tLine No:: %s",
                         ex, sys.exc_info()[2].tb_lineno
                     )
@@ -392,28 +396,67 @@ def register_user():
                         app_logger_name=user_management_logger,
                         message_data="User already exists",
                     )
-                except Exception as ex:
+                except sqlalchemy.exc.OperationalError as ex:
+                    # Specific: Database connection/operational issues
                     app_manager_db_obj.close_session(
                         session_instance=session_to_create_new_user
                     )
                     user_management_logger.error(
-                        "Error occurred :: %s\tLine No:: %s",
+                        "OperationalError occurred - database connection "
+                        "issue :: %s\tLine No:: %s",
+                        ex, sys.exc_info()[2].tb_lineno
+                    )
+                    return send_internal_server_error_to_client(
+                        app_logger_name=user_management_logger,
+                        message_data="Database connection error",
+                    )
+                except sqlalchemy.exc.SQLAlchemyError as ex:
+                    # Specific: Other SQLAlchemy database errors
+                    app_manager_db_obj.close_session(
+                        session_instance=session_to_create_new_user
+                    )
+                    user_management_logger.error(
+                        "SQLAlchemyError occurred :: %s\tLine No:: %s",
                         ex, sys.exc_info()[2].tb_lineno
                     )
                     return send_internal_server_error_to_client(
                         app_logger_name=user_management_logger,
                         message_data="Database Error",
                     )
-            except Exception as ex:
+                except Exception as ex:  # pylint: disable=broad-except
+                    # Fallback: Unexpected errors
+                    app_manager_db_obj.close_session(
+                        session_instance=session_to_create_new_user
+                    )
+                    user_management_logger.error(
+                        "Unexpected error occurred :: %s\tLine No:: %s",
+                        ex, sys.exc_info()[2].tb_lineno
+                    )
+                    return send_internal_server_error_to_client(
+                        app_logger_name=user_management_logger,
+                        message_data="Database Error",
+                    )
+            except ValueError as ex:
+                # Specific: Validation errors
+                user_management_logger.warning(
+                    "Validation error occurred :: %s\tLine No:: %s",
+                    ex, sys.exc_info()[2].tb_lineno
+                )
+                return send_invalid_request_error_to_client(
+                    app_logger_name=user_management_logger,
+                    message_data=str(ex),
+                )
+            except Exception as ex:  # pylint: disable=broad-except
+                # Fallback: Unexpected errors
                 user_management_logger.error(
-                    "Error occurred :: %s\tLine No:: %s",
+                    "Unexpected error occurred :: %s\tLine No:: %s",
                     ex, sys.exc_info()[2].tb_lineno
                 )
                 return send_internal_server_error_to_client(
                     app_logger_name=user_management_logger,
                     message_data="Unknown error caused",
                 )
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return send_internal_server_error_to_client(
             app_logger_name=user_management_logger,
             message_data="Unknown error caused"
