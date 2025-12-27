@@ -1,12 +1,17 @@
 import json
+
 import sys
+
 from typing import Union, Any, Optional
 
 import sqlalchemy.orm.exc
+
 from flask import request, make_response
 
 from app.users.request_handlers.user import User
+
 from app import (
+
     user_management_logger,
     req_headers_schema,
     usermanager,
@@ -14,15 +19,19 @@ from app import (
     user_management_kafka_producer,
 )
 from app.utils.util_helpers import (
+
     is_username_email_already_exists_in_db,
 )
 from common.pyportal_common.utils import mask_ip_address, mask_request_headers
+
 from app.users.response_handlers.\
     create_user_success_response import (
         generate_success_response,
     )
 from app.redis_helper import UserManagementRedisHelper
+
 from common.pyportal_common.error_handlers.invalid_request_handler import (
+
     send_invalid_request_error_to_client,
 )
 from common.pyportal_common.error_handlers.\
@@ -63,10 +72,8 @@ def register_user():
                     message_data="Request Headers Missing",
                     err_details=reg_header_result,
                 )
-
             # Initialize Redis helper for rate limiting and caching
             redis_helper = UserManagementRedisHelper()
-
             # Rate limiting: Check if client has exceeded registration limit
             # Limit: 5 registrations per minute per IP address
             client_ip = request.remote_addr or "unknown"
@@ -75,7 +82,6 @@ def register_user():
                 limit=5,   # 5 requests
                 window=60  # per minute
             )
-
             if not is_allowed:
                 masked_ip = mask_ip_address(client_ip)
                 user_management_logger.warning(
@@ -89,13 +95,11 @@ def register_user():
                     ),
                     "retry_after": 60
                 }), 429
-
             masked_ip = mask_ip_address(client_ip)
             user_management_logger.info(
                 "Rate limit check passed for IP: %s, remaining: %s",
                 masked_ip, remaining
             )
-
             rec_req_data = request.get_json()
             # 1. Find the missing params, any schema related issue related
             #    to params in the request body
@@ -114,7 +118,6 @@ def register_user():
             #         message_data="Request Params Missing",
             #         err_details=body_result,
             # )
-
             # Read the content which was received in the request
             username = rec_req_data["username"]
             firstname = rec_req_data["firstName"]
@@ -184,7 +187,6 @@ def register_user():
                         app_logger_name=user_management_logger,
                         message_data="Create Session Failed",
                     )
-
                 try:
                     user_db_record_to_insert = (
                         user_obj.map_user_instance_to_db_model()
@@ -197,31 +199,25 @@ def register_user():
                             app_logger_name=user_management_logger,
                             message_data="User DB - Instance mapping Failed",
                         )
-
                     user_management_logger.info(
                         "Data adding into DataBase session %s:: [STARTED]",
                         user_db_record_to_insert
                     )
-
                     # Add object to session and flush to get the ID
                     session_to_create_new_user.add(user_db_record_to_insert)
                     session_to_create_new_user.flush()  # Flush to get the ID
-
                     # Get ID and timestamps before commit
                     user_id = user_db_record_to_insert.ID
                     created_at = user_db_record_to_insert.CreatedAt
                     updated_at = user_db_record_to_insert.UpdatedAt
                     locationheader = request.url + "/" + str(user_id)
-
                     # Commit the transaction
                     session_to_create_new_user.commit()
-
                     user_management_logger.info(
                         "Data added and committed to DataBase "
                         "(ID: %s):: [SUCCESS]",
                         user_id
                     )
-
                     # Cache the newly created user in Redis
                     try:
                         # Prepare user data for caching
@@ -241,14 +237,12 @@ def register_user():
                                 else user_instance["updated_at"]
                             )
                         }
-
                         # Cache user data
                         redis_helper.cache_user(
                             user_id=user_id,
                             user_data=user_data_for_cache,
                             ttl=3600  # 1 hour TTL
                         )
-
                         # Cache username and email lookups for faster
                         # duplicate checks
                         redis_helper.cache_user_lookup(
@@ -261,7 +255,6 @@ def register_user():
                             user_id=user_id,
                             ttl=3600
                         )
-
                         user_management_logger.info(
                             "User %s cached in Redis with lookups [SUCCESS]",
                             user_id
@@ -273,7 +266,6 @@ def register_user():
                             "Failed to cache user %s in Redis: %s",
                             user_id, cache_ex
                         )
-
                     # Publish user registration event to Kafka
                     if user_management_kafka_producer:
                         try:
@@ -287,6 +279,7 @@ def register_user():
                                 "timestamp": str(created_at),
                             }
                             user_management_kafka_producer.\
+\
                                 publish_data_to_producer(
                                     registration_event
                                 )
@@ -300,7 +293,6 @@ def register_user():
                             user_management_logger.warning(
                                 "Failed to publish to Kafka: %s", kafka_ex
                             )
-
                     # Convert to the format expected by
                     # generate_success_response
                     # The function expects a dict with 'data' key containing
@@ -325,7 +317,6 @@ def register_user():
                             )
                         }
                     }
-
                     try:
                         custom_user_response_body = generate_success_response(
                             response_user_data
@@ -341,7 +332,6 @@ def register_user():
                                     "User success Response creation Failed"
                                 ),
                             )
-
                         # Parse JSON string to dict for make_response
                         try:
                             response_dict = json.loads(
@@ -350,9 +340,9 @@ def register_user():
                         except json.JSONDecodeError:
                             # If it's already a dict, use it directly
                             response_dict = custom_user_response_body
-
                         reg_usr_response = make_response(response_dict)
                         reg_usr_response.headers["Content-Type"] = \
+\
                             "application/json"
                         reg_usr_response.headers["Cache-Control"] = "no-cache"
                         reg_usr_response.headers["location"] = locationheader
@@ -370,19 +360,16 @@ def register_user():
                             app_logger_name=user_management_logger,
                             message_data="Response creation failed",
                         )
-
                     user_management_logger.info(
                         "Prepared success response and sending back to "
                         "client %s:: [SUCCESS]",
                         reg_usr_response
                     )
-
                     # Close session after successful commit
                     app_manager_db_obj.close_session(
                         session_instance=session_to_create_new_user
                     )
                     return reg_usr_response
-
                 except sqlalchemy.exc.IntegrityError as ex:
                     # Specific: Handle duplicate user/constraint violations
                     app_manager_db_obj.close_session(
