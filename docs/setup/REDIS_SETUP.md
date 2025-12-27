@@ -174,9 +174,10 @@ KEYS *
 docker-compose exec redis redis-cli -n 0
 KEYS user:*
 
-# Booking keys (DB 1)
+# Task keys (DB 1)
 docker-compose exec redis redis-cli -n 1
-KEYS booking:*  # Legacy key pattern (task processing uses this pattern)
+KEYS task:*
+KEYS user:tasks:*
 ```
 
 ## Next Steps

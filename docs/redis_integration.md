@@ -25,7 +25,7 @@ Each service uses a separate Redis database to avoid key conflicts:
 | Service | Redis DB | Usage |
 |---------|----------|-------|
 | User Management | 0 | User cache, sessions, rate limiting |
-| Task Processing | 1 | Task cache, task data (legacy: BookingRedisHelper) |
+| Task Processing | 1 | Task cache, task data |
 | Notification | 2 | Notification cache, delivery status |
 
 ## Usage Examples
@@ -80,10 +80,10 @@ is_allowed, remaining = redis_helper.check_rate_limit(
 ### Task Processing Service
 
 ```python
-from app.redis_helper import BookingRedisHelper  # Legacy class name, used for task processing
+from app.redis_helper import TaskRedisHelper
 
 # Initialize helper
-redis_helper = BookingRedisHelper()
+redis_helper = TaskRedisHelper()
 
 # Cache task data
 task_data = {
@@ -92,10 +92,10 @@ task_data = {
     'status': 'processing',
     'details': {...}
 }
-redis_helper.cache_booking(456, task_data, ttl=3600)  # Legacy method name
+redis_helper.cache_task(456, task_data, ttl=3600)
 
 # Get cached task
-cached_task = redis_helper.get_cached_booking(456)  # Legacy method name
+cached_task = redis_helper.get_cached_task(456)
 
 # Cache task-related data
 redis_helper.cache_flight_availability(
@@ -289,8 +289,8 @@ Use consistent key naming for easier management:
 - **Users**: `user:{user_id}`
 - **User Lookup**: `user:lookup:username:{username}`, `user:lookup:email:{email}`
 - **Sessions**: `session:{session_id}`
-- **Tasks**: `booking:{task_id}` (legacy key pattern, used for task processing)
-- **User Tasks**: `user:bookings:{user_id}` (legacy key pattern)
+- **Tasks**: `task:{task_id}`
+- **User Tasks**: `user:tasks:{user_id}`
 - **Flight Availability**: `flight:availability:{flight_id}`
 - **Rate Limits**: `rate_limit:{service}:{identifier}`
 
@@ -332,7 +332,7 @@ MONITOR
 
 1. **Set Appropriate TTLs**: Don't cache data indefinitely
    - User data: 1 hour
-   - Booking data: 1 hour
+   - Task data: 1 hour
    - Flight availability: 5 minutes
    - Sessions: 1 hour (refreshable)
 
