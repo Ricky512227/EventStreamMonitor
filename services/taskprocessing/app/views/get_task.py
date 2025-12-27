@@ -1,4 +1,5 @@
 import sys
+import sqlalchemy
 from flask import make_response
 from app import (
     taskprocessing_logger,
@@ -65,20 +66,46 @@ def get_task(task_id):
             app_manager_db_obj.close_session(session_instance=session)
             return response
 
-        except Exception as ex:
+        except sqlalchemy.exc.OperationalError as ex:
+            # Specific: Database connection/operational issues
             app_manager_db_obj.close_session(session_instance=session)
             taskprocessing_logger.error(
-                f"Error occurred :: {ex}\t"
-                f"Line No:: {sys.exc_info()[2].tb_lineno}"
+                f"OperationalError occurred - database connection "
+                f"issue :: {ex}\tLine No:: "
+                f"{sys.exc_info()[2].tb_lineno}"
+            )
+            return send_internal_server_error_to_client(
+                app_logger_name=taskprocessing_logger,
+                message_data="Database connection error",
+            )
+        except sqlalchemy.exc.SQLAlchemyError as ex:
+            # Specific: Other SQLAlchemy database errors
+            app_manager_db_obj.close_session(session_instance=session)
+            taskprocessing_logger.error(
+                f"SQLAlchemyError occurred :: {ex}\tLine No:: "
+                f"{sys.exc_info()[2].tb_lineno}"
+            )
+            return send_internal_server_error_to_client(
+                app_logger_name=taskprocessing_logger,
+                message_data="Database Error",
+            )
+        except Exception as ex:  # pylint: disable=broad-except
+            # Fallback: Unexpected errors
+            app_manager_db_obj.close_session(session_instance=session)
+            taskprocessing_logger.error(
+                f"Unexpected error occurred :: {ex}\tLine No:: "
+                f"{sys.exc_info()[2].tb_lineno}"
             )
             return send_internal_server_error_to_client(
                 app_logger_name=taskprocessing_logger,
                 message_data="Database Error",
             )
 
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-except
+        # Fallback: Unexpected errors
         taskprocessing_logger.exception(
-            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
+            f"Unexpected error occurred :: {ex}\tLine No:: "
+            f"{sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
             app_logger_name=taskprocessing_logger,

@@ -1,5 +1,6 @@
 import sys
 import uuid
+import sqlalchemy
 from datetime import datetime
 from flask import request, make_response
 from app import (
@@ -128,6 +129,7 @@ def create_task():
                         taskprocessing_logger.info(
                             f"Published task_created event to Kafka: {task_reference}"
                         )
+                    # pylint: disable=broad-except
                     except Exception as kafka_ex:
                         taskprocessing_logger.warning(
                             f"Failed to publish to Kafka: {kafka_ex}"
@@ -154,21 +156,59 @@ def create_task():
                 app_manager_db_obj.close_session(session_instance=session)
                 return reg_task_response
 
-            except Exception as ex:
+            except sqlalchemy.exc.OperationalError as ex:
+                # Specific: Database connection/operational issues
                 session.rollback()
                 app_manager_db_obj.close_session(session_instance=session)
                 taskprocessing_logger.error(
-                    f"Error creating task :: {ex}\t"
-                    f"Line No:: {sys.exc_info()[2].tb_lineno}"
+                    f"OperationalError occurred - database connection "
+                    f"issue :: {ex}\tLine No:: "
+                    f"{sys.exc_info()[2].tb_lineno}"
+                )
+                return send_internal_server_error_to_client(
+                    app_logger_name=taskprocessing_logger,
+                    message_data="Database connection error",
+                )
+            except sqlalchemy.exc.SQLAlchemyError as ex:
+                # Specific: Other SQLAlchemy database errors
+                session.rollback()
+                app_manager_db_obj.close_session(session_instance=session)
+                taskprocessing_logger.error(
+                    f"SQLAlchemyError occurred :: {ex}\tLine No:: "
+                    f"{sys.exc_info()[2].tb_lineno}"
+                )
+                return send_internal_server_error_to_client(
+                    app_logger_name=taskprocessing_logger,
+                    message_data="Database Error",
+                )
+            except Exception as ex:  # pylint: disable=broad-except
+                # Fallback: Unexpected errors
+                session.rollback()
+                app_manager_db_obj.close_session(session_instance=session)
+                taskprocessing_logger.error(
+                    f"Unexpected error occurred :: {ex}\tLine No:: "
+                    f"{sys.exc_info()[2].tb_lineno}"
                 )
                 return send_internal_server_error_to_client(
                     app_logger_name=taskprocessing_logger,
                     message_data="Database Error",
                 )
 
-    except Exception as ex:
+    except ValueError as ex:
+        # Specific: Validation errors
+        taskprocessing_logger.warning(
+            f"Validation error occurred :: {ex}\tLine No:: "
+            f"{sys.exc_info()[2].tb_lineno}"
+        )
+        return send_invalid_request_error_to_client(
+            app_logger_name=taskprocessing_logger,
+            message_data=str(ex),
+        )
+    except Exception as ex:  # pylint: disable=broad-except
+        # Fallback: Unexpected errors
         taskprocessing_logger.exception(
-            f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
+            f"Unexpected error occurred :: {ex}\tLine No:: "
+            f"{sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
             app_logger_name=taskprocessing_logger,
