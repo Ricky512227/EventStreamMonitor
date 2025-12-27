@@ -81,9 +81,11 @@ def get_user_info(userid):
                     messagedata="Retrieved User"
                 )
                 if len(custom_user_response_body.keys()) <= 0:
-                    invalid_req_err_res = EventStreamMonitorInternalServerError(
-                        message="Get User Response creation Failed",
-                        logger_instance=user_management_logger,
+                    invalid_req_err_res = (
+                        EventStreamMonitorInternalServerError(
+                            message="Get User Response creation Failed",
+                            logger_instance=user_management_logger,
+                        )
                     )
                     return invalid_req_err_res.send_response_to_client()
                 get_usr_response = make_response(custom_user_response_body)
@@ -127,9 +129,11 @@ def get_user_info(userid):
                         UsersModel
                     ).get(userid)
                     if get_user_instance is None:
-                        usr_not_found_err_res = EventStreamMonitorNotFoundError(
-                            message="Retrieved user doesn't exists",
-                            logger_instance=user_management_logger,
+                        usr_not_found_err_res = (
+                            EventStreamMonitorNotFoundError(
+                                message="Retrieved user doesn't exists",
+                                logger_instance=user_management_logger,
+                            )
                         )
                         return usr_not_found_err_res.send_response_to_client()
                 except sqlalchemy.exc.NoResultFound as ex:
@@ -194,9 +198,11 @@ def get_user_info(userid):
                         get_user_instance
                     )
                     if len(get_user_instance.keys()) <= 0:
-                        invalid_req_err_res = EventStreamMonitorInternalServerError(
-                            message="Get User Response creation Failed",
-                            logger_instance=user_management_logger,
+                        invalid_req_err_res = (
+                            EventStreamMonitorInternalServerError(
+                                message="Get User Response creation Failed",
+                                logger_instance=user_management_logger,
+                            )
                         )
                         app_manager_db_obj.close_session(
                             session_instance=get_user_management_session

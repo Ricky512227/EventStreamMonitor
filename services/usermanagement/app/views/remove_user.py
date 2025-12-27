@@ -88,9 +88,11 @@ def deregister_user(userid):
                         UsersModel
                     ).get(userid)
                     if del_user_instance is None:
-                        usr_not_found_err_res = EventStreamMonitorNotFoundError(
-                            message="Retrieved user doesn't exists",
-                            logger_instance=user_management_logger,
+                        usr_not_found_err_res = (
+                            EventStreamMonitorNotFoundError(
+                                message="Retrieved user doesn't exists",
+                                logger_instance=user_management_logger,
+                            )
                         )
                         return usr_not_found_err_res.send_response_to_client()
                 except sqlalchemy.exc.NoResultFound as ex:
@@ -214,9 +216,11 @@ def deregister_user(userid):
                             "Unexpected error occurred :: %s\tLine No:: %s",
                             ex, sys.exc_info()[2].tb_lineno
                         )
-                        internal_err_res = EventStreamMonitorInternalServerError(
-                            message="Internal Server Error",
-                            logger_instance=user_management_logger,
+                        internal_err_res = (
+                            EventStreamMonitorInternalServerError(
+                                message="Internal Server Error",
+                                logger_instance=user_management_logger,
+                            )
                         )
                         return internal_err_res.send_response_to_client()
                     else:
