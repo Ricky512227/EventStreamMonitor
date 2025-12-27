@@ -46,7 +46,6 @@ def add_UserValidationForTokenGenerationServiceServicer_to_server(servicer, serv
             'UserValidationForTokenGenerationService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
-
  # This class is part of an EXPERIMENTAL API.
 class UserValidationForTokenGenerationService(object):
     """buf:lint:ignore SERVICE_SUFFIX

@@ -37,7 +37,7 @@ def test_user_registration():
     print("\n" + "="*60)
     print("TEST: User Registration")
     print("="*60)
-    
+
     payload = {
         "username": f"testuser_{int(time.time())}",
         "firstName": "Test",
@@ -46,7 +46,7 @@ def test_user_registration():
         "password": "TestPass123",
         "dateOfBirth": "1990-01-01"
     }
-    
+
     try:
         response = requests.post(
             USER_MGMT_URL,
@@ -74,13 +74,13 @@ def test_task_creation(user_id, task_id=1000):
     print("\n" + "="*60)
     print("TEST: Task Creation")
     print("="*60)
-    
+
     payload = {
         "userId": user_id,
         "taskId": task_id,
         "description": "Test task"
     }
-    
+
     try:
         response = requests.post(
             TASK_URL,
@@ -108,7 +108,7 @@ def test_task_retrieval(task_id):
     print("\n" + "="*60)
     print("TEST: Task Retrieval")
     print("="*60)
-    
+
     try:
         response = requests.get(
             f"{TASK_URL}/{task_id}",
@@ -134,7 +134,7 @@ def test_kafka_events():
     print("="*60)
     print("ℹ  This test checks if notification service is consuming events")
     print("   Check notification service logs for event processing")
-    
+
     # Wait a bit for events to be processed
     time.sleep(3)
     return True
@@ -145,46 +145,46 @@ def main():
     print("\n" + "="*60)
     print("MICROSERVICES TEST SUITE")
     print("="*60)
-    
+
     # Check service health
     print("\n[1] Checking Service Health...")
     services_ok = True
-    
+
     if check_service_health("User Management", "http://localhost:5001"):
         print(" User Management Service: UP")
     else:
         print(" User Management Service: DOWN")
         services_ok = False
-    
+
     if check_service_health("Task Processing", "http://localhost:5002"):
         print(" Task Processing Service: UP")
     else:
         print(" Task Processing Service: DOWN")
         services_ok = False
-    
+
     if check_service_health("Notification", "http://localhost:5003"):
         print(" Notification Service: UP")
     else:
         print(" Notification Service: DOWN (may be normal if no health endpoint)")
-    
+
     if not services_ok:
         print("\n  Some services are not responding. Please check:")
         print("   docker-compose ps")
         print("   docker-compose logs [service-name]")
         return
-    
+
     # Run tests
     results = {}
-    
+
     # Test user registration
     user_id = test_user_registration()
     results["user_registration"] = user_id is not None
-    
+
     if user_id:
         # Test task creation
         task_id = test_task_creation(user_id)
         results["task_creation"] = task_id is not None
-        
+
         if task_id:
             results["task_retrieval"] = test_task_retrieval(task_id)
         else:
@@ -194,19 +194,19 @@ def main():
         print("\n  User registration failed - skipping task tests")
         results["task_creation"] = None
         results["task_retrieval"] = None
-    
+
     # Test Kafka events
     results["kafka_events"] = test_kafka_events()
-    
+
     # Summary
     print("\n" + "="*60)
     print("TEST SUMMARY")
     print("="*60)
-    
+
     passed = sum(1 for v in results.values() if v is True)
     total = sum(1 for v in results.values() if v is not None)
     skipped = sum(1 for v in results.values() if v is None)
-    
+
     for test_name, result in results.items():
         if result is True:
             print(f" {test_name.replace('_', ' ').title()}: PASSED")
@@ -214,9 +214,9 @@ def main():
             print(f" {test_name.replace('_', ' ').title()}: FAILED")
         else:
             print(f"⊘ {test_name.replace('_', ' ').title()}: SKIPPED")
-    
+
     print(f"\nResults: {passed}/{total} passed, {skipped} skipped")
-    
+
     if passed == total:
         print("\n All tests passed!")
         return 0
@@ -224,7 +224,5 @@ def main():
         print("\n  Some tests failed or were skipped")
         return 1
 
-
 if __name__ == "__main__":
     sys.exit(main())
-

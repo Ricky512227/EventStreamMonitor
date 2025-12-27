@@ -4,7 +4,6 @@
 #     test_aeroplane_1 = AeroPlane(airlines_name, airlines_type, maker, model, seating_capacity, fuel_capacity)
 #     return test_aeroplane_1
 
-
  # print(test_create_aeroplane_obj1('American Airlines', 'Business', 'AA', 2010, 250, 500000))
 
 # return test_aeroplane_1.airlines_name, test_aeroplane_1.airlines_type, test_aeroplane_1.maker, test_aeroplane_1.model,\
@@ -15,4 +14,3 @@
 # description={ "message": "Invalid request data - Mandatory Request params are missing fields",
 #              "details": {'field': "", "reason": "Mandatory Request param missing"
 #             }
-

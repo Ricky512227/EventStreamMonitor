@@ -72,7 +72,7 @@ def create_user(user_data):
             headers=headers,
             timeout=10
         )
-        
+
         if response.status_code == 201:
             print(f" Successfully created user: {user_data['username']}")
             return True
@@ -92,23 +92,22 @@ def main():
     print("CREATING TEST DATA IN DATABASE")
     print("="*60)
     print(f"Endpoint: {REGISTER_ENDPOINT}\n")
-    
+
     success_count = 0
     total_count = len(test_users)
-    
+
     for user_data in test_users:
         if create_user(user_data):
             success_count += 1
         time.sleep(0.5)  # Small delay between requests
-    
+
     print("\n" + "="*60)
     print(f"SUMMARY: Created {success_count}/{total_count} users")
     print("="*60)
-    
+
     # Verify by querying database
     print("\nTo verify, run:")
     print("docker-compose exec registration-db psql -U airlineradmin -d REGISTRATIONS -c 'SELECT \\\"ID\\\", \\\"Username\\\", \\\"Email\\\" FROM users;'")
 
 if __name__ == "__main__":
     main()
-
