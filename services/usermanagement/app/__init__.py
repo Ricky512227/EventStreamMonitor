@@ -1,17 +1,21 @@
 # pylint: disable=line-too-long
 import os
 import sys
-import concurrent.futures
 from logging import Logger
 from flask import Flask, Blueprint
-import sys
-import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..'))
 
-from common.pyportal_common.logging_handlers.base_logger import LogMonitor
-from common.pyportal_common.app_handlers.app_manager import AppHandler
-from app.app_configs import init_app_configs
-from app.models.user_model import UserBase
+# pylint: disable=wrong-import-position
+# Imports must come after sys.path modification
+from common.pyportal_common.logging_handlers.base_logger import (  # noqa: E402
+    LogMonitor
+)
+from common.pyportal_common.app_handlers.app_manager import (  # noqa: E402
+    AppHandler
+)
+from app.app_configs import init_app_configs  # noqa: E402
+from app.models.user_model import UserBase  # noqa: E402
 
 # Initialize variables
 user_management_logger = None
@@ -90,7 +94,7 @@ try:
         sys.exit()
 
     init_app_configs(usermanager_app)
-    
+
     # Add health check endpoint (before database initialization)
     @usermanager_app.route('/health', methods=['GET'])
     def health():
@@ -100,7 +104,7 @@ try:
             'status': 'healthy',
             'service': 'usermanagement'
         }), 200
-    
+
     # Load and Validate Schema Files which are read.
     (
         req_headers_schema_status,
@@ -152,9 +156,9 @@ try:
             user_management_grpc_server = (
                 start_user_management_grpc_server(user_management_logger)
             )
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             user_management_logger.warning(
-                f"Failed to initialize gRPC server: {ex}"
+                "Failed to initialize gRPC server: %s", ex
             )
             user_management_grpc_server = None
 
@@ -166,13 +170,16 @@ try:
             )
             user_management_kafka_producer = (
                 init_kafka_usermangement_producer.
-                start_user_management_kafka_producer(user_management_logger)
+                start_user_management_kafka_producer(
+                    user_management_logger
+                )
             )
+        # pylint: disable=broad-except
         except Exception as ex:
             user_management_logger.warning(
-                f"Failed to initialize Kafka producer: {ex}"
+                "Failed to initialize Kafka producer: %s", ex
             )
-        
+
         # Export for use in views
         __all__ = [
             "user_management_logger",
@@ -201,7 +208,8 @@ try:
         #     '/api/v1/eventstreammonitor/users/<int:userid>', methods=['GET']
         # )(get_user_info)
         # usermanager_bp.route(
-        #     '/api/v1/eventstreammonitor/users/<int:userid>', methods=['DELETE']
+        #     '/api/v1/eventstreammonitor/users/<int:userid>',
+        #     methods=['DELETE']
         # )(deregister_user)
 
         usermanager.register_blueprint_for_service(
@@ -211,7 +219,7 @@ try:
         usermanager.display_registered_blueprints_for_service(
             app_instance=usermanager_app
         )
-except Exception as ex:
+except Exception as ex:  # pylint: disable=broad-except
     print(f"Exception in __init__: {ex}")
     import traceback
     traceback.print_exc()

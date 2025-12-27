@@ -4,7 +4,6 @@ Find 'good first issue' in a GitHub repository
 """
 import requests
 import sys
-import json
 
 def find_good_first_issues(repo, token=None):
     """Find good first issues in a repository"""
