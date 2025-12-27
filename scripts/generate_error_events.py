@@ -16,7 +16,7 @@ from common.pyportal_common.logging_handlers.base_logger import LogMonitor
 import logging
 
 # Service names for testing
-SERVICES = ['usermanagement', 'booking', 'notification', 'logmonitor']
+SERVICES = ['usermanagement', 'taskprocessing', 'notification', 'logmonitor']
 ERROR_TYPES = [
     'Database connection failed',
     'Invalid user input',

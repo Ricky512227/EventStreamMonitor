@@ -30,7 +30,7 @@ ERROR_EVENTS = [
     },
     {
         'level': 'CRITICAL',
-        'service': 'booking',
+        'service': 'taskprocessing',
         'message': 'Service unavailable - all database connections exhausted',
         'module': 'db_pool_manager',
         'function': 'get_connection',
@@ -54,7 +54,7 @@ ERROR_EVENTS = [
     },
     {
         'level': 'CRITICAL',
-        'service': 'booking',
+        'service': 'taskprocessing',
         'message': 'Memory usage exceeded 90% threshold',
         'module': 'monitoring',
         'function': 'check_resources',

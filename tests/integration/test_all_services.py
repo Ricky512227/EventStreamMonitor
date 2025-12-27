@@ -191,9 +191,9 @@ def main():
             print("\n  Task test skipped")
             results["task_retrieval"] = None
     else:
-        print("\n  User registration failed - skipping booking tests")
-        results["booking_creation"] = None
-        results["booking_retrieval"] = None
+        print("\n  User registration failed - skipping task tests")
+        results["task_creation"] = None
+        results["task_retrieval"] = None
     
     # Test Kafka events
     results["kafka_events"] = test_kafka_events()

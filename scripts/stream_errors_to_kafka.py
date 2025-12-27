@@ -14,7 +14,7 @@ import json
 # Add parent directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-SERVICES = ['usermanagement', 'booking', 'notification', 'logmonitor']
+SERVICES = ['usermanagement', 'taskprocessing', 'notification', 'logmonitor']
 ERROR_MESSAGES = [
     {
         'level': 'ERROR',
