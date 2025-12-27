@@ -12,13 +12,16 @@ from app import (
     notification_app,
     notification_logger,
 )
+from common.pyportal_common.utils import mask_ip_address
 
 if __name__ == "__main__":
     print("Starting Notification Service")
     try:
+        server_ip = notification_app.config.get("NOTIFICATION_SERVER_IPADDRESS", "0.0.0.0")
+        masked_server_ip = mask_ip_address(server_ip)
         notification_logger.info(
             "Bound NOTIFICATION-SERVICE at IP-ADDRESS:PORT :: %s:%s",
-            notification_app.config.get("NOTIFICATION_SERVER_IPADDRESS", "0.0.0.0"),
+            masked_server_ip,
             notification_app.config.get("NOTIFICATION_SERVER_PORT", 9093),
         )
         notification_logger.info("Started the NOTIFICATION server ...")

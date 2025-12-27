@@ -4,6 +4,7 @@ from sqlalchemy import or_
 import sqlalchemy.orm.exc
 from app.models.user_model import UsersModel
 from app import user_management_logger
+from common.pyportal_common.utils import mask_ip_address
 
 
 def is_userid_exists_in_db(session_instance, userid) -> tuple[int, Union[bool, None]]:

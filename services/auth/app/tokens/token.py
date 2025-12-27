@@ -2,6 +2,7 @@ import sys
 import datetime,bcrypt
 from flask_jwt_extended import create_access_token
 from app import token_management_logger
+from common.pyportal_common.utils import sanitize_sensitive_data
 
 
 class Token:
@@ -36,10 +37,14 @@ class Token:
                             "token_type" : "bearer",
                             "expiry" : 10000
             }
-            token_management_logger.info(f"Returning :: {self.token_obj} , ID :: {id(self.token_obj)}")
-            token_management_logger.info(f"Instance creation for User :: [SUCCESS] :: {self.token_obj}")
+            # Security: Sanitize token object before logging
+            sanitized_token_obj = sanitize_sensitive_data(self.token_obj)
+            token_management_logger.info(f"Returning :: {sanitized_token_obj} , ID :: {id(self.token_obj)}")
+            token_management_logger.info(f"Instance creation for User :: [SUCCESS] :: {sanitized_token_obj}")
         except Exception as ex:
-            token_management_logger.info(f"Instance creation for Token :: [FAILED] :: {self.token_obj}")
+            # Security: Sanitize token object before logging even on failure
+            sanitized_token_obj = sanitize_sensitive_data(self.token_obj) if self.token_obj else None
+            token_management_logger.info(f"Instance creation for Token :: [FAILED] :: {sanitized_token_obj}")
             token_management_logger.error(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
         return self.token_obj
 

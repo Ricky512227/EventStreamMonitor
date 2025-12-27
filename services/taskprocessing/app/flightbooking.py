@@ -10,13 +10,16 @@ from app import (
     booking_app,
     booking_logger,
 )
+from common.pyportal_common.utils import mask_ip_address
 
 if __name__ == "__main__":
     print("Starting flight booking service")
     try:
+        server_ip = booking_app.config["BOOKING_SERVER_IPADDRESS"]
+        masked_server_ip = mask_ip_address(server_ip)
         booking_logger.info(
             "Bound FLIGHT-BOOKING-SERVICE at IP-ADDRESS:PORT :: %s:%s",
-            booking_app.config["BOOKING_SERVER_IPADDRESS"],
+            masked_server_ip,
             booking_app.config["BOOKING_SERVER_PORT"],
         )
         booking_logger.info("Started the FLIGHT-BOOKING server ...")

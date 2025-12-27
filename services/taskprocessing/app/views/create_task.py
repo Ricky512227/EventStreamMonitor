@@ -30,9 +30,11 @@ def create_task():
         )
         
         if request.method == "POST":
+            from common.pyportal_common.utils import mask_request_headers
             rec_req_headers = dict(request.headers)
+            masked_headers = mask_request_headers(rec_req_headers)
             booking_logger.info(
-                f"Received Headers from the request :: {rec_req_headers}"
+                f"Received Headers from the request :: {masked_headers}"
             )
             
             header_result = booking_manager.generate_req_missing_params(

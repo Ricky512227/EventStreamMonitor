@@ -4,9 +4,7 @@ Redis client wrapper for caching and session management
 import os
 import json
 import redis
-from typing import Optional, Any, Union, Dict
-from datetime import timedelta
-
+from typing import Optional, Any, Dict
 
 class RedisClient:
     """
@@ -36,8 +34,22 @@ class RedisClient:
             db: Redis database number (default: 0)
             password: Redis password (default: from REDIS_PASSWORD env var)
             decode_responses: Decode responses as strings (default: True)
-            socket_timeout: Socket timeout in seconds
-            socket_connect_timeout: Socket connect timeout in seconds
+            socket_timeout: Socket timeout in seconds for Redis operations
+                          (GET/SET/etc). These are blocking I/O operations
+                          that run on your application threads. Prevents
+                          threads from hanging indefinitely if Redis becomes
+                          unresponsive during a request. Without this, a slow
+                          Redis operation could block your application threads
+                          forever, making them unavailable for other requests.
+            socket_connect_timeout: Socket connect timeout in seconds for
+                                  establishing the initial TCP connection to
+                                  Redis. This is a blocking I/O operation that
+                                  runs on your application threads. Prevents
+                                  threads from hanging when Redis is down or
+                                  unreachable. Without this, connection
+                                  attempts could wait forever, exhausting
+                                  connection pools and blocking application
+                                  startup/threads.
         """
         self.host = host or os.getenv('REDIS_HOST', 'redis')
         self.port = port or int(os.getenv('REDIS_PORT', 6379))
@@ -45,7 +57,11 @@ class RedisClient:
         self.password = password or os.getenv('REDIS_PASSWORD')
         self.decode_responses = decode_responses
         
-        # Connection pool for better performance
+        # Connection pool for better performance - reuses TCP socket
+        # connections to avoid the overhead of establishing new connections.
+        # All operations (GET/SET/etc) are blocking I/O operations that run
+        # on application threads, so socket timeouts prevent threads from
+        # hanging indefinitely.
         self.pool = redis.ConnectionPool(
             host=self.host,
             port=self.port,

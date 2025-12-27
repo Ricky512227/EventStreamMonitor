@@ -221,9 +221,12 @@ try:
                             usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] + ":" +
                             usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"]
                         )
+                        from common.pyportal_common.utils import mask_ip_address
+                        grpc_ip = usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_IP']
+                        masked_grpc_ip = mask_ip_address(grpc_ip)
                         user_management_logger.info(
                             f"Starting GRPC server for the Token-User service with the IP & PORT:: "
-                            f"{usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_IP']}:"
+                            f"{masked_grpc_ip}:"
                             f"{usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_PORT']}"
                         )
 

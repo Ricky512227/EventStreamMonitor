@@ -107,11 +107,17 @@ if __name__ == "__main__":
     # Initialize client
     vault = VaultClient()
     
-    # Get database password
+    # Get database password (DO NOT print passwords in production!)
     db_password = vault.get_secret('secret/data/usermanagement/db', 'password')
-    print(f"DB Password: {db_password}")
+    # Security: Never log or print passwords
+    if db_password:
+        print("DB Password: ***MASKED*** (retrieved successfully)")
     
-    # Get entire secret object
+    # Get entire secret object (sanitize before logging)
     db_config = vault.get_secret('secret/data/usermanagement/db')
-    print(f"DB Config: {db_config}")
+    # Security: Mask sensitive keys before printing
+    if db_config:
+        sanitized_config = {k: "***MASKED***" if 'password' in k.lower() or 'secret' in k.lower() else v 
+                           for k, v in db_config.items()}
+        print(f"DB Config: {sanitized_config}")
 

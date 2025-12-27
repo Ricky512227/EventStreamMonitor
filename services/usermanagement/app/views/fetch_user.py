@@ -25,9 +25,11 @@ def get_user_info(userid):
             f"REQUEST ==> Received url for the request :: {request.url}"
         )
         if request.method == "GET":
+            from common.pyportal_common.utils import mask_request_headers
             rec_req_headers = dict(request.headers)
+            masked_headers = mask_request_headers(rec_req_headers)
             user_management_app_logger.info(
-                f"Received Headers from the request :: {rec_req_headers}"
+                f"Received Headers from the request :: {masked_headers}"
             )
             """
                 1. Find the missing headers, any schema related issue related to headers in the request

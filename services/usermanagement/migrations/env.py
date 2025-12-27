@@ -26,10 +26,26 @@ def get_engine():
 
 def get_engine_url():
     try:
-        return get_engine().url.render_as_string(hide_password=False).replace(
+        # Security: Hide password in database URL
+        return get_engine().url.render_as_string(hide_password=True).replace(
             '%', '%%')
     except AttributeError:
-        return str(get_engine().url).replace('%', '%%')
+        # Security: Mask password in URL string
+        url_str = str(get_engine().url)
+        # Replace password with masked value
+        if '@' in url_str and ':' in url_str:
+            parts = url_str.split('@')
+            if len(parts) == 2:
+                auth_part = parts[0]
+                if ':' in auth_part:
+                    user_pass = auth_part.split('://')
+                    if len(user_pass) == 2:
+                        protocol = user_pass[0]
+                        credentials = user_pass[1]
+                        if ':' in credentials:
+                            user = credentials.split(':')[0]
+                            url_str = f"{protocol}://{user}:***MASKED***@{parts[1]}"
+        return url_str.replace('%', '%%')
 
 
 # add your model's MetaData object here

@@ -11,13 +11,16 @@ from app import (
     notification_logger,
     kafka_consumer,
 )
+from common.pyportal_common.utils import mask_ip_address
 
 if __name__ == "__main__":
     print("Starting notification service")
     try:
+        server_ip = notification_app.config["NOTIFICATION_SERVER_IPADDRESS"]
+        masked_server_ip = mask_ip_address(server_ip)
         notification_logger.info(
             "Bound NOTIFICATION-SERVICE at IP-ADDRESS:PORT :: %s:%s",
-            notification_app.config["NOTIFICATION_SERVER_IPADDRESS"],
+            masked_server_ip,
             notification_app.config["NOTIFICATION_SERVER_PORT"],
         )
         notification_logger.info("Started the NOTIFICATION server ...")

@@ -12,13 +12,16 @@ from app import (
     logmonitor_app,
     logmonitor_logger,
 )
+from common.pyportal_common.utils import mask_ip_address
 
 if __name__ == "__main__":
     print("Starting Log Monitoring Service")
     try:
+        server_ip = logmonitor_app.config.get("LOG_MONITOR_SERVER_IPADDRESS", "0.0.0.0")
+        masked_server_ip = mask_ip_address(server_ip)
         logmonitor_logger.info(
             "Bound LOG-MONITOR-SERVICE at IP-ADDRESS:PORT :: %s:%s",
-            logmonitor_app.config.get("LOG_MONITOR_SERVER_IPADDRESS", "0.0.0.0"),
+            masked_server_ip,
             logmonitor_app.config.get("LOG_MONITOR_SERVER_PORT", 9094),
         )
         logmonitor_logger.info("Started the LOG-MONITOR server ...")

@@ -16,6 +16,7 @@ from app import (
 from app.utils.util_helpers import (
     is_username_email_already_exists_in_db,
 )
+from common.pyportal_common.utils import mask_ip_address, mask_request_headers
 from app.users.response_handlers.\
     create_user_success_response import (
         generate_success_response,
@@ -41,8 +42,10 @@ def register_user():
         )
         if request.method == "POST":
             rec_req_headers = dict(request.headers)
+            # Mask IP addresses in headers for security
+            masked_headers = mask_request_headers(rec_req_headers)
             user_management_logger.info(
-                "Received Headers from the request :: %s", rec_req_headers
+                "Received Headers from the request :: %s", masked_headers
             )
             # 1. Find the missing headers, any schema related issue
             #    related to headers in the request
@@ -74,8 +77,9 @@ def register_user():
             )
 
             if not is_allowed:
+                masked_ip = mask_ip_address(client_ip)
                 user_management_logger.warning(
-                    "Rate limit exceeded for IP: %s", client_ip
+                    "Rate limit exceeded for IP: %s", masked_ip
                 )
                 return jsonify({
                     "error": "Rate limit exceeded",
@@ -86,9 +90,10 @@ def register_user():
                     "retry_after": 60
                 }), 429
 
+            masked_ip = mask_ip_address(client_ip)
             user_management_logger.info(
                 "Rate limit check passed for IP: %s, remaining: %s",
-                client_ip, remaining
+                masked_ip, remaining
             )
 
             rec_req_data = request.get_json()
