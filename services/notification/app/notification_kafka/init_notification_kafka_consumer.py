@@ -38,8 +38,11 @@ class NotificationKafkaConsumer:
                 f"Kafka consumer initialized for topics: {self.topics}"
             )
             return True
+        # pylint: disable=broad-except
         except Exception as ex:
-            self.logger.error(f"Failed to initialize Kafka consumer: {ex}")
+            self.logger.error(
+                "Failed to initialize Kafka consumer: %s", ex
+            )
             return False
 
     def process_notification(self, event_data, topic):
@@ -104,9 +107,12 @@ class NotificationKafkaConsumer:
                     self.logger.info(
                         f"Notification logged: {subject} to {recipient_email}"
                     )
+                # pylint: disable=broad-except
                 except Exception as db_ex:
                     session.rollback()
-                    self.logger.error(f"Error logging notification: {db_ex}")
+                    self.logger.error(
+                        "Error logging notification: %s", db_ex
+                    )
                 finally:
                     app_manager_db_obj.close_session(session_instance=session)
 
@@ -118,8 +124,11 @@ class NotificationKafkaConsumer:
                 f"Notification sent: {subject} to {recipient_email}"
             )
 
+        # pylint: disable=broad-except
         except Exception as ex:
-            self.logger.error(f"Error processing notification: {ex}")
+            self.logger.error(
+                "Error processing notification: %s", ex
+            )
 
     def start_consuming(self):
         """Start consuming messages from Kafka"""
@@ -138,13 +147,15 @@ class NotificationKafkaConsumer:
                     event_data = message.value
                     topic = message.topic
                     self.process_notification(event_data, topic)
+                # pylint: disable=broad-except
                 except Exception as ex:
                     self.logger.error(
-                        f"Error processing message: {ex}"
+                        "Error processing message: %s", ex
                     )
 
+        # pylint: disable=broad-except
         except Exception as ex:
-            self.logger.error(f"Consumer error: {ex}")
+            self.logger.error("Consumer error: %s", ex)
         finally:
             if self.consumer:
                 self.consumer.close()
@@ -162,9 +173,10 @@ def start_notification_kafka_consumer(notification_logger):
     try:
         consumer = NotificationKafkaConsumer(notification_logger)
         return consumer
+    # pylint: disable=broad-except
     except Exception as ex:
         notification_logger.error(
-            f"Failed to create Kafka consumer: {ex}"
+            "Failed to create Kafka consumer: %s", ex
         )
         return None
 
