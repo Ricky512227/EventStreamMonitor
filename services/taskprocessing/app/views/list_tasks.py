@@ -6,9 +6,10 @@ from app import (
     app_manager_db_obj,
 )
 from app.models.task_model import TaskModel
-from common.pyportal_common.error_handlers.internal_server_error_handler import (
-    send_internal_server_error_to_client,
-)
+from common.pyportal_common.error_handlers.\
+    internal_server_error_handler import (
+        send_internal_server_error_to_client,
+    )
 
 
 def list_tasks():
@@ -60,7 +61,9 @@ def list_tasks():
                     "priority": task.Priority,
                     "progress": task.Progress,
                     "createdAt": str(task.CreatedAt),
-                    "completedAt": str(task.CompletedAt) if task.CompletedAt else None,
+                    "completedAt": (
+                        str(task.CompletedAt) if task.CompletedAt else None
+                    ),
                 })
 
             response_data = {

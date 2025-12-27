@@ -9,9 +9,10 @@ from app.models.task_model import TaskModel
 from common.pyportal_common.error_handlers.not_found_error_handler import (
     send_notfound_request_error_to_client,
 )
-from common.pyportal_common.error_handlers.internal_server_error_handler import (
-    send_internal_server_error_to_client,
-)
+from common.pyportal_common.error_handlers.\
+    internal_server_error_handler import (
+        send_internal_server_error_to_client,
+    )
 
 
 def get_task(task_id):
@@ -51,10 +52,17 @@ def get_task(task_id):
                     "parameters": task.Parameters,
                     "result": task.Result,
                     "errorMessage": task.ErrorMessage,
-                    "processingTime": float(task.ProcessingTime) if task.ProcessingTime else None,
+                    "processingTime": (
+                        float(task.ProcessingTime)
+                        if task.ProcessingTime else None
+                    ),
                     "createdAt": str(task.CreatedAt),
-                    "startedAt": str(task.StartedAt) if task.StartedAt else None,
-                    "completedAt": str(task.CompletedAt) if task.CompletedAt else None,
+                    "startedAt": (
+                        str(task.StartedAt) if task.StartedAt else None
+                    ),
+                    "completedAt": (
+                        str(task.CompletedAt) if task.CompletedAt else None
+                    ),
                     "updatedAt": str(task.UpdatedAt),
                 }
             }

@@ -14,9 +14,10 @@ from common.pyportal_common.error_handlers.not_found_error_handler import (
 from common.pyportal_common.error_handlers.invalid_request_handler import (
     send_invalid_request_error_to_client,
 )
-from common.pyportal_common.error_handlers.internal_server_error_handler import (
-    send_internal_server_error_to_client,
-)
+from common.pyportal_common.error_handlers.\
+    internal_server_error_handler import (
+        send_internal_server_error_to_client,
+    )
 
 
 def cancel_task(task_id):

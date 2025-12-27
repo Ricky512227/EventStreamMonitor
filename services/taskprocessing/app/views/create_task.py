@@ -15,9 +15,10 @@ from app.models.task_model import TaskModel
 from common.pyportal_common.error_handlers.invalid_request_handler import (
     send_invalid_request_error_to_client,
 )
-from common.pyportal_common.error_handlers.internal_server_error_handler import (
-    send_internal_server_error_to_client,
-)
+from common.pyportal_common.error_handlers.\
+    internal_server_error_handler import (
+        send_internal_server_error_to_client,
+    )
 from common.pyportal_common.utils import mask_request_headers
 
 
@@ -74,11 +75,15 @@ def create_task():
             if task_type not in valid_task_types:
                 return send_invalid_request_error_to_client(
                     app_logger_name=taskprocessing_logger,
-                    message_data=f"Invalid task type. Must be one of: {', '.join(valid_task_types)}",
+                    message_data=(
+                        f"Invalid task type. Must be one of: "
+                        f"{', '.join(valid_task_types)}"
+                    ),
                 )
 
             taskprocessing_logger.info(
-                f"Creating task - Type: {task_type}, User: {user_id}, Priority: {priority}"
+                "Creating task - Type: %s, User: %s, Priority: %s",
+                task_type, user_id, priority
             )
             
             session = app_manager_db_obj.get_session_from_session_maker()
@@ -89,7 +94,10 @@ def create_task():
                 )
 
             try:
-                task_reference = f"TASK{datetime.now().strftime('%Y%m%d')}{uuid.uuid4().hex[:8].upper()}"
+                task_reference = (
+                    f"TASK{datetime.now().strftime('%Y%m%d')}"
+                    f"{uuid.uuid4().hex[:8].upper()}"
+                )
                 
                 task = TaskModel(
                     TaskType=task_type,
@@ -109,7 +117,8 @@ def create_task():
                 session.commit()
 
                 taskprocessing_logger.info(
-                    f"Task created successfully: {task_reference} (ID: {task_id})"
+                    "Task created successfully: %s (ID: %s)",
+                    task_reference, task_id
                 )
 
                 if taskprocessing_kafka_producer:
@@ -127,7 +136,8 @@ def create_task():
                             task_event
                         )
                         taskprocessing_logger.info(
-                            f"Published task_created event to Kafka: {task_reference}"
+                            "Published task_created event to Kafka: %s",
+                            task_reference
                         )
                     # pylint: disable=broad-except
                     except Exception as kafka_ex:
