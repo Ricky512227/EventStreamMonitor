@@ -31,14 +31,14 @@ def create_task():
         taskprocessing_logger.info(
             f"REQUEST ==> Received url for the request :: {request.url}"
         )
-        
+
         if request.method == "POST":
             rec_req_headers = dict(request.headers)
             masked_headers = mask_request_headers(rec_req_headers)
             taskprocessing_logger.info(
                 f"Received Headers from the request :: {masked_headers}"
             )
-            
+
             header_result = taskprocessing_manager.generate_req_missing_params(
                 rec_req_headers, taskprocessing_headers_schema
             )
@@ -50,7 +50,7 @@ def create_task():
                 )
 
             rec_req_data = request.get_json()
-            
+
             body_result = taskprocessing_manager.generate_req_missing_params(
                 rec_req_data, taskprocessing_req_schema
             )
@@ -85,7 +85,7 @@ def create_task():
                 "Creating task - Type: %s, User: %s, Priority: %s",
                 task_type, user_id, priority
             )
-            
+
             session = app_manager_db_obj.get_session_from_session_maker()
             if session is None:
                 return send_internal_server_error_to_client(
@@ -98,7 +98,7 @@ def create_task():
                     f"TASK{datetime.now().strftime('%Y%m%d')}"
                     f"{uuid.uuid4().hex[:8].upper()}"
                 )
-                
+
                 task = TaskModel(
                     TaskType=task_type,
                     UserID=user_id,
@@ -224,4 +224,3 @@ def create_task():
             app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
-

@@ -25,7 +25,7 @@ def cancel_task(task_id):
         taskprocessing_logger.info(
             f"REQUEST ==> Cancel task: {task_id}"
         )
-        
+
         session = app_manager_db_obj.get_session_from_session_maker()
         if session is None:
             return send_internal_server_error_to_client(
@@ -51,14 +51,14 @@ def cancel_task(task_id):
                     app_logger_name=taskprocessing_logger,
                     message_data="Task already cancelled",
                 )
-            
+
             if task.Status == "completed":
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_invalid_request_error_to_client(
                     app_logger_name=taskprocessing_logger,
                     message_data="Cannot cancel completed task",
                 )
-            
+
             if task.Status == "failed":
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_invalid_request_error_to_client(
@@ -165,4 +165,3 @@ def cancel_task(task_id):
             app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
-
