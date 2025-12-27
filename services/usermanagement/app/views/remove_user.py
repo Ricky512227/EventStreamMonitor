@@ -2,7 +2,7 @@ import sys
 
 import sqlalchemy
 from flask import request, make_response
-from app.models.user_model import UsersModel
+from app.models import UsersModel
 from app import (
     user_management_logger,
     del_user_headers_schema,

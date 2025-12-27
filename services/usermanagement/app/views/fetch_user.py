@@ -1,7 +1,7 @@
 import sys
 import sqlalchemy.exc
 from flask import request, make_response
-from usermanagement_service.users.request_handlers.user import User
+from app.users.request_handlers.user import User
 from app.models.user_model import UsersModel
 from app import (
     user_management_logger,
