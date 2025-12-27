@@ -32,9 +32,12 @@ class PyPortalAdminBaseError(ABC):
             self.cmn_logger.info(
                 f"Prepared Err_response :: [SUCCESS] : {error_res}")
             return error_res
+        # pylint: disable=broad-except
         except Exception as ex:
             self.cmn_logger.error(
-                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
+                "Error occurred :: %s\tLine No:: %s",
+                ex, sys.exc_info()[2].tb_lineno
+            )
 
     def serialize_prepared_error_response(
             self, prep_error_res: dict) -> Union[make_response, None]:
@@ -54,9 +57,12 @@ class PyPortalAdminBaseError(ABC):
             self.cmn_logger.debug(
                 f"Prepared Err_response :: [SUCCESS]:: {err_response}")
             return err_response
+        # pylint: disable=broad-except
         except Exception as ex:
             self.cmn_logger.error(
-                f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
+                "Error occurred :: %s\tLine No:: %s",
+                ex, sys.exc_info()[2].tb_lineno
+            )
 
     @property
     def send_response_to_client(self) -> Union[make_response, None]:
