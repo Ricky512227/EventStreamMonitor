@@ -1,12 +1,17 @@
 from typing import Union, Optional, Any
 from flask import make_response
-from common.pyportal_common.error_handlers.base_error_handler import PyPortalAdminBaseError
+from common.pyportal_common.error_handlers.\
+    base_error_handler import EventStreamMonitorBaseError
 
 
-class PyPortalAdminInternalServerError(PyPortalAdminBaseError):
+class EventStreamMonitorInternalServerError(EventStreamMonitorBaseError):
 
     def __init__(self, logger_instance, message=None, error_details=None):
-        # self.cmn_logger.info("Initializing PyPortalAdminBaseError object ID: {0}".format(id(self)))
+        # self.cmn_logger.info(
+        #     "Initializing EventStreamMonitorBaseError object ID: {0}".format(
+        #         id(self)
+        #     )
+        # )
         super().__init__(logger=logger_instance,
                          message=message,
                          error_details=error_details)
@@ -16,7 +21,7 @@ class PyPortalAdminInternalServerError(PyPortalAdminBaseError):
         for key, value in vars(self).items():
             self.cmn_logger.info(f"Initialized {key} with value: {value}")
         self.cmn_logger.info(
-            f"Initialed PyPortalAdminBaseError object ID: {id(self)}")
+            f"Initialed EventStreamMonitorBaseError object ID: {id(self)}")
 
     def get_custom_error(self) -> str:
         return self.error
@@ -30,7 +35,7 @@ def send_internal_server_error_to_client(
     message_data: Optional[str] = None,
     err_details: Optional[Any] = None,
 ) -> Union[make_response, None]:
-    internal_server_error_obj = PyPortalAdminInternalServerError(
+    internal_server_error_obj = EventStreamMonitorInternalServerError(
         logger_instance=app_logger_name,
         message=message_data,
         error_details=err_details)

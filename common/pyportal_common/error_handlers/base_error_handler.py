@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Union
 
 
-class PyPortalAdminBaseError(ABC):
+class EventStreamMonitorBaseError(ABC):
 
     def __init__(self, logger, message=None, error_details=None) -> None:
         self.message = message
