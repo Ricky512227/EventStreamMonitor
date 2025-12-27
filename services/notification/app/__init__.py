@@ -2,7 +2,7 @@
 import os
 import sys
 from logging import Logger
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, jsonify
 
 # Add parent directory to path for common imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..'))
@@ -40,7 +40,6 @@ try:
     @notification_app.route('/health', methods=['GET'])
     def health():
         """Health check endpoint"""
-        from flask import jsonify
         return jsonify({
             'status': 'healthy',
             'service': 'notification'

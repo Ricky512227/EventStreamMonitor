@@ -18,6 +18,7 @@ from common.pyportal_common.error_handlers.invalid_request_handler import (
 from common.pyportal_common.error_handlers.internal_server_error_handler import (
     send_internal_server_error_to_client,
 )
+from common.pyportal_common.utils import mask_request_headers
 
 
 def create_task():
@@ -31,7 +32,6 @@ def create_task():
         )
         
         if request.method == "POST":
-            from common.pyportal_common.utils import mask_request_headers
             rec_req_headers = dict(request.headers)
             masked_headers = mask_request_headers(rec_req_headers)
             taskprocessing_logger.info(

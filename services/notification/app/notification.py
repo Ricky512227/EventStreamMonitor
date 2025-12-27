@@ -6,6 +6,7 @@ This module contains the main entry point for the Notification service.
 It initializes the server, configures settings, and starts Kafka consumer.
 """
 import sys
+import threading
 from app import (
     notification_app,
     notification_logger,
@@ -28,7 +29,6 @@ if __name__ == "__main__":
         
         # Start Kafka consumer in background thread
         if kafka_consumer:
-            import threading
             consumer_thread = threading.Thread(
                 target=kafka_consumer.start_consuming,
                 daemon=True

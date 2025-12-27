@@ -9,6 +9,7 @@ from common.pyportal_common.app_handlers.app_manager import AppHandler
 from common.pyportal_common.db_handlers.db_conn_manager import (
     DataBaseConnectionHandler
 )
+from common.pyportal_common.utils import mask_ip_address
 from app.models.token_model import Base
 
 try:
@@ -221,7 +222,6 @@ try:
                             usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_IP"] + ":" +
                             usermanager_app.config["USER_MANAGEMENT_GRPC_SERVER_PORT"]
                         )
-                        from common.pyportal_common.utils import mask_ip_address
                         grpc_ip = usermanager_app.config['USER_MANAGEMENT_GRPC_SERVER_IP']
                         masked_grpc_ip = mask_ip_address(grpc_ip)
                         user_management_logger.info(

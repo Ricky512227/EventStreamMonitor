@@ -2,7 +2,7 @@
 import os
 import sys
 from logging import Logger
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, jsonify
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..'))
 
@@ -99,7 +99,6 @@ try:
     @usermanager_app.route('/health', methods=['GET'])
     def health():
         """Health check endpoint"""
-        from flask import jsonify
         return jsonify({
             'status': 'healthy',
             'service': 'usermanagement'
