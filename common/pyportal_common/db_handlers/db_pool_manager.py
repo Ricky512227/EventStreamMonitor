@@ -9,7 +9,7 @@ from sqlalchemy.exc import (
     ArgumentError,
     UnboundExecutionError,
     OperationalError,
-    TimeoutError,
+    TimeoutError as SQLTimeoutError,
     DatabaseError,
 )
 from flask_sqlalchemy import SQLAlchemy
@@ -18,15 +18,6 @@ from sqlalchemy.pool import QueuePool
 from common.pyportal_common.db_handlers.db_conn_manager import (
     DataBaseConnectionHandler,
 )
-
-# from sqlalchemy.exc import (
-#     SQLAlchemyError,
-#     ArgumentError,
-#     UnboundExecutionError,
-#     OperationalError,
-#     TimeoutError,
-#     DatabaseError,
-# )
 from sqlalchemy.orm import sessionmaker
 
 
@@ -48,11 +39,13 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
     ) -> Union[QueuePool, None]:
         try:
             self.cmn_logger.info(
-                f"Creating Pool of connections for Service ==>[{self.cmn_logger.name}] :: [STARTED]"
+                f"Creating Pool of connections for Service "
+                f"==>[{self.cmn_logger.name}] :: [STARTED]"
             )
             if not db_engine:
                 self.cmn_logger.info(
-                    f"Created Pool of connections for Service ==>[{self.cmn_logger.name}] :: [FAILED]"
+                    f"Created Pool of connections for Service "
+                    f"==>[{self.cmn_logger.name}] :: [FAILED]"
                 )
                 return None
             else:
@@ -64,12 +57,14 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
                     max_overflow=self.db_pool_max_overflow,
                 )
                 self.cmn_logger.info(
-                    f"Created Pool of connections for Service ==>[{self.cmn_logger.name}] :: [SUCCESS]"
+                    f"Created Pool of connections for Service "
+                    f"==>[{self.cmn_logger.name}] :: [SUCCESS]"
                 )
                 return pool_of_db_connections
         except SQLAlchemyError as ex:
             self.cmn_logger.error(
-                f"{ex} error occurred while Creating Pool of connections for Service \tLine No:: {sys.exc_info()[2].tb_lineno}"
+                f"{ex} error occurred while Creating Pool of connections "
+                f"for Service \tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
 
@@ -84,58 +79,58 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
                 return None
             else:
                 self.cmn_logger.info(
-                    "Creating session maker for managing database sessions/interactions  :: [STARTED]"
+                    "Creating session maker for managing database "
+                    "sessions/interactions  :: [STARTED]"
                 )
                 self.session_maker = sessionmaker(bind=db_engine)
                 self.cmn_logger.info(
                     f"Created session using Pool_info :: {connection_pool}"
                 )
                 self.cmn_logger.info(
-                    f"Created a session maker for database interactions {self.session_maker} :: [SUCCESS]"
+                    f"Created a session maker for database interactions "
+                    f"{self.session_maker} :: [SUCCESS]"
                 )
                 return self.session_maker
         except (
             ArgumentError,
             UnboundExecutionError,
             OperationalError,
-            TimeoutError,
+            SQLTimeoutError,
             DatabaseError,
         ) as ex:
             self.cmn_logger.error(
-                f"{ex} error occurred while Creating session using pool of connections  \tLine No:: {sys.exc_info()[2].tb_lineno}"
+                f"{ex} error occurred while Creating session using pool "
+                f"of connections  \tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
 
-        # def rollback_session(self, session_instance: sqlalchemy.orm.Session) -> Union[bool, None]:
-        #     try:
-        #         if session_instance:
-        #             self.cmn_logger.info(f"Rollback the  session  {session_instance}:: ")
-        #             session_instance.rollback()
-        #             self.cmn_logger.info(f"Rollback the  session  {session_instance}:: ")
-        #             return True
-        #     except Exception as ex:
-        #         self.cmn_logger.info(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
-        #         print(f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}")
-        #         return False
-
-    def get_session_from_session_maker(self) -> Union[sqlalchemy.orm.Session, None]:
+    def get_session_from_session_maker(
+        self
+    ) -> Union[sqlalchemy.orm.Session, None]:
         try:
             if self.session_maker is None:
                 self.cmn_logger.info(
-                    "Fetching session from sessions of connections  :: [FAILED]"
+                    "Fetching session from sessions of connections "
+                    ":: [FAILED]"
                 )
                 return None
             else:
-                self.display_pool_info(
-                    connection_pool=self.session_maker.kw["bind"].pool
-                )
+                # Get pool from engine bound to sessionmaker
+                # pylint: disable=no-member
+                bind_engine = getattr(self.session_maker, 'bind', None)
+                if bind_engine and hasattr(bind_engine, 'pool'):
+                    self.display_pool_info(
+                        connection_pool=bind_engine.pool
+                    )
                 self.cmn_logger.info(
-                    "Fetching session from sessions of connections :: [STARTED]"
+                    "Fetching session from sessions of connections "
+                    ":: [STARTED]"
                 )
                 session_instance = self.session_maker()
 
                 self.cmn_logger.info(
-                    "Fetching session %s from sessions of connections:: [SUCCESS]",
+                    "Fetching session %s from sessions of connections "
+                    ":: [SUCCESS]",
                     session_instance,
                 )
                 return session_instance
@@ -143,11 +138,13 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
             ArgumentError,
             UnboundExecutionError,
             OperationalError,
-            TimeoutError,
+            SQLTimeoutError,
             DatabaseError,
         ) as ex:
             self.cmn_logger.error(
-                f"{ex} error occurred while Fetching session from sessions of connections \tLine No:: {sys.exc_info()[2].tb_lineno}"
+                f"{ex} error occurred while Fetching session from "
+                f"sessions of connections \tLine No:: "
+                f"{sys.exc_info()[2].tb_lineno}"
             )
             return None
 
@@ -155,11 +152,13 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
         self, session_instance: sqlalchemy.orm.Session
     ) -> Union[bool, None]:
         try:
-            self.cmn_logger.info(f"Closing the  session  {session_instance}:: ")
+            self.cmn_logger.info(
+                f"Closing the  session  {session_instance}:: "
+            )
             if not session_instance.is_active:
-                pass
                 self.cmn_logger.info(
-                    f"Session of Session-Id {session_instance} which is not active or already closed:: [SUCCESS]"
+                    f"Session of Session-Id {session_instance} which is "
+                    f"not active or already closed:: [SUCCESS]"
                 )
             else:
                 session_instance.close()
@@ -167,8 +166,9 @@ class DataBasePoolHandler(DataBaseConnectionHandler):
                     f"Closed session of Session-Id {session_instance}:: "
                 )
             return True
-        except Exception as ex:
+        except (SQLAlchemyError, AttributeError, RuntimeError) as ex:
             self.cmn_logger.error(
-                f"{ex} error occurred while Closing the  session \tLine No:: {sys.exc_info()[2].tb_lineno}"
+                f"{ex} error occurred while Closing the  session "
+                f"\tLine No:: {sys.exc_info()[2].tb_lineno}"
             )
             return None
