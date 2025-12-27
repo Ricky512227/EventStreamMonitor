@@ -7,11 +7,11 @@ data:
   FLASK_ENV: "development"
   DEBUG: "True"
   SECRET_KEY: "12345abcd"
-  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/PyPortalAdminstration/src/usermanagement_service/usermanagement_service.py"
+  FLASK_APP: "/Users/kamalsaidevarapalli/Desktop/Workshop/EventStreamMonitor/src/usermanagement_service/usermanagement_service.py"
 
   SERVICE_NAME: "usermanagement"
   DB_DRIVER_NAME: "postgresql"
-  DB_USER: "pyportaladmin"
+  DB_USER: "eventstreammonitor"
   DB_PASSWORD: "testeventstreammonitor#123"
   DB_IPADDRESS: "miniapp-usermanagementdb"
   DB_PORT: "5433"
