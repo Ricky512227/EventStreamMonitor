@@ -1,7 +1,7 @@
 import sys
 from flask import request, make_response
 from app import (
-    booking_logger,
+    taskprocessing_logger,
     app_manager_db_obj,
 )
 from app.models.task_model import TaskModel
@@ -12,7 +12,7 @@ from common.pyportal_common.error_handlers.internal_server_error_handler import 
 
 def list_tasks():
     try:
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"REQUEST ==> List tasks"
         )
         
@@ -22,7 +22,7 @@ def list_tasks():
         limit = request.args.get('limit', default=50, type=int)
         offset = request.args.get('offset', default=0, type=int)
         
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"List tasks filters - status: {status}, taskType: {task_type}, "
             f"userId: {user_id}, limit: {limit}, offset: {offset}"
         )
@@ -30,7 +30,7 @@ def list_tasks():
         session = app_manager_db_obj.get_session_from_session_maker()
         if session is None:
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Create Session Failed",
             )
 
@@ -76,7 +76,7 @@ def list_tasks():
             response.headers["Content-Type"] = "application/json"
             response.status_code = 200
 
-            booking_logger.info(
+            taskprocessing_logger.info(
                 f"Listed {len(tasks_list)} tasks (total: {total_count})"
             )
 
@@ -85,21 +85,21 @@ def list_tasks():
 
         except Exception as ex:
             app_manager_db_obj.close_session(session_instance=session)
-            booking_logger.error(
+            taskprocessing_logger.error(
                 f"Error occurred :: {ex}\t"
                 f"Line No:: {sys.exc_info()[2].tb_lineno}"
             )
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Database Error",
             )
 
     except Exception as ex:
-        booking_logger.exception(
+        taskprocessing_logger.exception(
             f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
-            app_logger_name=booking_logger,
+            app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
 

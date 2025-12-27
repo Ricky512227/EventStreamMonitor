@@ -1,7 +1,7 @@
 import sys
 from flask import make_response
 from app import (
-    booking_logger,
+    taskprocessing_logger,
     app_manager_db_obj,
 )
 from app.models.task_model import TaskModel
@@ -15,14 +15,14 @@ from common.pyportal_common.error_handlers.internal_server_error_handler import 
 
 def get_task(task_id):
     try:
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"REQUEST ==> Get task: {task_id}"
         )
         
         session = app_manager_db_obj.get_session_from_session_maker()
         if session is None:
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Create Session Failed",
             )
 
@@ -34,7 +34,7 @@ def get_task(task_id):
             if not task:
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_notfound_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Task not found",
                 )
 
@@ -67,21 +67,21 @@ def get_task(task_id):
 
         except Exception as ex:
             app_manager_db_obj.close_session(session_instance=session)
-            booking_logger.error(
+            taskprocessing_logger.error(
                 f"Error occurred :: {ex}\t"
                 f"Line No:: {sys.exc_info()[2].tb_lineno}"
             )
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Database Error",
             )
 
     except Exception as ex:
-        booking_logger.exception(
+        taskprocessing_logger.exception(
             f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
-            app_logger_name=booking_logger,
+            app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
 

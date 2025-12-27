@@ -22,10 +22,10 @@ from common.pyportal_common.error_handlers.internal_server_error_handler import 
 def create_task():
     """Create a new task for processing"""
     try:
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"REQUEST ==> Received Endpoint: {request.endpoint}"
         )
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"REQUEST ==> Received url for the request :: {request.url}"
         )
         
@@ -33,28 +33,28 @@ def create_task():
             from common.pyportal_common.utils import mask_request_headers
             rec_req_headers = dict(request.headers)
             masked_headers = mask_request_headers(rec_req_headers)
-            booking_logger.info(
+            taskprocessing_logger.info(
                 f"Received Headers from the request :: {masked_headers}"
             )
             
-            header_result = booking_manager.generate_req_missing_params(
-                rec_req_headers, booking_headers_schema
+            header_result = taskprocessing_manager.generate_req_missing_params(
+                rec_req_headers, taskprocessing_headers_schema
             )
             if len(header_result) > 0:
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Request Headers Missing",
                     err_details=header_result,
                 )
 
             rec_req_data = request.get_json()
             
-            body_result = booking_manager.generate_req_missing_params(
-                rec_req_data, booking_req_schema
+            body_result = taskprocessing_manager.generate_req_missing_params(
+                rec_req_data, taskprocessing_req_schema
             )
             if len(body_result) > 0:
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Request Params Missing",
                     err_details=body_result,
                 )
@@ -72,18 +72,18 @@ def create_task():
             ]
             if task_type not in valid_task_types:
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data=f"Invalid task type. Must be one of: {', '.join(valid_task_types)}",
                 )
 
-            booking_logger.info(
+            taskprocessing_logger.info(
                 f"Creating task - Type: {task_type}, User: {user_id}, Priority: {priority}"
             )
             
             session = app_manager_db_obj.get_session_from_session_maker()
             if session is None:
                 return send_internal_server_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Create Session Failed",
                 )
 
@@ -107,11 +107,11 @@ def create_task():
                 task_id = task.ID
                 session.commit()
 
-                booking_logger.info(
+                taskprocessing_logger.info(
                     f"Task created successfully: {task_reference} (ID: {task_id})"
                 )
 
-                if booking_kafka_producer:
+                if taskprocessing_kafka_producer:
                     try:
                         task_event = {
                             "eventType": "task_created",
@@ -122,14 +122,14 @@ def create_task():
                             "priority": priority,
                             "timestamp": datetime.now().isoformat(),
                         }
-                        booking_kafka_producer.publish_data_to_producer(
+                        taskprocessing_kafka_producer.publish_data_to_producer(
                             task_event
                         )
-                        booking_logger.info(
+                        taskprocessing_logger.info(
                             f"Published task_created event to Kafka: {task_reference}"
                         )
                     except Exception as kafka_ex:
-                        booking_logger.warning(
+                        taskprocessing_logger.warning(
                             f"Failed to publish to Kafka: {kafka_ex}"
                         )
 
@@ -157,21 +157,21 @@ def create_task():
             except Exception as ex:
                 session.rollback()
                 app_manager_db_obj.close_session(session_instance=session)
-                booking_logger.error(
+                taskprocessing_logger.error(
                     f"Error creating task :: {ex}\t"
                     f"Line No:: {sys.exc_info()[2].tb_lineno}"
                 )
                 return send_internal_server_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Database Error",
                 )
 
     except Exception as ex:
-        booking_logger.exception(
+        taskprocessing_logger.exception(
             f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
-            app_logger_name=booking_logger,
+            app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
 

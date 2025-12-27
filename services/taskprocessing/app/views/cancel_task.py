@@ -2,9 +2,9 @@ import sys
 from datetime import datetime
 from flask import make_response
 from app import (
-    booking_logger,
+    taskprocessing_logger,
     app_manager_db_obj,
-    booking_kafka_producer,
+    taskprocessing_kafka_producer,
 )
 from app.models.task_model import TaskModel
 from common.pyportal_common.error_handlers.not_found_error_handler import (
@@ -20,14 +20,14 @@ from common.pyportal_common.error_handlers.internal_server_error_handler import 
 
 def cancel_task(task_id):
     try:
-        booking_logger.info(
+        taskprocessing_logger.info(
             f"REQUEST ==> Cancel task: {task_id}"
         )
         
         session = app_manager_db_obj.get_session_from_session_maker()
         if session is None:
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Create Session Failed",
             )
 
@@ -39,28 +39,28 @@ def cancel_task(task_id):
             if not task:
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_notfound_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Task not found",
                 )
 
             if task.Status == "cancelled":
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Task already cancelled",
                 )
             
             if task.Status == "completed":
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Cannot cancel completed task",
                 )
             
             if task.Status == "failed":
                 app_manager_db_obj.close_session(session_instance=session)
                 return send_invalid_request_error_to_client(
-                    app_logger_name=booking_logger,
+                    app_logger_name=taskprocessing_logger,
                     message_data="Cannot cancel failed task",
                 )
 
@@ -70,12 +70,12 @@ def cancel_task(task_id):
             task.CompletedAt = datetime.now()
             session.commit()
 
-            booking_logger.info(
+            taskprocessing_logger.info(
                 f"Task cancelled successfully: {task.TaskReference} "
                 f"(was: {old_status})"
             )
 
-            if booking_kafka_producer:
+            if taskprocessing_kafka_producer:
                 try:
                     cancel_event = {
                         "eventType": "task_cancelled",
@@ -86,15 +86,15 @@ def cancel_task(task_id):
                         "previousStatus": old_status,
                         "timestamp": datetime.now().isoformat(),
                     }
-                    booking_kafka_producer.publish_data_to_producer(
+                    taskprocessing_kafka_producer.publish_data_to_producer(
                         cancel_event
                     )
-                    booking_logger.info(
+                    taskprocessing_logger.info(
                         f"Published task_cancelled event to Kafka: "
                         f"{task.TaskReference}"
                     )
                 except Exception as kafka_ex:
-                    booking_logger.warning(
+                    taskprocessing_logger.warning(
                         f"Failed to publish to Kafka: {kafka_ex}"
                     )
 
@@ -117,21 +117,21 @@ def cancel_task(task_id):
         except Exception as ex:
             session.rollback()
             app_manager_db_obj.close_session(session_instance=session)
-            booking_logger.error(
+            taskprocessing_logger.error(
                 f"Error occurred :: {ex}\t"
                 f"Line No:: {sys.exc_info()[2].tb_lineno}"
             )
             return send_internal_server_error_to_client(
-                app_logger_name=booking_logger,
+                app_logger_name=taskprocessing_logger,
                 message_data="Database Error",
             )
 
     except Exception as ex:
-        booking_logger.exception(
+        taskprocessing_logger.exception(
             f"Error occurred :: {ex}\tLine No:: {sys.exc_info()[2].tb_lineno}"
         )
         return send_internal_server_error_to_client(
-            app_logger_name=booking_logger,
+            app_logger_name=taskprocessing_logger,
             message_data="Unknown error caused",
         )
 
