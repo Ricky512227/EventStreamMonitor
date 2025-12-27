@@ -1,2 +1,2 @@
-# Views for flight booking service
+# Views for task processing service
 

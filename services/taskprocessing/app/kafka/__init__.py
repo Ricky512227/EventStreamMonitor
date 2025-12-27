@@ -1,2 +1,2 @@
-# Kafka producer for booking service
+# Kafka producer for task processing service
 

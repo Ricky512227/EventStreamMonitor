@@ -1,2 +1,2 @@
-# Migrations for flight booking service
+# Migrations for task processing service
 
